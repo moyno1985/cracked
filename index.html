@@ -868,14 +868,16 @@ const LOADING_PHRASES = ['Cracking the brief...','Finding the brave moves...','C
 let loaderInterval;
 
 function startLoader() {
-  let i = 0;
+  let used = [];
   const el = document.getElementById('loaderText');
   const bar = document.querySelector('.progress-bar');
   bar.innerHTML = '<div class="progress-fill" id="progressFill"></div>';
   requestAnimationFrame(() => {
     document.getElementById('progressFill').style.animation = 'progress 6s ease-in-out forwards';
   });
-  loaderInterval = setInterval(() => { i = (i+1) % LOADING_PHRASES.length; el.textContent = LOADING_PHRASES[i]; }, 1400);
+  function getRandom() { if(used.length===LOADING_PHRASES.length) used=[]; let i; do { i=Math.floor(Math.random()*LOADING_PHRASES.length); } while(used.includes(i)); used.push(i); return LOADING_PHRASES[i]; }
+  el.textContent = getRandom();
+  loaderInterval = setInterval(() => { el.textContent = getRandom(); }, 1400);
 }
 
 function stopLoader() { clearInterval(loaderInterval); }
