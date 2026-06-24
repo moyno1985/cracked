@@ -97,8 +97,7 @@ const server = http.createServer((req, res) => {
         prompt: imagePrompt,
         n: 1,
         size: '1024x1024',
-        quality: 'standard',
-        style: 'natural'
+        quality: 'standard'
       });
       const options = {
         hostname: 'api.openai.com',
