@@ -585,6 +585,26 @@
     margin-top: 16px;
   }
 
+  .concept-image {
+    width: 100%;
+    margin-top: 20px;
+    border: 1px dashed #dddbd5;
+    background: var(--paper);
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .concept-image img { width: 100%; display: block; }
+  .concept-image .img-loading {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    animation: blink 1.4s ease-in-out infinite;
+  }
   .concept-meta {
     display: flex;
     flex-wrap: wrap;
@@ -972,8 +992,22 @@ function renderConcepts(concepts, brand) {
       <div class="concept-body">${c.keyInsight}</div>
       <span class="concept-label">Bring it to life</span>
       <div class="concept-body">${c.executionIdea}</div>
+      <div class="concept-image"><span class="img-loading">Sketching concept...</span></div>
       <div class="concept-meta">${c.lionsPotential?`<span class="meta-tag highlight">${c.lionsPotential}</span>`:''}</div>`;
     grid.appendChild(card);
+    const imgDiv = card.querySelector('.concept-image');
+    fetch('/api/image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ concept: c.name + ': ' + c.concept })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.data && data.data[0] && data.data[0].url) {
+        imgDiv.innerHTML = '<img src="' + data.data[0].url + '" alt="Concept visual" />';
+      } else { imgDiv.innerHTML = ''; }
+    })
+    .catch(() => { imgDiv.innerHTML = ''; });
     if (inspHtml) { const d = document.createElement('div'); d.innerHTML = inspHtml; grid.appendChild(d.firstElementChild); }
   });
   document.getElementById('resultsTitle').textContent = `${concepts.length} concepts — ${brand} cracked`;
