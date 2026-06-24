@@ -876,7 +876,7 @@ function startLoader() {
   });
   function getRandom() { if(used.length===LOADING_PHRASES.length) used=[]; let i; do { i=Math.floor(Math.random()*LOADING_PHRASES.length); } while(used.includes(i)); used.push(i); return LOADING_PHRASES[i]; }
   el.textContent = getRandom();
-  loaderInterval = setInterval(() => { el.textContent = getRandom(); }, 1400);
+  loaderInterval = setInterval(() => { el.textContent = getRandom(); }, 2200);
 }
 
 function stopLoader() { clearInterval(loaderInterval); }
