@@ -716,7 +716,7 @@
       
       <div class="examples-row">
         <span class="examples-label">Load an example</span>
-        <button class="example-pill" onclick="loadExample('northern')">Great Northern</button>
+        <button class="example-pill" onclick="loadExample('balter')">Balter</button>
         <button class="example-pill" onclick="loadExample('moccona')">Moccona</button>
         <button class="example-pill" onclick="loadExample('qantas')">Qantas</button>
         <button class="example-pill" onclick="loadExample('guinness')">Guinness</button>
@@ -845,7 +845,7 @@
 document.getElementById('formDate').textContent = new Date().toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'}).toUpperCase();
 
 const EXAMPLES = {
-  northern: { brand:'Great Northern Brewing Co.', category:'FMCG / Food & Drink', audience:'Australian blokes 25-45 who drink outdoors and distrust anything that tries too hard', ambition:'Drive brand fame', brief:"Great Northern has grown fast on the back of an outdoor lifestyle platform. But as it gets bigger it risks feeling like a marketing idea rather than a real brand. We need to deepen authenticity without losing the simplicity that made it work.", tone:'Raw & honest' },
+  balter: { brand:'Balter Brewing', category:'FMCG / Food & Drink', audience:'Australian craft beer drinkers 25-40 who championed Balter before the buyout and now feel conflicted', ambition:'Challenge a cultural norm', brief:'Balter was founded by pro surfers who made genuinely great beer. Then Carlton United Breweries bought them. Now they have the distribution to be everywhere but the credibility that made people love them is under threat. How do you scale without selling out — or do you lean into the contradiction?', tone:'Raw & honest' },
   moccona: { brand:'Moccona', category:'FMCG / Food & Drink', audience:'Australians 35-60 who grew up with Moccona on the bench but have quietly moved on to pods or cafe coffee', ambition:'Reposition a brand', brief:'Moccona was Australia's idea of sophisticated coffee for 50 years. Then the world got complicated — pods, single origin, cold brew, oat milk flat whites. We need to find Moccona's place in a coffee culture it no longer leads — without apologising for what it is.', tone:'Raw & honest' },
   qantas: { brand:'Qantas', category:'Travel & Tourism', audience:'Australians who fly regularly but have lost faith in the airline after years of poor service', ambition:'Reposition a brand', brief:"Qantas used to be a source of national pride. Now it's a punchline. Australians feel betrayed — by cancelled flights, lost baggage, and a CEO who became a villain. We need to begin rebuilding trust without pretending nothing happened.", tone:'Raw & honest' },
   commbank: { brand:'CommBank', category:'Finance / Banking', audience:'Australians 18-35 who manage finances on their phone but feel anxious about money', ambition:'Make people feel something', brief:"Money stress is Australia's silent epidemic. CommBank has the most advanced banking app in the country but people still feel like their bank is working against them. We need to position CommBank as genuinely on your side.", tone:'Warm & human' },
