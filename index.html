@@ -864,11 +864,7 @@ function loadExample(key) {
   document.getElementById('tone').value = ex.tone;
 }
 
-const LOADING_PHRASES = ['Pretending I haven't seen the budget...','Staring out the window...','Asking if it's been done...','Playing ping pong...','Blaming the client...','Browsing Carhartt.com...','Calling it brave so no one questions it...','Deciphering Notes mash...','Blaming the brief...','Admiring clouds...','Hiding in cubicle...','Taking long lunch...','Climbing out of YouTube hole...','Losing Sharpie cap...','Researching Impostor Syndrome...','Sleeping on beanbag...','Opening more tabs...']
-let loaderInterval;
-
-function startLoader() {
-  let used = [];
+const LOADING_PHRASES = ['Pretending I havent seen the budget...','Staring out the window...','Asking if its been done...','Playing ping pong...','Blaming the client...','Browsing Carhartt.com...','Calling it brave so no one questions it...','Deciphering Notes mash...','Blaming the brief...','Admiring clouds...','Hiding in cubicle...','Taking long lunch...','Climbing out of YouTube hole...','Losing Sharpie cap...','Researching Impostor Syndrome...','Sleeping on beanbag...','Opening more tabs...']
   const el = document.getElementById('loaderText');
   const bar = document.querySelector('.progress-bar');
   bar.innerHTML = '<div class="progress-fill" id="progressFill"></div>';
