@@ -996,7 +996,8 @@ function renderConcepts(concepts, brand) {
       <div class="concept-meta">${c.lionsPotential?`<span class="meta-tag highlight">${c.lionsPotential}</span>`:''}</div>`;
     grid.appendChild(card);
     const imgDiv = card.querySelector('.concept-image');
-    fetch('/api/image', {
+    if (i > 0) { imgDiv.innerHTML = ''; }
+    else fetch('/api/image', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ concept: c.name + ': ' + c.concept })
