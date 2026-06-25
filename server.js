@@ -93,7 +93,7 @@ const server = http.createServer((req, res) => {
       }
       const imagePrompt = `Advertising agency concept scamp. Rough sharpie marker pen sketch on white paper. Hand-drawn art directors rough. Black ink gestural strokes, very loose and expressive, minimal colour wash in yellow and grey. Shows the concept: ${parsed.concept}. Style: professional ad agency notepad sketch, not finished artwork, thumbnail composition.`;
       const imageBody = JSON.stringify({
-        model: 'gpt-image-1',
+        model: 'gpt-image-2',
         prompt: imagePrompt,
         n: 1,
         size: '1024x1024',
