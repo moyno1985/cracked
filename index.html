@@ -1144,12 +1144,42 @@ function renderConcepts(concepts, brand) {
           body: JSON.stringify({ concept: c.name + ': ' + c.concept })
         });
         const data = await r.json();
+        var imgSrc = '';
         if (data.data && data.data[0] && data.data[0].b64_json) {
-          imgDiv.innerHTML = '<img src="data:image/png;base64,' + data.data[0].b64_json + '" alt="Concept visual" />';
+          imgSrc = 'data:image/png;base64,' + data.data[0].b64_json;
+          imgDiv.innerHTML = '<img src="' + imgSrc + '" alt="Concept visual" />';
         } else if (data.data && data.data[0] && data.data[0].url) {
-          imgDiv.innerHTML = '<img src="' + data.data[0].url + '" alt="Concept visual" />';
+          imgSrc = data.data[0].url;
+          imgDiv.innerHTML = '<img src="' + imgSrc + '" alt="Concept visual" />';
         } else {
           imgDiv.innerHTML = '';
+        }
+        var btn = cards[i] ? cards[i].querySelector('.sketch-btn') : null;
+        if (btn) btn.style.display = 'none';
+        if (imgSrc) {
+          var conceptName = cards[i].querySelector('.highlight-line').textContent;
+          var conceptLogline = cards[i].querySelector('.concept-logline').textContent;
+          var conceptBody = cards[i].querySelectorAll('.concept-body')[0].textContent;
+          var insight = cards[i].querySelectorAll('.concept-body')[1].textContent;
+          var execution = cards[i].querySelectorAll('.concept-body')[2].textContent;
+          var downloadRow = document.createElement('div');
+          downloadRow.style.cssText = 'display:flex;gap:8px;margin-top:12px;';
+          var dlJpeg = document.createElement('a');
+          dlJpeg.href = imgSrc;
+          dlJpeg.download = 'scamp.jpg';
+          dlJpeg.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download scamp';
+          dlJpeg.style.cssText = "display:flex;align-items:center;gap:5px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);border:1.5px solid var(--ink);padding:6px 12px;background:var(--white);box-shadow:2px 2px 0 var(--ink);text-decoration:none;cursor:pointer;";
+          dlJpeg.onmouseover = function(){ this.style.background='var(--yellow)'; };
+          dlJpeg.onmouseout = function(){ this.style.background='var(--white)'; };
+          var dlPdf = document.createElement('button');
+          dlPdf.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Download concept';
+          dlPdf.style.cssText = "display:flex;align-items:center;gap:5px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);border:1.5px solid var(--ink);padding:6px 12px;background:var(--white);box-shadow:2px 2px 0 var(--ink);cursor:pointer;";
+          dlPdf.onmouseover = function(){ this.style.background='var(--yellow)'; };
+          dlPdf.onmouseout = function(){ this.style.background='var(--white)'; };
+          (function(n,l,b,ins,ex,src){ dlPdf.onclick = function() { downloadConceptPdf(n,l,b,ins,ex,src); }; })(conceptName,conceptLogline,conceptBody,insight,execution,imgSrc);
+          downloadRow.appendChild(dlJpeg);
+          downloadRow.appendChild(dlPdf);
+          cards[i].appendChild(downloadRow);
         }
       } catch {
         imgDiv.innerHTML = '';
