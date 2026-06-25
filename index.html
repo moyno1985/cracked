@@ -911,7 +911,7 @@ function sketchConcept(btn, index) {
   var conceptName = card.querySelector('.highlight-line').textContent;
   var conceptBody = card.querySelectorAll('.concept-body')[0].textContent;
   btn.classList.add('loading');
-  btn.innerHTML = 'Sketching...';
+  btn.innerHTML = 'Scamping...';
   imgDiv.style.display = 'flex';
   imgDiv.innerHTML = '<span class="img-loading">Sketching concept...</span>';
   fetch('/api/image', {
@@ -929,12 +929,12 @@ function sketchConcept(btn, index) {
       imgDiv.innerHTML = '';
     }
     btn.classList.remove('loading');
-    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Sketch this';
+    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Scamp this';
   })
   .catch(() => {
     imgDiv.innerHTML = '';
     btn.classList.remove('loading');
-    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Sketch this';
+    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Scamp this';
   });
 }
 
@@ -1068,7 +1068,7 @@ function renderConcepts(concepts, brand) {
       <div class="concept-meta">${c.lionsPotential?`<span class="meta-tag highlight">${c.lionsPotential}</span>`:''}</div>
       <button class="sketch-btn" onclick="sketchConcept(this, ${i})">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        Sketch this
+        Scamp this
       </button>`;
     grid.appendChild(card);
     const imgDiv = card.querySelector('.concept-image');
