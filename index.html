@@ -928,12 +928,64 @@ function sketchConcept(btn, index) {
       imgDiv.innerHTML = '';
     }
     btn.style.display = 'none';
+    var downloadRow = document.createElement('div');
+    downloadRow.style.cssText = 'display:flex;gap:8px;margin-top:12px;justify-content:flex-end;';
+    var imgSrc = '';
+    if (data.data && data.data[0] && data.data[0].b64_json) {
+      imgSrc = 'data:image/png;base64,' + data.data[0].b64_json;
+    } else if (data.data && data.data[0] && data.data[0].url) {
+      imgSrc = data.data[0].url;
+    }
+    var dlJpeg = document.createElement('a');
+    dlJpeg.href = imgSrc;
+    dlJpeg.download = 'scamp.jpg';
+    dlJpeg.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download scamp';
+    dlJpeg.style.cssText = "display:flex;align-items:center;gap:5px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);border:1.5px solid var(--ink);padding:6px 12px;background:var(--white);box-shadow:2px 2px 0 var(--ink);text-decoration:none;cursor:pointer;";
+    dlJpeg.onmouseover = function(){ this.style.background='var(--yellow)'; };
+    dlJpeg.onmouseout = function(){ this.style.background='var(--white)'; };
+    var conceptName = card.querySelector('.highlight-line').textContent;
+    var conceptLogline = card.querySelector('.concept-logline').textContent;
+    var conceptBody = card.querySelectorAll('.concept-body')[0].textContent;
+    var insight = card.querySelectorAll('.concept-body')[1].textContent;
+    var execution = card.querySelectorAll('.concept-body')[2].textContent;
+    var dlPdf = document.createElement('button');
+    dlPdf.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Download concept';
+    dlPdf.style.cssText = "display:flex;align-items:center;gap:5px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);border:1.5px solid var(--ink);padding:6px 12px;background:var(--white);box-shadow:2px 2px 0 var(--ink);cursor:pointer;";
+    dlPdf.onmouseover = function(){ this.style.background='var(--yellow)'; };
+    dlPdf.onmouseout = function(){ this.style.background='var(--white)'; };
+    dlPdf.onclick = function() { downloadConceptPdf(conceptName, conceptLogline, conceptBody, insight, execution, imgSrc); };
+    downloadRow.appendChild(dlJpeg);
+    downloadRow.appendChild(dlPdf);
+    card.appendChild(downloadRow);
   })
   .catch(() => {
     imgDiv.innerHTML = '';
     btn.classList.remove('loading');
     btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Scamp this';
   });
+}
+
+function downloadConceptPdf(name, logline, concept, insight, execution, imgSrc) {
+  var win = window.open('', '_blank');
+  win.document.write('<html><head><title>' + name + '</title>');
+  win.document.write('<style>');
+  win.document.write('@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,700&family=Inter:wght@300;400&family=Space+Mono&display=swap");');
+  win.document.write('body{font-family:Inter,sans-serif;font-weight:300;max-width:800px;margin:40px auto;padding:40px;color:#111110;}');
+  win.document.write('h1{font-family:Fraunces,serif;font-style:italic;font-weight:700;font-size:48px;line-height:1;margin:0 0 16px;}');
+  win.document.write('.logline{font-style:italic;color:#4C4A46;margin-bottom:24px;font-size:16px;line-height:1.6;}');
+  win.document.write('.label{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#99978F;margin:20px 0 4px;}');
+  win.document.write('.body{font-size:14px;line-height:1.8;color:#4C4A46;margin-bottom:8px;}');
+  win.document.write('img{width:100%;margin-top:24px;border:1px solid #dddbd5;}');
+  win.document.write('</style></head><body>');
+  win.document.write('<h1>' + name + '</h1>');
+  win.document.write('<div class="logline">' + logline + '</div>');
+  win.document.write('<div class="label">The concept</div><div class="body">' + concept + '</div>');
+  win.document.write('<div class="label">The insight</div><div class="body">' + insight + '</div>');
+  win.document.write('<div class="label">Bring it to life</div><div class="body">' + execution + '</div>');
+  if (imgSrc) win.document.write('<img src="' + imgSrc + '" />');
+  win.document.write('</body></html>');
+  win.document.close();
+  setTimeout(function(){ win.print(); }, 800);
 }
 
 function toggleScamps() {
