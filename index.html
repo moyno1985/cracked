@@ -1085,6 +1085,8 @@ function renderConcepts(concepts, brand) {
       const cards = document.querySelectorAll('.concept-card');
       const imgDiv = cards[i] ? cards[i].querySelector('.concept-image') : null;
       if (!imgDiv) continue;
+      imgDiv.style.display = 'flex';
+      imgDiv.innerHTML = '<span class="img-loading">Sketching concept...</span>';
       try {
         const r = await fetch('/api/image', {
           method: 'POST',
