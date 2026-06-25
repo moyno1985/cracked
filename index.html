@@ -1163,7 +1163,7 @@ function renderConcepts(concepts, brand) {
           var insight = cards[i].querySelectorAll('.concept-body')[1].textContent;
           var execution = cards[i].querySelectorAll('.concept-body')[2].textContent;
           var downloadRow = document.createElement('div');
-          downloadRow.style.cssText = 'display:flex;gap:8px;margin-top:12px;';
+          downloadRow.style.cssText = 'display:flex;gap:8px;margin-top:12px;justify-content:flex-end;';
           var dlJpeg = document.createElement('a');
           dlJpeg.href = imgSrc;
           dlJpeg.download = 'scamp.jpg';
