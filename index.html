@@ -828,6 +828,7 @@
 
       <div class="submit-row">
         <button class="btn-generate" id="generateBtn" onclick="generateConcepts()">Crack the Brief</button>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" id="generateScamps" style="width:16px;height:16px;accent-color:var(--ink);cursor:pointer;" /><span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-mid);">Sketch concepts</span></label>
         
       </div>
     </div>
@@ -1003,7 +1004,8 @@ function renderConcepts(concepts, brand) {
   document.getElementById('results').classList.add('active');
   document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-(async () => {
+if (!document.getElementById('generateScamps').checked) return;
+  (async () => {
     for (const [i, c] of concepts.entries()) {
       const cards = document.querySelectorAll('.concept-card');
       const imgDiv = cards[i] ? cards[i].querySelector('.concept-image') : null;
