@@ -831,7 +831,9 @@
         <div style="display:flex;align-items:center;gap:10px;cursor:pointer;position:relative;" onclick="toggleScamps()">
           <input type="checkbox" id="generateScamps" style="display:none;" />
           <span id="scampsBox" style="display:inline-block;width:22px;height:22px;border:1.5px solid var(--ink);background:white;box-shadow:2px 2px 0 var(--ink);flex-shrink:0;"></span>
-          <span id="scampsTick" style="display:none;position:absolute;left:-6px;top:-14px;font-size:40px;font-weight:900;color:var(--ink);line-height:1;pointer-events:none;">✓</span>
+          <svg id="scampsTick" style="display:none;position:absolute;left:-14px;top:-18px;width:50px;height:50px;pointer-events:none;overflow:visible;" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 26 Q10 24 14 32 Q16 36 18 35 Q26 18 44 6" stroke="#111110" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-dasharray="60" stroke-dashoffset="60" id="scampsTickPath"/>
+          </svg>
           <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-mid);">Sketch concepts</span>
         </div>
 
@@ -886,9 +888,18 @@ function toggleScamps() {
   var cb = document.getElementById("generateScamps");
   var box = document.getElementById("scampsBox");
   var tick = document.getElementById("scampsTick");
+  var path = document.getElementById("scampsTickPath");
   cb.checked = !cb.checked;
   box.style.background = cb.checked ? "#FFE566" : "white";
-  tick.style.display = cb.checked ? "block" : "none";
+  if (cb.checked) {
+    tick.style.display = "block";
+    path.style.transition = "stroke-dashoffset 0.25s ease-out";
+    path.style.strokeDashoffset = "0";
+  } else {
+    tick.style.display = "none";
+    path.style.transition = "none";
+    path.style.strokeDashoffset = "60";
+  }
 }
 
 function loadExample(key) {
