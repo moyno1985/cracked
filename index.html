@@ -1018,9 +1018,9 @@ function renderConcepts(concepts, brand) {
   document.getElementById('resultsTitle').textContent = `${concepts.length} concepts — ${brand} cracked`;
   document.getElementById('results').classList.add('active');
   document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-if (!document.getElementById('generateScamps').checked) return;
+
   (async () => {
+    if (!document.getElementById('generateScamps').checked) return;
     for (const [i, c] of concepts.entries()) {
       const cards = document.querySelectorAll('.concept-card');
       const imgDiv = cards[i] ? cards[i].querySelector('.concept-image') : null;
