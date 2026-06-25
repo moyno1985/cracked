@@ -828,14 +828,14 @@
 
       <div class="submit-row">
         <button class="btn-generate" id="generateBtn" onclick="generateConcepts()">Crack the Brief</button>
-        <label for="generateScamps" style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+        <label for="generateScamps" style="display:flex;align-items:center;gap:10px;cursor:pointer;position:relative;">
           <input type="checkbox" id="generateScamps" style="display:none;" />
           <span id="scampsBox" style="display:inline-block;width:22px;height:22px;border:1.5px solid var(--ink);background:white;box-shadow:2px 2px 0 var(--ink);flex-shrink:0;position:relative;"></span>
+          <span id="scampsTick" style="display:none;position:absolute;left:-8px;top:-14px;font-size:40px;font-weight:900;color:var(--ink);line-height:1;pointer-events:none;">✓</span>
           <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-mid);">Sketch concepts</span>
         </label>
         <style>
           #generateScamps:checked + #scampsBox { background: var(--yellow); }
-          #generateScamps:checked + #scampsBox { overflow:visible; } #generateScamps:checked + #scampsBox::after { content:"✓"; position:absolute; top:-12px; left:-2px; font-size:32px; font-weight:900; color:var(--ink); }
         </style>
 
         
@@ -887,9 +887,8 @@ const EXAMPLES = {
 
 function toggleScamps() {
   var cb = document.getElementById("generateScamps");
-  var box = document.getElementById("scampsBox");
   cb.checked = !cb.checked;
-  box.classList.toggle("on");
+  document.getElementById("scampsTick").style.display = cb.checked ? "block" : "none";
 }
 
 function loadExample(key) {
