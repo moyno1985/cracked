@@ -845,14 +845,7 @@
           #scampsBox.on #tickPath { animation: drawtick 0.25s ease-out forwards; }
           @keyframes drawtick { from { stroke-dashoffset: 30; } to { stroke-dashoffset: 0; } }
         </style>
-        <script>
-          function toggleScamps() {
-            var cb = document.getElementById("generateScamps");
-            var box = document.getElementById("scampsBox");
-            cb.checked = !cb.checked;
-            box.classList.toggle("on");
-          }
-        </script>
+
         
       </div>
     </div>
@@ -899,6 +892,13 @@ const EXAMPLES = {
   canva: { brand:'Canva', audience:'Designers and marketers who use Canva daily but feel slightly guilty admitting it to people who use the Adobe suite', ambition:'Drive brand fame', brief:"Canva started as a scrappy Melbourne startup with a simple idea: design shouldn't require a design degree. It democratised an entire industry and made the establishment uncomfortable. Now it's worth $40 billion and used by 170 million people. The brand tone is warm, optimistic, democratising — it believes everyone has something to say and should be able to say it beautifully. But as Canva scales into enterprise and competes with Microsoft and Google, the scrappy underdog spirit is under threat. The creative challenge: grow to global dominance without losing the thing that made people love Canva — that it felt like it was on your side against the establishment.", tone:'Bold & provocative' },
   woodstock: { brand:'Woodstock Bourbon', audience:'Australians 25-45 who drink Woodstock without thinking but could not tell you a single thing about the brand', ambition:'Drive brand fame', brief:"Woodstock has been in Australian fridges since 1980. It's the bourbon at every footy club, every house party, every regional pub. Nobody talks about it. Everyone drinks it. It wins on habit and availability, not aspiration. Woodstock just launched their biggest brand campaign in years — Australia noticed. But does one campaign change 40 years of being the bourbon you drink without thinking? The brand tone should be laconic, honest, unpretentious — the complete opposite of the American bourbon playbook with its heritage mythology and distillery reverence. Woodstock is just a good drink that doesn't need to be more than that. The creative challenge: turn Australia's most habitual drink into Australia's most loved one, without making it something it's not.", tone:'Warm & human' }
 };
+
+function toggleScamps() {
+  var cb = document.getElementById("generateScamps");
+  var box = document.getElementById("scampsBox");
+  cb.checked = !cb.checked;
+  box.classList.toggle("on");
+}
 
 function loadExample(key) {
   const ex = EXAMPLES[key];
