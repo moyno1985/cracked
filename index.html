@@ -996,28 +996,37 @@ function renderConcepts(concepts, brand) {
       <div class="concept-meta">${c.lionsPotential?`<span class="meta-tag highlight">${c.lionsPotential}</span>`:''}</div>`;
     grid.appendChild(card);
     const imgDiv = card.querySelector('.concept-image');
-    if (i > 0) { imgDiv.innerHTML = ''; }
-    else fetch('/api/image', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ concept: c.name + ': ' + c.concept })
-    })
-    .then(r => r.json())
-    .then(data => {
-      if (data.data && data.data[0] && data.data[0].b64_json) {
-        imgDiv.innerHTML = '<img src="data:image/png;base64,' + data.data[0].b64_json + '" alt="Concept visual" />';
-      } else if (data.data && data.data[0] && data.data[0].url) {
-        imgDiv.innerHTML = '<img src="' + data.data[0].url + '" alt="Concept visual" />';
-      } else { imgDiv.innerHTML = ''; }
-    })
-    .catch(() => { imgDiv.innerHTML = ''; });
+
     if (inspHtml) { const d = document.createElement('div'); d.innerHTML = inspHtml; grid.appendChild(d.firstElementChild); }
   });
   document.getElementById('resultsTitle').textContent = `${concepts.length} concepts — ${brand} cracked`;
   document.getElementById('results').classList.add('active');
   document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-
+(async () => {
+    for (const [i, c] of concepts.entries()) {
+      const cards = document.querySelectorAll('.concept-card');
+      const imgDiv = cards[i] ? cards[i].querySelector('.concept-image') : null;
+      if (!imgDiv) continue;
+      try {
+        const r = await fetch('/api/image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ concept: c.name + ': ' + c.concept })
+        });
+        const data = await r.json();
+        if (data.data && data.data[0] && data.data[0].b64_json) {
+          imgDiv.innerHTML = '<img src="data:image/png;base64,' + data.data[0].b64_json + '" alt="Concept visual" />';
+        } else if (data.data && data.data[0] && data.data[0].url) {
+          imgDiv.innerHTML = '<img src="' + data.data[0].url + '" alt="Concept visual" />';
+        } else {
+          imgDiv.innerHTML = '';
+        }
+      } catch {
+        imgDiv.innerHTML = '';
+      }
+    }
+  })();
 function showError(msg) { const el = document.getElementById('errorMsg'); el.textContent = msg; el.classList.add('active'); }
 function hideError() { document.getElementById('errorMsg').classList.remove('active'); }
 function resetForm() { document.getElementById('results').classList.remove('active'); document.getElementById('briefForm').scrollIntoView({ behavior: 'smooth' }); }
