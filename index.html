@@ -828,9 +828,9 @@
 
       <div class="submit-row">
         <button class="btn-generate" id="generateBtn" onclick="generateConcepts()">Crack the Brief</button>
-        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="document.getElementById('generateScamps').checked=!document.getElementById('generateScamps').checked;document.getElementById('scampsBox').classList.toggle('on');">
+        <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="document.getElementById('generateScamps').checked=!document.getElementById('generateScamps').checked;document.getElementById('scampsBox').classList.toggle('on');">
           <input type="checkbox" id="generateScamps" style="display:none;" />
-          <svg id="scampsBox" width="24" height="24" viewBox="0 0 24 24" style="flex-shrink:0;cursor:pointer;" xmlns="http://www.w3.org/2000/svg">
+          <svg id="scampsBox" width="24" height="24" viewBox="0 0 24 24" style="flex-shrink:0;cursor:pointer;pointer-events:none;" xmlns="http://www.w3.org/2000/svg">
             <rect x="1" y="1" width="22" height="22" fill="white" stroke="#111110" stroke-width="1.5"/>
             <g class="tick" style="display:none;">
               <path d="M4 13 Q8 11 10 16 Q14 6 21 4" stroke="#111110" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"
@@ -838,7 +838,7 @@
             </g>
           </svg>
           <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-mid);">Sketch concepts</span>
-        </label>
+        </div>
         <style>
           #scampsBox.on rect { fill: var(--yellow); }
           #scampsBox.on .tick { display:block; }
