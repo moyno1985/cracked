@@ -828,9 +828,9 @@
 
       <div class="submit-row">
         <button class="btn-generate" id="generateBtn" onclick="generateConcepts()">Crack the Brief</button>
-        <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="document.getElementById('generateScamps').checked=!document.getElementById('generateScamps').checked;document.getElementById('scampsBox').classList.toggle('on');">
+        <div style="display:flex;align-items:center;gap:10px;">
           <input type="checkbox" id="generateScamps" style="display:none;" />
-          <svg id="scampsBox" width="24" height="24" viewBox="0 0 24 24" style="flex-shrink:0;cursor:pointer;pointer-events:none;" xmlns="http://www.w3.org/2000/svg">
+          <svg id="scampsBox" width="24" height="24" viewBox="0 0 24 24" style="flex-shrink:0;cursor:pointer;" xmlns="http://www.w3.org/2000/svg" onclick="toggleScamps()">
             <rect x="1" y="1" width="22" height="22" fill="white" stroke="#111110" stroke-width="1.5"/>
             <g class="tick" style="display:none;">
               <rect x="1" y="1" width="22" height="22" fill="#FFE566" stroke="#111110" stroke-width="1.5"/>
@@ -838,13 +838,21 @@
                 style="stroke-dasharray:30;stroke-dashoffset:30;" id="tickPath"/>
             </g>
           </svg>
-          <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-mid);">Sketch concepts</span>
+          <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-mid);cursor:pointer;" onclick="toggleScamps()">Sketch concepts</span>
         </div>
         <style>
           #scampsBox.on .tick { display:block; }
           #scampsBox.on #tickPath { animation: drawtick 0.25s ease-out forwards; }
           @keyframes drawtick { from { stroke-dashoffset: 30; } to { stroke-dashoffset: 0; } }
         </style>
+        <script>
+          function toggleScamps() {
+            var cb = document.getElementById("generateScamps");
+            var box = document.getElementById("scampsBox");
+            cb.checked = !cb.checked;
+            box.classList.toggle("on");
+          }
+        </script>
         
       </div>
     </div>
