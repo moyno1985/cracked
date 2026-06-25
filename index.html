@@ -516,7 +516,28 @@
     transition: box-shadow 0.15s, transform 0.15s;
   }
 
-  .concept-card:hover {
+  .sketch-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--white);
+  border: 1.5px solid var(--ink);
+  padding: 6px 12px;
+  cursor: pointer;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  transition: all 0.12s;
+}
+.sketch-btn:hover { background: var(--yellow); box-shadow: 1px 1px 0 var(--ink); transform: translate(1px,1px); }
+.sketch-btn.loading { color: var(--ink-light); border-color: var(--ink-light); box-shadow: 2px 2px 0 var(--ink-light); cursor: not-allowed; }
+.concept-card:hover {
     box-shadow: 0 0 0 1.5px var(--ink), 2px 2px 0 0 var(--ink);
     transform: translate(2px, 2px);
   }
@@ -882,6 +903,39 @@ const EXAMPLES = {
   woodstock: { brand:'Woodstock Bourbon', audience:'Australians 25-45 who drink Woodstock without thinking but could not tell you a single thing about the brand', ambition:'Drive brand fame', brief:"Woodstock has been in Australian fridges since 1980. It's the bourbon at every footy club, every house party, every regional pub. Nobody talks about it. Everyone drinks it. It wins on habit and availability, not aspiration. Woodstock just launched their biggest brand campaign in years — Australia noticed. But does one campaign change 40 years of being the bourbon you drink without thinking? The brand tone should be laconic, honest, unpretentious — the complete opposite of the American bourbon playbook with its heritage mythology and distillery reverence. Woodstock is just a good drink that doesn't need to be more than that. The creative challenge: turn Australia's most habitual drink into Australia's most loved one, without making it something it's not.", tone:'Warm & human' }
 };
 
+function sketchConcept(btn, index) {
+  var cards = document.querySelectorAll('.concept-card');
+  var card = cards[index];
+  var imgDiv = card.querySelector('.concept-image');
+  var conceptName = card.querySelector('.highlight-line').textContent;
+  var conceptBody = card.querySelectorAll('.concept-body')[0].textContent;
+  btn.classList.add('loading');
+  btn.innerHTML = 'Sketching...';
+  imgDiv.innerHTML = '<span class="img-loading">Sketching concept...</span>';
+  fetch('/api/image', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ concept: conceptName + ': ' + conceptBody })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.data && data.data[0] && data.data[0].b64_json) {
+      imgDiv.innerHTML = '<img src="data:image/png;base64,' + data.data[0].b64_json + '" alt="Concept visual" />';
+    } else if (data.data && data.data[0] && data.data[0].url) {
+      imgDiv.innerHTML = '<img src="' + data.data[0].url + '" alt="Concept visual" />';
+    } else {
+      imgDiv.innerHTML = '';
+    }
+    btn.classList.remove('loading');
+    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Sketch this';
+  })
+  .catch(() => {
+    imgDiv.innerHTML = '';
+    btn.classList.remove('loading');
+    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Sketch this';
+  });
+}
+
 function toggleScamps() {
   var cb = document.getElementById("generateScamps");
   var box = document.getElementById("scampsBox");
@@ -1009,7 +1063,11 @@ function renderConcepts(concepts, brand) {
       <span class="concept-label">Bring it to life</span>
       <div class="concept-body">${c.executionIdea}</div>
       <div class="concept-image"><span class="img-loading">Sketching concept...</span></div>
-      <div class="concept-meta">${c.lionsPotential?`<span class="meta-tag highlight">${c.lionsPotential}</span>`:''}</div>`;
+      <div class="concept-meta">${c.lionsPotential?`<span class="meta-tag highlight">${c.lionsPotential}</span>`:''}</div>
+      <button class="sketch-btn" onclick="sketchConcept(this, ${i})">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Sketch this
+      </button>`;
     grid.appendChild(card);
     const imgDiv = card.querySelector('.concept-image');
 
