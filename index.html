@@ -841,10 +841,9 @@
           <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-mid);">Sketch concepts</span>
         </div>
         <style>
-          #scampsBox.on rect { fill: var(--yellow); }
           #scampsBox.on .tick { display:block; }
-          #scampsBox.on #tickPath { animation: drawtick 0.2s ease-out forwards; }
-          @keyframes drawtick { to { stroke-dashoffset: 0; } }
+          #scampsBox.on #tickPath { animation: drawtick 0.25s ease-out forwards; }
+          @keyframes drawtick { from { stroke-dashoffset: 30; } to { stroke-dashoffset: 0; } }
         </style>
         
       </div>
