@@ -828,22 +828,14 @@
 
       <div class="submit-row">
         <button class="btn-generate" id="generateBtn" onclick="generateConcepts()">Crack the Brief</button>
-        <div style="display:flex;align-items:center;gap:10px;">
+        <label for="generateScamps" style="display:flex;align-items:center;gap:10px;cursor:pointer;">
           <input type="checkbox" id="generateScamps" style="display:none;" />
-          <svg id="scampsBox" width="24" height="24" viewBox="0 0 24 24" style="flex-shrink:0;cursor:pointer;" xmlns="http://www.w3.org/2000/svg" onclick="toggleScamps()">
-            <rect x="1" y="1" width="22" height="22" fill="white" stroke="#111110" stroke-width="1.5"/>
-            <g class="tick" style="display:none;">
-              <rect x="1" y="1" width="22" height="22" fill="#FFE566" stroke="#111110" stroke-width="1.5"/>
-              <path d="M4 13 Q8 11 10 17 Q14 6 21 4" stroke="#111110" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"
-                style="stroke-dasharray:30;stroke-dashoffset:30;" id="tickPath"/>
-            </g>
-          </svg>
-          <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-mid);cursor:pointer;" onclick="toggleScamps()">Sketch concepts</span>
-        </div>
+          <span id="scampsBox" style="display:inline-block;width:22px;height:22px;border:1.5px solid var(--ink);background:white;box-shadow:2px 2px 0 var(--ink);flex-shrink:0;position:relative;"></span>
+          <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-mid);">Sketch concepts</span>
+        </label>
         <style>
-          #scampsBox.on .tick { display:block; }
-          #scampsBox.on #tickPath { animation: drawtick 0.25s ease-out forwards; }
-          @keyframes drawtick { from { stroke-dashoffset: 30; } to { stroke-dashoffset: 0; } }
+          #generateScamps:checked + #scampsBox { background: var(--yellow); }
+          #generateScamps:checked + #scampsBox::after { content:"✓"; position:absolute; top:-2px; left:2px; font-size:16px; font-weight:900; color:var(--ink); }
         </style>
 
         
