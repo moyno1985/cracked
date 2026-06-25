@@ -912,6 +912,7 @@ function sketchConcept(btn, index) {
   var conceptBody = card.querySelectorAll('.concept-body')[0].textContent;
   btn.classList.add('loading');
   btn.innerHTML = 'Sketching...';
+  imgDiv.style.display = 'flex';
   imgDiv.innerHTML = '<span class="img-loading">Sketching concept...</span>';
   fetch('/api/image', {
     method: 'POST',
