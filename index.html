@@ -828,16 +828,22 @@
 
       <div class="submit-row">
         <button class="btn-generate" id="generateBtn" onclick="generateConcepts()">Crack the Brief</button>
-        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="document.getElementById('generateScamps').checked=!document.getElementById('generateScamps').checked;document.getElementById('scampsBox').classList.toggle('on');">
           <input type="checkbox" id="generateScamps" style="display:none;" />
-          <div id="scampsToggle" onclick="this.classList.toggle('on');document.getElementById('generateScamps').checked=!document.getElementById('generateScamps').checked;" style="width:40px;height:22px;border:1.5px solid var(--ink);background:var(--white);position:relative;cursor:pointer;flex-shrink:0;box-shadow:2px 2px 0 var(--ink);transition:background 0.15s;">
-            <div style="position:absolute;top:2px;left:2px;width:14px;height:14px;background:var(--ink-light);transition:all 0.15s;" id="scampsThumb"></div>
-          </div>
+          <svg id="scampsBox" width="24" height="24" viewBox="0 0 24 24" style="flex-shrink:0;cursor:pointer;" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="22" height="22" fill="white" stroke="#111110" stroke-width="1.5"/>
+            <g class="tick" style="display:none;">
+              <path d="M4 13 Q8 11 10 16 Q14 6 21 4" stroke="#111110" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"
+                style="stroke-dasharray:30;stroke-dashoffset:30;animation:none;" id="tickPath"/>
+            </g>
+          </svg>
           <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-mid);">Sketch concepts</span>
         </label>
         <style>
-          #scampsToggle.on { background: var(--yellow); }
-          #scampsToggle.on #scampsThumb { left: 20px; background: var(--ink); }
+          #scampsBox.on rect { fill: var(--yellow); }
+          #scampsBox.on .tick { display:block; }
+          #scampsBox.on #tickPath { animation: drawtick 0.2s ease-out forwards; }
+          @keyframes drawtick { to { stroke-dashoffset: 0; } }
         </style>
         
       </div>
