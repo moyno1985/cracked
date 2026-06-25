@@ -1004,7 +1004,9 @@ function renderConcepts(concepts, brand) {
     })
     .then(r => r.json())
     .then(data => {
-      if (data.data && data.data[0] && data.data[0].url) {
+      if (data.data && data.data[0] && data.data[0].b64_json) {
+        imgDiv.innerHTML = '<img src="data:image/png;base64,' + data.data[0].b64_json + '" alt="Concept visual" />';
+      } else if (data.data && data.data[0] && data.data[0].url) {
         imgDiv.innerHTML = '<img src="' + data.data[0].url + '" alt="Concept visual" />';
       } else { imgDiv.innerHTML = ''; }
     })
