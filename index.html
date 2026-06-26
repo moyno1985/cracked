@@ -976,7 +976,7 @@ function sketchConcept(btn, index) {
   fetch('/api/image', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ concept: conceptName + ': ' + conceptBody })
+    body: JSON.stringify({ concept: conceptName + ': ' + conceptBody, brand: window._currentBrand || '' })
   })
   .then(r => r.json())
   .then(async startData => {
@@ -1282,7 +1282,7 @@ function renderContentConcepts(concepts, brand) {
         const startR = await fetch('/api/image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ concept: c.name + ': ' + c.format })
+          body: JSON.stringify({ concept: c.name + ': ' + c.format, brand: window._currentBrand || '' })
         });
         const startData = await startR.json();
         const jobId = startData.jobId;
@@ -1498,7 +1498,7 @@ function renderConcepts(concepts, brand) {
         const startR = await fetch('/api/image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ concept: c.name + ': ' + c.concept })
+          body: JSON.stringify({ concept: c.name + ': ' + c.concept, brand: window._currentBrand || '' })
         });
         const startData = await startR.json();
         const jobId = startData.jobId;
