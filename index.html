@@ -1050,10 +1050,10 @@ function downloadConceptPdf(name, logline, concept, insight, execution, imgSrc) 
     if (h && h.textContent === name) { targetCard = cards[i]; break; }
   }
   if (!targetCard) { alert('Could not find concept card'); return; }
-  var downloadRows = targetCard.querySelectorAll('div[style*="justify-content:flex-end"]');
-  downloadRows.forEach(function(el){ el.style.visibility = 'hidden'; });
+  var hideEls = targetCard.querySelectorAll('a[download], button, .sketch-btn');
+  hideEls.forEach(function(el){ el.style.display = 'none'; });
   html2canvas(targetCard, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(function(canvas) {
-    downloadRows.forEach(function(el){ el.style.visibility = 'visible'; });
+    hideEls.forEach(function(el){ el.style.display = ''; });
     const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const pdfWidth = 210;
