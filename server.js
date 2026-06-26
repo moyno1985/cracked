@@ -119,6 +119,7 @@ const server = http.createServer((req, res) => {
   serveFile(res, filePath);
 });
 
+server.timeout = 120000; // 2 minutes
 server.listen(PORT, () => {
   console.log(`Cracked running on port ${PORT}`);
 });
