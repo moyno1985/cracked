@@ -1230,8 +1230,56 @@ function renderContentConcepts(concepts, brand) {
     grid.appendChild(card);
   });
   document.getElementById('resultsTitle').textContent = `${concepts.length} series concept${concepts.length > 1 ? 's' : ''} — ${brand} cracked`;
+  window._currentBrand = brand;
   document.getElementById('results').classList.add('active');
   document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  if (!document.getElementById('generateScamps').checked) return;
+  (async () => {
+    for (const [i, c] of concepts.entries()) {
+      const cards = document.querySelectorAll('.concept-card');
+      const imgDiv = cards[i] ? cards[i].querySelector('.concept-image') : null;
+      if (!imgDiv) continue;
+      imgDiv.style.display = 'flex';
+      imgDiv.innerHTML = '<span class="img-loading">Sketching concept...</span>';
+      try {
+        const r = await fetch('/api/image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ concept: c.name + ': ' + c.format })
+        });
+        const data = await r.json();
+        var imgSrc = '';
+        if (data.data && data.data[0] && data.data[0].b64_json) {
+          imgSrc = 'data:image/png;base64,' + data.data[0].b64_json;
+          imgDiv.innerHTML = '<img src="' + imgSrc + '" alt="Concept visual" />';
+        } else if (data.data && data.data[0] && data.data[0].url) {
+          imgSrc = data.data[0].url;
+          imgDiv.innerHTML = '<img src="' + imgSrc + '" alt="Concept visual" />';
+        } else {
+          imgDiv.innerHTML = '';
+        }
+        var btn = cards[i] ? cards[i].querySelector('.sketch-btn') : null;
+        if (btn) btn.style.display = 'none';
+        if (imgSrc) {
+          var conceptName = cards[i].querySelector('.highlight-line').textContent;
+          var downloadRow = document.createElement('div');
+          downloadRow.style.cssText = 'display:flex;gap:8px;margin-top:12px;justify-content:flex-end;';
+          var dlJpeg = document.createElement('a');
+          dlJpeg.href = imgSrc;
+          dlJpeg.download = (window._currentBrand || 'cracked').toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + conceptName.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.jpg';
+          dlJpeg.innerHTML = 'Download scamp (JPEG)';
+          dlJpeg.style.cssText = "display:flex;align-items:center;gap:5px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);border:1.5px solid var(--ink);padding:6px 12px;background:var(--white);box-shadow:2px 2px 0 var(--ink);text-decoration:none;cursor:pointer;";
+          dlJpeg.onmouseover = function(){ this.style.background='var(--yellow)'; };
+          dlJpeg.onmouseout = function(){ this.style.background='var(--white)'; };
+          downloadRow.appendChild(dlJpeg);
+          cards[i].appendChild(downloadRow);
+        }
+      } catch {
+        imgDiv.innerHTML = '';
+      }
+    }
+  })();
 }
 
 function toggleScamps() {
