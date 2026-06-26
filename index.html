@@ -1006,12 +1006,6 @@ function sketchConcept(btn, index) {
     btn.style.display = 'none';
     var downloadRow = document.createElement('div');
     downloadRow.style.cssText = 'display:flex;gap:8px;margin-top:12px;justify-content:flex-end;';
-    var imgSrc = '';
-    if (data.data && data.data[0] && data.data[0].b64_json) {
-      imgSrc = 'data:image/png;base64,' + data.data[0].b64_json;
-    } else if (data.data && data.data[0] && data.data[0].url) {
-      imgSrc = data.data[0].url;
-    }
     var dlJpeg = document.createElement('a');
     dlJpeg.href = imgSrc;
     dlJpeg.download = (window._currentBrand || 'cracked').toLowerCase().replace(/\s+/g, '-') + '-' + conceptName.toLowerCase().replace(/\s+/g, '-') + '.jpg';
