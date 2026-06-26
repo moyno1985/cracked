@@ -1056,22 +1056,16 @@ function downloadConceptPdf(name, logline, concept, insight, execution, imgSrc) 
     hideEls.forEach(function(el){ el.style.display = ''; });
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const pdfWidth = 210;
-    // Page 1: concept text only
+    const pdfPageHeight = 297;
+    const margin = 10;
+    // Page 1: concept text only, scaled to fit one page
     const textImgData = canvas.toDataURL('image/png');
-    const textHeight = (canvas.height * pdfWidth) / canvas.width;
-    if (textHeight <= 297) {
-      pdf.addImage(textImgData, 'PNG', 0, 0, pdfWidth, textHeight);
-    } else {
-      var pageHeight = 297;
-      var position = 0;
-      var remaining = textHeight;
-      while (remaining > 0) {
-        pdf.addImage(textImgData, 'PNG', 0, position, pdfWidth, textHeight);
-        remaining -= pageHeight;
-        position -= pageHeight;
-        if (remaining > 0) pdf.addPage();
-      }
-    }
+    const naturalHeight = (canvas.height * pdfWidth) / canvas.width;
+    const maxTextHeight = pdfPageHeight - (margin * 2);
+    const textHeight = Math.min(naturalHeight, maxTextHeight);
+    const textWidth = naturalHeight > maxTextHeight ? (pdfWidth * maxTextHeight) / naturalHeight : pdfWidth;
+    const textX = (pdfWidth - textWidth) / 2;
+    pdf.addImage(textImgData, 'PNG', textX, margin, textWidth, textHeight);
     // Page 2: scamp image full bleed (only if scamp exists)
     if (imgSrc) {
       pdf.addPage();
