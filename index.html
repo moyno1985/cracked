@@ -681,6 +681,7 @@
     .header-right { display: none; }
   }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -1023,26 +1024,63 @@ function sketchConcept(btn, index) {
 }
 
 function downloadConceptPdf(name, logline, concept, insight, execution, imgSrc) {
-  var win = window.open('', '_blank');
-  win.document.write('<html><head><title>' + name + '</title>');
-  win.document.write('<style>');
-  win.document.write('@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,700&family=Inter:wght@300;400&family=Space+Mono&display=swap");');
-  win.document.write('body{font-family:Inter,sans-serif;font-weight:300;max-width:800px;margin:40px auto;padding:40px;color:#111110;}');
-  win.document.write('h1{font-family:Fraunces,serif;font-style:italic;font-weight:700;font-size:48px;line-height:1;margin:0 0 16px;}');
-  win.document.write('.logline{font-style:italic;color:#4C4A46;margin-bottom:24px;font-size:16px;line-height:1.6;}');
-  win.document.write('.label{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#99978F;margin:20px 0 4px;}');
-  win.document.write('.body{font-size:14px;line-height:1.8;color:#4C4A46;margin-bottom:8px;}');
-  win.document.write('img{width:100%;margin-top:24px;border:1px solid #dddbd5;}');
-  win.document.write('</style></head><body>');
-  win.document.write('<h1>' + name + '</h1>');
-  win.document.write('<div class="logline">' + logline + '</div>');
-  win.document.write('<div class="label">The concept</div><div class="body">' + concept + '</div>');
-  win.document.write('<div class="label">The insight</div><div class="body">' + insight + '</div>');
-  win.document.write('<div class="label">Bring it to life</div><div class="body">' + execution + '</div>');
-  if (imgSrc) win.document.write('<img src="' + imgSrc + '" />');
-  win.document.write('</body></html>');
-  win.document.close();
-  setTimeout(function(){ win.print(); }, 800);
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const margin = 20;
+  const pageWidth = 210;
+  const contentWidth = pageWidth - margin * 2;
+  let y = 20;
+
+  // Name
+  doc.setFont('helvetica', 'bolditalic');
+  doc.setFontSize(24);
+  doc.setTextColor(17, 17, 16);
+  const nameLines = doc.splitTextToSize(name, contentWidth);
+  doc.text(nameLines, margin, y);
+  y += nameLines.length * 10 + 4;
+
+  // Yellow underline
+  doc.setDrawColor(255, 229, 102);
+  doc.setLineWidth(3);
+  doc.line(margin, y, margin + Math.min(contentWidth, name.length * 4), y);
+  y += 8;
+
+  // Logline
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(11);
+  doc.setTextColor(76, 74, 70);
+  const loglineLines = doc.splitTextToSize(logline, contentWidth);
+  doc.text(loglineLines, margin, y);
+  y += loglineLines.length * 6 + 10;
+
+  // Sections
+  function addSection(label, text) {
+    if (y > 260) { doc.addPage(); y = 20; }
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(153, 151, 143);
+    doc.text(label.toUpperCase(), margin, y);
+    y += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(76, 74, 70);
+    const lines = doc.splitTextToSize(text, contentWidth);
+    doc.text(lines, margin, y);
+    y += lines.length * 5 + 8;
+  }
+
+  addSection('The concept', concept);
+  addSection('The insight', insight);
+  addSection('Bring it to life', execution);
+
+  // Image
+  if (imgSrc) {
+    if (y > 200) { doc.addPage(); y = 20; }
+    const imgHeight = 80;
+    doc.addImage(imgSrc, 'PNG', margin, y, contentWidth, imgHeight);
+  }
+
+  doc.save(name.toLowerCase().replace(/\s+/g, '-') + '.pdf');
 }
 
 const CONTENT_EXAMPLES = {
