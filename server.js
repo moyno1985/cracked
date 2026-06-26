@@ -60,6 +60,8 @@ function handleCors(res) {
   res.end();
 }
 
+const jobs = {};
+
 const server = http.createServer((req, res) => {
   if (req.method === 'OPTIONS') { handleCors(res); return; }
 
@@ -83,6 +85,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Job queue for image generation
   if (req.url === '/api/image') {
     let body = '';
     req.on('data', chunk => body += chunk);
@@ -91,26 +94,46 @@ const server = http.createServer((req, res) => {
       try { parsed = JSON.parse(body); } catch(e) {
         res.writeHead(400); res.end(JSON.stringify({ error: 'Invalid JSON' })); return;
       }
+      const jobId = Date.now().toString(36) + Math.random().toString(36).slice(2);
+      jobs[jobId] = { status: 'pending' };
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+      res.end(JSON.stringify({ jobId }));
+
+      // Run image generation in background
       const imagePrompt = `Advertising agency concept scamp. Rough sharpie marker pen sketch on white paper. Hand-drawn art directors rough. Black ink gestural strokes, very loose and expressive, minimal colour wash in yellow and grey. Shows the concept: ${parsed.concept}. Style: professional ad agency notepad sketch, not finished artwork, thumbnail composition.`;
-      const imageBody = JSON.stringify({
-        model: 'gpt-image-2',
-        prompt: imagePrompt,
-        n: 1,
-        size: '1024x1024',
-        quality: 'low'
-      });
+      const imageBody = JSON.stringify({ model: 'gpt-image-2', prompt: imagePrompt, n: 1, size: '1024x1024', quality: 'low' });
       const options = {
         hostname: 'api.openai.com',
         path: '/v1/images/generations',
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENAI_API_KEY}`,
-          'Content-Length': Buffer.byteLength(imageBody),
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${OPENAI_API_KEY}`, 'Content-Length': Buffer.byteLength(imageBody) },
       };
-      proxyRequest(options, imageBody, res);
+      const apiReq = https.request(options, (apiRes) => {
+        let responseBody = '';
+        apiRes.on('data', chunk => responseBody += chunk);
+        apiRes.on('end', () => {
+          jobs[jobId] = { status: 'done', result: responseBody };
+          setTimeout(() => { delete jobs[jobId]; }, 300000); // cleanup after 5min
+        });
+      });
+      apiReq.on('error', (e) => { jobs[jobId] = { status: 'error', error: e.message }; });
+      apiReq.write(imageBody);
+      apiReq.end();
     });
+    return;
+  }
+
+  // Poll for image job result
+  if (req.url.startsWith('/api/image-status/')) {
+    const jobId = req.url.split('/').pop();
+    const job = jobs[jobId];
+    if (!job) {
+      res.writeHead(404, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+      res.end(JSON.stringify({ status: 'not_found' }));
+    } else {
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+      res.end(JSON.stringify(job));
+    }
     return;
   }
 

@@ -979,13 +979,29 @@ function sketchConcept(btn, index) {
     body: JSON.stringify({ concept: conceptName + ': ' + conceptBody })
   })
   .then(r => r.json())
-  .then(data => {
-    if (data.data && data.data[0] && data.data[0].b64_json) {
-      imgDiv.innerHTML = '<img src="data:image/png;base64,' + data.data[0].b64_json + '" alt="Concept visual" />';
-    } else if (data.data && data.data[0] && data.data[0].url) {
-      imgDiv.innerHTML = '<img src="' + data.data[0].url + '" alt="Concept visual" />';
-    } else {
-      imgDiv.innerHTML = '';
+  .then(async startData => {
+    const jobId = startData.jobId;
+    var imgSrc = '';
+    while (true) {
+      await new Promise(r => setTimeout(r, 2000));
+      const pollR = await fetch('/api/image-status/' + jobId);
+      const pollData = await pollR.json();
+      if (pollData.status === 'done') {
+        const result = JSON.parse(pollData.result);
+        if (result.data && result.data[0] && result.data[0].b64_json) {
+          imgSrc = 'data:image/png;base64,' + result.data[0].b64_json;
+          imgDiv.innerHTML = '<img src="' + imgSrc + '" alt="Concept visual" />';
+        } else if (result.data && result.data[0] && result.data[0].url) {
+          imgSrc = result.data[0].url;
+          imgDiv.innerHTML = '<img src="' + imgSrc + '" alt="Concept visual" />';
+        } else {
+          imgDiv.innerHTML = '';
+        }
+        break;
+      } else if (pollData.status === 'error' || pollData.status === 'not_found') {
+        imgDiv.innerHTML = '';
+        break;
+      }
     }
     btn.style.display = 'none';
     var downloadRow = document.createElement('div');
@@ -1434,21 +1450,35 @@ function renderConcepts(concepts, brand) {
       imgDiv.style.display = 'flex';
       imgDiv.innerHTML = '<span class="img-loading">Sketching concept...</span>';
       try {
-        const r = await fetch('/api/image', {
+        const startR = await fetch('/api/image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ concept: c.name + ': ' + c.concept })
         });
-        const data = await r.json();
+        const startData = await startR.json();
+        const jobId = startData.jobId;
         var imgSrc = '';
-        if (data.data && data.data[0] && data.data[0].b64_json) {
-          imgSrc = 'data:image/png;base64,' + data.data[0].b64_json;
-          imgDiv.innerHTML = '<img src="' + imgSrc + '" alt="Concept visual" />';
-        } else if (data.data && data.data[0] && data.data[0].url) {
-          imgSrc = data.data[0].url;
-          imgDiv.innerHTML = '<img src="' + imgSrc + '" alt="Concept visual" />';
-        } else {
-          imgDiv.innerHTML = '';
+        // Poll until done
+        while (true) {
+          await new Promise(r => setTimeout(r, 2000));
+          const pollR = await fetch('/api/image-status/' + jobId);
+          const pollData = await pollR.json();
+          if (pollData.status === 'done') {
+            const result = JSON.parse(pollData.result);
+            if (result.data && result.data[0] && result.data[0].b64_json) {
+              imgSrc = 'data:image/png;base64,' + result.data[0].b64_json;
+              imgDiv.innerHTML = '<img src="' + imgSrc + '" alt="Concept visual" />';
+            } else if (result.data && result.data[0] && result.data[0].url) {
+              imgSrc = result.data[0].url;
+              imgDiv.innerHTML = '<img src="' + imgSrc + '" alt="Concept visual" />';
+            } else {
+              imgDiv.innerHTML = '';
+            }
+            break;
+          } else if (pollData.status === 'error' || pollData.status === 'not_found') {
+            imgDiv.innerHTML = '';
+            break;
+          }
         }
         var btn = cards[i] ? cards[i].querySelector('.sketch-btn') : null;
         if (btn) btn.style.display = 'none';
