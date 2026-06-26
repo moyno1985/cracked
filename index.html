@@ -722,9 +722,10 @@
     <div class="form-body">
       <div class="mode-toggle">
         <button class="mode-btn active" id="btnCampaign" onclick="setMode('campaign')">Campaign</button>
-        <button class="mode-btn" id="btnContent" onclick="setMode('content')">Content <span style="font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.1em;opacity:0.5;font-style:normal;font-weight:400;">SOON</span></button>
+        <button class="mode-btn" id="btnContent" onclick="setMode('content')">Content</button>
       </div>
       
+      <div id="campaignForm">
       <div class="examples-row">
         <span class="examples-label">Load an example</span>
         <button class="example-pill" onclick="loadExample('balter')">Balter</button>
@@ -817,6 +818,85 @@
         </div>
       </div>
 
+      </div><!-- end campaignForm -->
+      <div id="contentForm" style="display:none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Brand / Product</label>
+            <input type="text" id="contentBrand" placeholder="e.g. Oatly, Nike, Dove" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Target Audience</label>
+            <input type="text" id="contentAudience" placeholder="e.g. Gen Z urban professionals" />
+          </div>
+          <div class="form-group">
+            <label>Platform</label>
+            <select id="contentPlatform">
+              <option value="">Any platform</option>
+              <option>TikTok</option>
+              <option>Meta (Facebook &amp; Instagram)</option>
+              <option>YouTube</option>
+              <option>LinkedIn</option>
+              <option>Podcast</option>
+              <option>Pinterest</option>
+              <option>Snapchat</option>
+              <option>X (Twitter)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Series Ambition</label>
+            <select id="contentAmbition">
+              <option value="">Select ambition</option>
+              <option>Build brand community</option>
+              <option>Establish category authority</option>
+              <option>Drive product discovery</option>
+              <option>Entertain &amp; grow audience</option>
+              <option>Educate &amp; inform</option>
+              <option>Challenge a cultural norm</option>
+              <option>Make people feel something</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tone</label>
+            <select id="contentTone">
+              <option value="">Any direction</option>
+              <option>Bold &amp; provocative</option>
+              <option>Warm &amp; human</option>
+              <option>Witty &amp; playful</option>
+              <option>Cinematic &amp; epic</option>
+              <option>Raw &amp; honest</option>
+              <option>Surreal &amp; unexpected</option>
+              <option>Minimalist &amp; pure</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full">
+            <label>Content Territory</label>
+            <input type="text" id="contentTerritory" placeholder="e.g. the intersection of food and culture, honest money advice for young people" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full">
+            <label>The Brief</label>
+            <textarea id="contentBrief" placeholder="What is the brand trying to achieve? What does the audience currently think, feel or do? What would success look like?"></textarea>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Number of concepts</label>
+            <select id="contentNumConcepts">
+              <option value="1" selected>1 concept</option>
+              <option value="3">3 concepts</option>
+              <option value="5">5 concepts</option>
+            </select>
+          </div>
+        </div>
+      </div><!-- end contentForm -->
       <div class="submit-row">
         <button class="btn-generate" id="generateBtn" onclick="generateConcepts()">Crack the Brief</button>
         <div style="display:flex;align-items:center;gap:10px;cursor:pointer;position:relative;" onclick="toggleScamps()">
@@ -956,6 +1036,135 @@ function downloadConceptPdf(name, logline, concept, insight, execution, imgSrc) 
   win.document.write('</body></html>');
   win.document.close();
   setTimeout(function(){ win.print(); }, 800);
+}
+
+function setMode(mode) {
+  const campaignForm = document.getElementById('campaignForm');
+  const contentForm = document.getElementById('contentForm');
+  const btnCampaign = document.getElementById('btnCampaign');
+  const btnContent = document.getElementById('btnContent');
+  const generateBtn = document.getElementById('generateBtn');
+
+  if (mode === 'campaign') {
+    campaignForm.style.display = 'block';
+    contentForm.style.display = 'none';
+    btnCampaign.classList.add('active');
+    btnContent.classList.remove('active');
+    generateBtn.onclick = generateConcepts;
+    generateBtn.textContent = 'Crack the Brief';
+  } else {
+    campaignForm.style.display = 'none';
+    contentForm.style.display = 'block';
+    btnCampaign.classList.remove('active');
+    btnContent.classList.add('active');
+    generateBtn.onclick = generateContentConcepts;
+    generateBtn.textContent = 'Crack the Brief';
+  }
+}
+
+async function generateContentConcepts() {
+  const brand = document.getElementById('contentBrand').value.trim();
+  const brief = document.getElementById('contentBrief').value.trim();
+  if (!brand || !brief) { showError('Please fill in at least the Brand and Brief fields.'); return; }
+
+  const audience = document.getElementById('contentAudience').value.trim();
+  const platform = document.getElementById('contentPlatform').value;
+  const ambition = document.getElementById('contentAmbition').value;
+  const tone = document.getElementById('contentTone').value;
+  const territory = document.getElementById('contentTerritory').value.trim();
+  const numConcepts = document.getElementById('contentNumConcepts').value;
+
+  hideError();
+  document.getElementById('generateBtn').disabled = true;
+  document.getElementById('loading').classList.add('active');
+  document.getElementById('results').classList.remove('active');
+  startLoader();
+
+  const systemPrompt = `You are a senior content strategist and creative director with deep knowledge of award-winning branded content series — from Webby and Shorty Award winners to Cannes Entertainment Lions. You understand what makes a content series earn a genuine audience rather than just impressions: a real point of view, a repeatable format, and a reason to come back.
+
+Your job is to generate original content series concepts for brands. Each concept should feel like something a brand could actually own and build over time — not a one-off campaign, but a recurring creative property.
+
+You must respond ONLY with a valid JSON object. No preamble, no markdown, no explanation outside the JSON. The format is:
+
+{
+  "concepts": [
+    {
+      "name": "SERIES NAME IN CAPS",
+      "logline": "One sentence that captures the series soul",
+      "format": "2-3 sentences describing the series format: what each episode looks like, how long, what happens",
+      "platformRationale": "Why this platform is right for this series and how it uses the platform natively",
+      "episodeStructure": "A repeatable episode structure — the beats, segments or moments that make each episode work",
+      "pilotEpisode": "A specific, vivid pilot episode idea — who, what, where, what happens",
+      "seriesAmbition": "What this series builds for the brand over time if it works"
+    }
+  ]
+}`;
+
+  const userPrompt = `Generate ${numConcepts} original content series concept${numConcepts > 1 ? 's' : ''} for the following brief:
+
+Brand: ${brand}
+Target Audience: ${audience || 'Not specified'}
+Platform: ${platform || 'Not specified'}
+Series Ambition: ${ambition || 'Not specified'}
+Content Territory: ${territory || 'Not specified'}
+Tone: ${tone || 'Not specified'}
+
+The Brief:
+${brief}
+
+Each concept should feel genuinely ownable — the kind of series that builds a real audience and makes people look forward to the next episode. Avoid generic "behind the scenes" or "meet our team" formats. Think about what unique perspective or access this brand has that no one else does.`;
+
+  try {
+    const response = await fetch('/api/claude', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 2500, system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] })
+    });
+    const data = await response.json();
+    stopLoader();
+    document.getElementById('loading').classList.remove('active');
+    document.getElementById('generateBtn').disabled = false;
+    if (data.error) { showError('API error: ' + (data.error.message || JSON.stringify(data.error))); return; }
+    const raw = data.content.map(b => b.text || '').join('');
+    const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    renderContentConcepts(parsed.concepts, brand);
+  } catch (err) {
+    stopLoader();
+    document.getElementById('loading').classList.remove('active');
+    document.getElementById('generateBtn').disabled = false;
+    showError('Something went wrong. (' + err.message + ')');
+  }
+}
+
+function renderContentConcepts(concepts, brand) {
+  const grid = document.getElementById('conceptsGrid');
+  grid.innerHTML = '';
+  concepts.forEach((c, i) => {
+    const card = document.createElement('div');
+    card.className = 'concept-card';
+    card.innerHTML = `
+      <div class="concept-num">Series ${String(i+1).padStart(2,'0')}</div>
+      <div class="concept-name-wrap"><span class="concept-name"><span class="highlight-line">${c.name}</span></span></div>
+      <div class="concept-logline">"${c.logline}"</div>
+      <div class="concept-body">${c.format}</div>
+      <span class="concept-label">Platform rationale</span>
+      <div class="concept-body">${c.platformRationale}</div>
+      <span class="concept-label">Episode structure</span>
+      <div class="concept-body">${c.episodeStructure}</div>
+      <span class="concept-label">Pilot episode</span>
+      <div class="concept-body">${c.pilotEpisode}</div>
+      <span class="concept-label">What it builds</span>
+      <div class="concept-body">${c.seriesAmbition}</div>
+      <div class="concept-image" style="display:none;"></div>
+      <button class="sketch-btn" onclick="sketchConcept(this, ${i})">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Scamp this
+      </button>`;
+    grid.appendChild(card);
+  });
+  document.getElementById('resultsTitle').textContent = `${concepts.length} series concept${concepts.length > 1 ? 's' : ''} — ${brand} cracked`;
+  document.getElementById('results').classList.add('active');
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function toggleScamps() {
