@@ -967,7 +967,8 @@ function sketchConcept(btn, index) {
   var card = cards[index];
   var imgDiv = card.querySelector('.concept-image');
   var conceptName = card.querySelector('.highlight-line').textContent;
-  var conceptBody = card.querySelectorAll('.concept-body')[0].textContent;
+  var bodyEls = card.querySelectorAll('.concept-body');
+  var conceptBody = Array.from(bodyEls).slice(0,2).map(el => el.textContent).join(' ');
   btn.classList.add('loading');
   btn.innerHTML = 'Scamping...';
   imgDiv.style.display = 'flex';
