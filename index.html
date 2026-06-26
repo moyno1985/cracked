@@ -820,6 +820,13 @@
 
       </div><!-- end campaignForm -->
       <div id="contentForm" style="display:none;">
+        <div class="examples-row">
+          <span class="examples-label">Load an example</span>
+          <button class="example-pill" onclick="loadContentExample('duolingo')">Duolingo</button>
+          <button class="example-pill" onclick="loadContentExample('rarebeauty')">Rare Beauty</button>
+          <button class="example-pill" onclick="loadContentExample('spotify')">Spotify</button>
+          <button class="example-pill" onclick="loadContentExample('oatly')">Oatly</button>
+        </div>
         <div class="form-row">
           <div class="form-group">
             <label>Brand / Product</label>
@@ -1036,6 +1043,56 @@ function downloadConceptPdf(name, logline, concept, insight, execution, imgSrc) 
   win.document.write('</body></html>');
   win.document.close();
   setTimeout(function(){ win.print(); }, 800);
+}
+
+const CONTENT_EXAMPLES = {
+  duolingo: {
+    brand: 'Duolingo',
+    audience: 'Gen Z 18-28 who downloaded the app but ghost it after week one',
+    platform: 'TikTok',
+    ambition: 'Build brand community',
+    territory: 'The comedy of language learning failure',
+    tone: 'Witty & playful',
+    brief: "Duolingo's owl is one of the most recognisable brand characters on the internet. The TikTok account redefined what a brand could be on social — unhinged, self-aware, genuinely funny. But the content is almost entirely about the owl, not about language learning. The creative challenge: build a content series that's as entertaining as the owl content but actually makes people want to open the app."
+  },
+  rarebeauty: {
+    brand: 'Rare Beauty',
+    audience: 'Women 18-35 dealing with anxiety, burnout and the pressure of social media beauty standards',
+    platform: 'Meta (Facebook & Instagram)',
+    ambition: 'Build brand community',
+    territory: 'Mental health and self-acceptance in beauty',
+    tone: 'Raw & honest',
+    brief: "Rare Beauty isn't really a beauty brand — it's a mental health brand that sells makeup. The Rare Impact Fund, the Find Comfort collections, the way Selena talks about her own struggles — the brand has built genuine emotional equity in a category defined by aspiration and insecurity. The creative challenge: build a content series that makes the audience feel seen, not sold to. The beauty stuff should feel like an afterthought."
+  },
+  spotify: {
+    brand: 'Spotify',
+    audience: 'Music obsessives 22-38 who use Spotify daily but feel like the algorithm knows their habits better than their taste',
+    platform: 'YouTube',
+    ambition: 'Establish category authority',
+    territory: 'The stories behind the music, not just the music itself',
+    tone: 'Cinematic & epic',
+    brief: "Spotify has more data on human listening behaviour than any company on earth. It knows what people listen to when they're heartbroken, when they're driving, when they can't sleep. That data is the most interesting thing about Spotify and nobody is telling those stories. The creative challenge: build a content series that uses Spotify's unique data access to reveal something true and surprising about how music and human emotion intersect."
+  },
+  oatly: {
+    brand: 'Oatly',
+    audience: 'People 20-35 who buy Oatly but feel mildly embarrassed about how much they spend on oat milk',
+    platform: 'TikTok',
+    ambition: 'Challenge a cultural norm',
+    territory: 'Honest anti-marketing in a world of sustainable brand bullshit',
+    tone: 'Witty & playful',
+    brief: "Oatly might be the most self-aware brand on earth. It puts its own nutritional debates on packaging. It makes ads that admit they're ads. It hired a controversial CEO and then made content about the backlash. The brand has built a devoted following by treating marketing itself as the enemy and then doing marketing anyway. The creative challenge: build a content series that continues to weaponise Oatly's honesty in a category — sustainable food — that is drowning in greenwash and virtue signalling."
+  }
+};
+
+function loadContentExample(key) {
+  const ex = CONTENT_EXAMPLES[key];
+  document.getElementById('contentBrand').value = ex.brand;
+  document.getElementById('contentAudience').value = ex.audience;
+  document.getElementById('contentPlatform').value = ex.platform;
+  document.getElementById('contentAmbition').value = ex.ambition;
+  document.getElementById('contentTerritory').value = ex.territory;
+  document.getElementById('contentTone').value = ex.tone;
+  document.getElementById('contentBrief').value = ex.brief;
 }
 
 function setMode(mode) {
