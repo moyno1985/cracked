@@ -1255,44 +1255,71 @@ function renderContentConcepts(concepts, brand) {
   (async () => {
     for (const [i, c] of concepts.entries()) {
       const cards = document.querySelectorAll('.concept-card');
-      const imgDiv = cards[i] ? cards[i].querySelector('.concept-image') : null;
+      const card = cards[i];
+      const imgDiv = card ? card.querySelector('.concept-image') : null;
       if (!imgDiv) continue;
       imgDiv.style.display = 'flex';
       imgDiv.innerHTML = '<span class="img-loading">Sketching concept...</span>';
       try {
-        const r = await fetch('/api/image', {
+        const startR = await fetch('/api/image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ concept: c.name + ': ' + c.format })
         });
-        const data = await r.json();
+        const startData = await startR.json();
+        const jobId = startData.jobId;
         var imgSrc = '';
-        if (data.data && data.data[0] && data.data[0].b64_json) {
-          imgSrc = 'data:image/png;base64,' + data.data[0].b64_json;
-          imgDiv.innerHTML = '<img src="' + imgSrc + '" alt="Concept visual" />';
-        } else if (data.data && data.data[0] && data.data[0].url) {
-          imgSrc = data.data[0].url;
-          imgDiv.innerHTML = '<img src="' + imgSrc + '" alt="Concept visual" />';
-        } else {
-          imgDiv.innerHTML = '';
+        while (true) {
+          await new Promise(r => setTimeout(r, 2000));
+          const pollR = await fetch('/api/image-status/' + jobId);
+          const pollData = await pollR.json();
+          if (pollData.status === 'done') {
+            const result = JSON.parse(pollData.result);
+            if (result.data && result.data[0] && result.data[0].b64_json) {
+              imgSrc = 'data:image/png;base64,' + result.data[0].b64_json;
+              imgDiv.innerHTML = '<img src="' + imgSrc + '" alt="Concept visual" />';
+            } else if (result.data && result.data[0] && result.data[0].url) {
+              imgSrc = result.data[0].url;
+              imgDiv.innerHTML = '<img src="' + imgSrc + '" alt="Concept visual" />';
+            } else {
+              imgDiv.innerHTML = '';
+            }
+            break;
+          } else if (pollData.status === 'error' || pollData.status === 'not_found') {
+            imgDiv.innerHTML = '';
+            break;
+          }
         }
-        var btn = cards[i] ? cards[i].querySelector('.sketch-btn') : null;
+        var btn = card ? card.querySelector('.sketch-btn') : null;
         if (btn) btn.style.display = 'none';
         if (imgSrc) {
-          var conceptName = cards[i].querySelector('.highlight-line').textContent;
+          var conceptName = card.querySelector('.highlight-line').textContent;
+          var conceptLogline = card.querySelector('.concept-logline') ? card.querySelector('.concept-logline').textContent : '';
+          var bodyEls = card.querySelectorAll('.concept-body');
+          var conceptBody = bodyEls[0] ? bodyEls[0].textContent : '';
+          var insight = bodyEls[1] ? bodyEls[1].textContent : '';
+          var execution = bodyEls[2] ? bodyEls[2].textContent : '';
           var downloadRow = document.createElement('div');
           downloadRow.style.cssText = 'display:flex;gap:8px;margin-top:12px;justify-content:flex-end;';
           var dlJpeg = document.createElement('a');
           dlJpeg.href = imgSrc;
           dlJpeg.download = (window._currentBrand || 'cracked').toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + conceptName.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.jpg';
-          dlJpeg.innerHTML = 'Download scamp (JPEG)';
+          dlJpeg.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download scamp (JPEG)';
           dlJpeg.style.cssText = "display:flex;align-items:center;gap:5px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);border:1.5px solid var(--ink);padding:6px 12px;background:var(--white);box-shadow:2px 2px 0 var(--ink);text-decoration:none;cursor:pointer;";
           dlJpeg.onmouseover = function(){ this.style.background='var(--yellow)'; };
           dlJpeg.onmouseout = function(){ this.style.background='var(--white)'; };
+          var dlPdf = document.createElement('button');
+          dlPdf.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Download concept (PDF)';
+          dlPdf.style.cssText = "display:flex;align-items:center;gap:5px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);border:1.5px solid var(--ink);padding:6px 12px;background:var(--white);box-shadow:2px 2px 0 var(--ink);cursor:pointer;";
+          dlPdf.onmouseover = function(){ this.style.background='var(--yellow)'; };
+          dlPdf.onmouseout = function(){ this.style.background='var(--white)'; };
+          dlPdf.onclick = (function(n, ll, cb, ins, ex, src){ return function(){ downloadConceptPdf(n, ll, cb, ins, ex, src); }; })(conceptName, conceptLogline, conceptBody, insight, execution, imgSrc);
           downloadRow.appendChild(dlJpeg);
-          cards[i].appendChild(downloadRow);
+          downloadRow.appendChild(dlPdf);
+          card.appendChild(downloadRow);
         }
-      } catch {
+      } catch(err) {
+        console.error('Auto-scamp error:', err);
         imgDiv.innerHTML = '';
       }
     }
