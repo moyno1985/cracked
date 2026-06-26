@@ -997,7 +997,7 @@ function sketchConcept(btn, index) {
     }
     var dlJpeg = document.createElement('a');
     dlJpeg.href = imgSrc;
-    dlJpeg.download = 'scamp.jpg';
+    dlJpeg.download = (window._currentBrand || 'cracked').toLowerCase().replace(/\s+/g, '-') + '-' + conceptName.toLowerCase().replace(/\s+/g, '-') + '.jpg';
     dlJpeg.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download scamp (JPEG)';
     dlJpeg.style.cssText = "display:flex;align-items:center;gap:5px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);border:1.5px solid var(--ink);padding:6px 12px;background:var(--white);box-shadow:2px 2px 0 var(--ink);text-decoration:none;cursor:pointer;";
     dlJpeg.onmouseover = function(){ this.style.background='var(--yellow)'; };
@@ -1051,7 +1051,7 @@ function downloadConceptPdf(name, logline, concept, insight, execution, imgSrc) 
         if (remainingHeight > 0) pdf.addPage();
       }
     }
-    pdf.save(name.toLowerCase().replace(/\s+/g, '-') + '.pdf');
+    pdf.save((window._currentBrand || 'cracked').toLowerCase().replace(/\s+/g, '-') + '-' + name.toLowerCase().replace(/\s+/g, '-') + '.pdf');
   });
 }
 
@@ -1372,6 +1372,7 @@ function renderConcepts(concepts, brand) {
     if (inspHtml) { const d = document.createElement('div'); d.innerHTML = inspHtml; grid.appendChild(d.firstElementChild); }
   });
   document.getElementById('resultsTitle').textContent = `${concepts.length} concepts — ${brand} cracked`;
+  window._currentBrand = brand;
   document.getElementById('results').classList.add('active');
   document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
@@ -1412,7 +1413,7 @@ function renderConcepts(concepts, brand) {
           downloadRow.style.cssText = 'display:flex;gap:8px;margin-top:12px;justify-content:flex-end;';
           var dlJpeg = document.createElement('a');
           dlJpeg.href = imgSrc;
-          dlJpeg.download = 'scamp.jpg';
+          dlJpeg.download = (window._currentBrand || 'cracked').toLowerCase().replace(/\s+/g, '-') + '-' + conceptName.toLowerCase().replace(/\s+/g, '-') + '.jpg';
           dlJpeg.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download scamp (JPEG)';
           dlJpeg.style.cssText = "display:flex;align-items:center;gap:5px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);border:1.5px solid var(--ink);padding:6px 12px;background:var(--white);box-shadow:2px 2px 0 var(--ink);text-decoration:none;cursor:pointer;";
           dlJpeg.onmouseover = function(){ this.style.background='var(--yellow)'; };
