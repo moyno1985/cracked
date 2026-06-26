@@ -682,6 +682,7 @@
   }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -1025,62 +1026,33 @@ function sketchConcept(btn, index) {
 
 function downloadConceptPdf(name, logline, concept, insight, execution, imgSrc) {
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  const margin = 20;
-  const pageWidth = 210;
-  const contentWidth = pageWidth - margin * 2;
-  let y = 20;
-
-  // Name
-  doc.setFont('helvetica', 'bolditalic');
-  doc.setFontSize(24);
-  doc.setTextColor(17, 17, 16);
-  const nameLines = doc.splitTextToSize(name, contentWidth);
-  doc.text(nameLines, margin, y);
-  y += nameLines.length * 10 + 4;
-
-  // Yellow underline
-  doc.setDrawColor(255, 229, 102);
-  doc.setLineWidth(3);
-  doc.line(margin, y, margin + Math.min(contentWidth, name.length * 4), y);
-  y += 8;
-
-  // Logline
-  doc.setFont('helvetica', 'italic');
-  doc.setFontSize(11);
-  doc.setTextColor(76, 74, 70);
-  const loglineLines = doc.splitTextToSize(logline, contentWidth);
-  doc.text(loglineLines, margin, y);
-  y += loglineLines.length * 6 + 10;
-
-  // Sections
-  function addSection(label, text) {
-    if (y > 260) { doc.addPage(); y = 20; }
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(153, 151, 143);
-    doc.text(label.toUpperCase(), margin, y);
-    y += 5;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(10);
-    doc.setTextColor(76, 74, 70);
-    const lines = doc.splitTextToSize(text, contentWidth);
-    doc.text(lines, margin, y);
-    y += lines.length * 5 + 8;
+  var cards = document.querySelectorAll('.concept-card');
+  var targetCard = null;
+  for (var i = 0; i < cards.length; i++) {
+    var h = cards[i].querySelector('.highlight-line');
+    if (h && h.textContent === name) { targetCard = cards[i]; break; }
   }
-
-  addSection('The concept', concept);
-  addSection('The insight', insight);
-  addSection('Bring it to life', execution);
-
-  // Image
-  if (imgSrc) {
-    if (y > 200) { doc.addPage(); y = 20; }
-    const imgHeight = 80;
-    doc.addImage(imgSrc, 'PNG', margin, y, contentWidth, imgHeight);
-  }
-
-  doc.save(name.toLowerCase().replace(/\s+/g, '-') + '.pdf');
+  if (!targetCard) { alert('Could not find concept card'); return; }
+  html2canvas(targetCard, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(function(canvas) {
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pdfWidth = 210;
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    if (pdfHeight <= 297) {
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    } else {
+      var pageHeight = 297;
+      var position = 0;
+      var remainingHeight = pdfHeight;
+      while (remainingHeight > 0) {
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+        remainingHeight -= pageHeight;
+        position -= pageHeight;
+        if (remainingHeight > 0) pdf.addPage();
+      }
+    }
+    pdf.save(name.toLowerCase().replace(/\s+/g, '-') + '.pdf');
+  });
 }
 
 const CONTENT_EXAMPLES = {
