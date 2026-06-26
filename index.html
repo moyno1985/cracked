@@ -1014,10 +1014,11 @@ function sketchConcept(btn, index) {
     dlJpeg.onmouseover = function(){ this.style.background='var(--yellow)'; };
     dlJpeg.onmouseout = function(){ this.style.background='var(--white)'; };
     var conceptName = card.querySelector('.highlight-line').textContent;
-    var conceptLogline = card.querySelector('.concept-logline').textContent;
-    var conceptBody = card.querySelectorAll('.concept-body')[0].textContent;
-    var insight = card.querySelectorAll('.concept-body')[1].textContent;
-    var execution = card.querySelectorAll('.concept-body')[2].textContent;
+    var conceptLogline = card.querySelector('.concept-logline') ? card.querySelector('.concept-logline').textContent : '';
+    var bodyEls = card.querySelectorAll('.concept-body');
+    var conceptBody = bodyEls[0] ? bodyEls[0].textContent : '';
+    var insight = bodyEls[1] ? bodyEls[1].textContent : '';
+    var execution = bodyEls[2] ? bodyEls[2].textContent : '';
     var dlPdf = document.createElement('button');
     dlPdf.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Download concept (PDF)';
     dlPdf.style.cssText = "display:flex;align-items:center;gap:5px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);border:1.5px solid var(--ink);padding:6px 12px;background:var(--white);box-shadow:2px 2px 0 var(--ink);cursor:pointer;";
