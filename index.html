@@ -1050,28 +1050,43 @@ function downloadConceptPdf(name, logline, concept, insight, execution, imgSrc) 
     if (h && h.textContent === name) { targetCard = cards[i]; break; }
   }
   if (!targetCard) { alert('Could not find concept card'); return; }
-  var hideEls = targetCard.querySelectorAll('a[download], button, .sketch-btn');
+  var hideEls = targetCard.querySelectorAll('a[download], button, .sketch-btn, .concept-image');
   hideEls.forEach(function(el){ el.style.display = 'none'; });
   html2canvas(targetCard, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(function(canvas) {
     hideEls.forEach(function(el){ el.style.display = ''; });
-    const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const pdfWidth = 210;
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-    if (pdfHeight <= 297) {
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    // Page 1: concept text only
+    const textImgData = canvas.toDataURL('image/png');
+    const textHeight = (canvas.height * pdfWidth) / canvas.width;
+    if (textHeight <= 297) {
+      pdf.addImage(textImgData, 'PNG', 0, 0, pdfWidth, textHeight);
     } else {
       var pageHeight = 297;
       var position = 0;
-      var remainingHeight = pdfHeight;
-      while (remainingHeight > 0) {
-        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-        remainingHeight -= pageHeight;
+      var remaining = textHeight;
+      while (remaining > 0) {
+        pdf.addImage(textImgData, 'PNG', 0, position, pdfWidth, textHeight);
+        remaining -= pageHeight;
         position -= pageHeight;
-        if (remainingHeight > 0) pdf.addPage();
+        if (remaining > 0) pdf.addPage();
       }
     }
-    pdf.save((window._currentBrand || 'cracked').toLowerCase().replace(/\s+/g, '-') + '-' + name.toLowerCase().replace(/\s+/g, '-') + '.pdf');
+    // Page 2: scamp image full bleed (only if scamp exists)
+    if (imgSrc) {
+      pdf.addPage();
+      var scampImg = new Image();
+      scampImg.onload = function() {
+        var scampW = pdfWidth;
+        var scampH = (scampImg.height * pdfWidth) / scampImg.width;
+        var topMargin = scampH < 297 ? (297 - scampH) / 2 : 0;
+        pdf.addImage(scampImg, 'PNG', 0, topMargin, scampW, Math.min(scampH, 297));
+        pdf.save((window._currentBrand || 'cracked').toLowerCase().replace(/\s+/g, '-') + '-' + name.toLowerCase().replace(/\s+/g, '-') + '.pdf');
+      };
+      scampImg.src = imgSrc;
+    } else {
+      pdf.save((window._currentBrand || 'cracked').toLowerCase().replace(/\s+/g, '-') + '-' + name.toLowerCase().replace(/\s+/g, '-') + '.pdf');
+    }
   });
 }
 
