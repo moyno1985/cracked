@@ -34,34 +34,28 @@
     background-size: cover;
   }
 
-  /* MODE TOGGLE */
-  .mode-toggle {
+  /* FORMAT CHIPS */
+  .format-chips {
     display: flex;
-    margin-bottom: 28px;
-    border: 1.5px solid var(--ink);
-    width: fit-content;
-  }
-  .mode-btn {
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 16px;
-    padding: 10px 28px;
-    border: none;
-    cursor: pointer;
-    background: var(--white);
-    color: var(--ink-light);
-  }
-  .mode-btn.active { background: var(--ink); color: var(--yellow); }
-  .mode-btn:first-child { border-right: 1.5px solid var(--ink); }
-  .mode-desc {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    color: var(--ink-light);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    flex-wrap: wrap;
+    gap: 8px;
     margin-bottom: 24px;
   }
+  .format-chip {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border: 1.5px solid var(--ink);
+    background: var(--white);
+    color: var(--ink-mid);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .format-chip:hover { background: var(--paper); color: var(--ink); }
+  .format-chip.active { background: var(--ink); color: var(--yellow); border-color: var(--ink); }
+  .conditional-fields { margin-top: 0; }
 
   /* HEADER */
   header {
@@ -714,13 +708,9 @@
       <span class="form-header-date" style="margin-right: 3px;" id="formDate"></span>
     </div>
     <div class="form-body">
-      <div class="mode-toggle">
-        <button class="mode-btn active" id="btnCampaign" onclick="setMode('campaign')">Campaign</button>
-        <button class="mode-btn" id="btnContent" onclick="setMode('content')">Content</button>
-      </div>
-      
-      <div id="campaignForm">
-      <div class="examples-row">
+
+      <!-- Examples row — updates based on active format chip -->
+      <div class="examples-row" id="examplesRow">
         <span class="examples-label">Load an example</span>
         <button class="example-pill" onclick="loadExample('balter')">Balter</button>
         <button class="example-pill" onclick="loadExample('moccona')">Moccona</button>
@@ -739,167 +729,177 @@
         <button class="example-pill" onclick="loadExample('ringers')">Ringers Western</button>
       </div>
 
+      <!-- Shared fields -->
       <div class="form-row">
         <div class="form-group">
           <label>Brand / Product</label>
           <input type="text" id="brand" placeholder="e.g. Oatly, Nike, Dove" />
         </div>
-
-      </div>
-
-      <div class="form-row">
         <div class="form-group">
           <label>Target Audience</label>
           <input type="text" id="audience" placeholder="e.g. Gen Z urban professionals" />
-        </div>
-        <div class="form-group">
-          <label id="ambitionLabel">Campaign Ambition</label>
-          <select id="ambition" style="width:100%">
-            <option value="">Select ambition</option>
-            <option>Change behaviour</option>
-            <option>Challenge a cultural norm</option>
-            <option>Launch a new product</option>
-            <option>Reposition a brand</option>
-            <option>Drive brand fame</option>
-            <option>Respond to a cultural moment</option>
-            <option>Make people feel something</option>
-          </select>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group full">
-          <label id="briefLabel">The brief</label>
-          <textarea id="brief" placeholder="Describe the creative challenge, the audience, and the brand tone. The more specific you are, the better the ideas."></textarea>
+          <label>The Brief</label>
+          <textarea id="brief" placeholder="Describe the creative challenge. The more specific you are, the better the ideas."></textarea>
         </div>
       </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>Channel / Media</label>
-          <select id="channel">
-            <option value="">Any / Integrated</option>
-            <option>TVC / Film</option>
-            <option>Out of Home</option>
-            <option>Social Media</option>
-            <option>Digital / Interactive</option>
-            <option>Print</option>
-            <option>Experiential / Activation</option>
-            <option>PR Stunt</option>
-            <option>Radio / Audio</option>
-          </select>
+      <!-- Format chips -->
+      <div class="format-chips" id="formatChips">
+        <button class="format-chip active" onclick="setFormat('campaign')" id="chip-campaign">Full Campaign</button>
+        <button class="format-chip" onclick="setFormat('content')" id="chip-content">Content Series</button>
+        <button class="format-chip" onclick="setFormat('social')" id="chip-social">Social</button>
+        <button class="format-chip" onclick="setFormat('film')" id="chip-film">Film &amp; TV</button>
+        <button class="format-chip" onclick="setFormat('ooh')" id="chip-ooh">OOH</button>
+        <button class="format-chip" onclick="setFormat('activation')" id="chip-activation">Activation</button>
+      </div>
+
+      <!-- Conditional fields — shown based on chip selection -->
+      <div class="conditional-fields" id="conditionalFields">
+
+        <!-- Campaign fields -->
+        <div id="fields-campaign">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Campaign Ambition</label>
+              <select id="ambition" style="width:100%">
+                <option value="">Select ambition</option>
+                <option>Change behaviour</option>
+                <option>Challenge a cultural norm</option>
+                <option>Launch a new product</option>
+                <option>Reposition a brand</option>
+                <option>Drive brand fame</option>
+                <option>Respond to a cultural moment</option>
+                <option>Make people feel something</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Lead Channel</label>
+              <select id="channel">
+                <option value="">Any / Integrated</option>
+                <option>TVC / Film</option>
+                <option>Out of Home</option>
+                <option>Social Media</option>
+                <option>Digital / Interactive</option>
+                <option>Print</option>
+                <option>Experiential / Activation</option>
+                <option>PR Stunt</option>
+                <option>Radio / Audio</option>
+              </select>
+            </div>
+          </div>
         </div>
+
+        <!-- Content Series fields -->
+        <div id="fields-content" style="display:none">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Platform</label>
+              <select id="contentPlatform">
+                <option value="">Any platform</option>
+                <option>TikTok</option>
+                <option>Meta (Facebook &amp; Instagram)</option>
+                <option>YouTube</option>
+                <option>LinkedIn</option>
+                <option>Podcast</option>
+                <option>Pinterest</option>
+                <option>Snapchat</option>
+                <option>X (Twitter)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Series Ambition</label>
+              <select id="contentAmbition">
+                <option value="">Select ambition</option>
+                <option>Build brand community</option>
+                <option>Establish category authority</option>
+                <option>Drive product discovery</option>
+                <option>Entertain &amp; grow audience</option>
+                <option>Educate &amp; inform</option>
+                <option>Challenge a cultural norm</option>
+                <option>Make people feel something</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full">
+              <label>Content Territory</label>
+              <input type="text" id="contentTerritory" placeholder="e.g. the intersection of food and culture, honest money advice for young people" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Social fields -->
+        <div id="fields-social" style="display:none">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Platform</label>
+              <select id="socialPlatform">
+                <option value="">Any platform</option>
+                <option>TikTok</option>
+                <option>Instagram</option>
+                <option>YouTube</option>
+                <option>LinkedIn</option>
+                <option>X (Twitter)</option>
+                <option>Snapchat</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Social Ambition</label>
+              <select id="socialAmbition">
+                <option value="">Select ambition</option>
+                <option>Build brand community</option>
+                <option>Drive brand fame</option>
+                <option>Go viral</option>
+                <option>Drive product discovery</option>
+                <option>Challenge a cultural norm</option>
+                <option>Make people feel something</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Film & TV — no extra fields needed -->
+        <div id="fields-film" style="display:none"></div>
+
+        <!-- OOH — no extra fields needed -->
+        <div id="fields-ooh" style="display:none"></div>
+
+        <!-- Activation — no extra fields needed -->
+        <div id="fields-activation" style="display:none"></div>
+
+      </div><!-- end conditional fields -->
+
+      <!-- Always-visible bottom row -->
+      <div class="form-row">
         <div class="form-group">
           <label>Tone</label>
           <select id="tone">
             <option value="">Any direction</option>
-            <option>Bold & provocative</option>
-            <option>Warm & human</option>
-            <option>Witty & playful</option>
-            <option>Cinematic & epic</option>
-            <option>Raw & honest</option>
-            <option>Surreal & unexpected</option>
-            <option>Minimalist & pure</option>
+            <option>Bold &amp; provocative</option>
+            <option>Warm &amp; human</option>
+            <option>Witty &amp; playful</option>
+            <option>Cinematic &amp; epic</option>
+            <option>Raw &amp; honest</option>
+            <option>Surreal &amp; unexpected</option>
+            <option>Minimalist &amp; pure</option>
           </select>
         </div>
         <div class="form-group">
-          <label id="numLabel">Number of concepts</label>
+          <label>Number of concepts</label>
           <select id="numConcepts">
-            <option value="1" id="opt1" selected>1 concept</option>
-                <option value="3" id="opt3">3 concepts</option>
-            <option value="5" id="opt5">5 concepts</option>
+            <option value="1" selected>1 concept</option>
+            <option value="3">3 concepts</option>
+            <option value="5">5 concepts</option>
           </select>
         </div>
       </div>
-
-      </div><!-- end campaignForm -->
-      <div id="contentForm" style="display:none;">
-        <div class="examples-row">
-          <span class="examples-label">Load an example</span>
-          <button class="example-pill" onclick="loadContentExample('duolingo')">Duolingo</button>
-          <button class="example-pill" onclick="loadContentExample('rarebeauty')">Rare Beauty</button>
-          <button class="example-pill" onclick="loadContentExample('spotify')">Spotify</button>
-          <button class="example-pill" onclick="loadContentExample('oatly')">Oatly</button>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Brand / Product</label>
-            <input type="text" id="contentBrand" placeholder="e.g. Oatly, Nike, Dove" />
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Target Audience</label>
-            <input type="text" id="contentAudience" placeholder="e.g. Gen Z urban professionals" />
-          </div>
-          <div class="form-group">
-            <label>Platform</label>
-            <select id="contentPlatform">
-              <option value="">Any platform</option>
-              <option>TikTok</option>
-              <option>Meta (Facebook &amp; Instagram)</option>
-              <option>YouTube</option>
-              <option>LinkedIn</option>
-              <option>Podcast</option>
-              <option>Pinterest</option>
-              <option>Snapchat</option>
-              <option>X (Twitter)</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Series Ambition</label>
-            <select id="contentAmbition">
-              <option value="">Select ambition</option>
-              <option>Build brand community</option>
-              <option>Establish category authority</option>
-              <option>Drive product discovery</option>
-              <option>Entertain &amp; grow audience</option>
-              <option>Educate &amp; inform</option>
-              <option>Challenge a cultural norm</option>
-              <option>Make people feel something</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Tone</label>
-            <select id="contentTone">
-              <option value="">Any direction</option>
-              <option>Bold &amp; provocative</option>
-              <option>Warm &amp; human</option>
-              <option>Witty &amp; playful</option>
-              <option>Cinematic &amp; epic</option>
-              <option>Raw &amp; honest</option>
-              <option>Surreal &amp; unexpected</option>
-              <option>Minimalist &amp; pure</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group full">
-            <label>Content Territory</label>
-            <input type="text" id="contentTerritory" placeholder="e.g. the intersection of food and culture, honest money advice for young people" />
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group full">
-            <label>The Brief</label>
-            <textarea id="contentBrief" placeholder="What is the brand trying to achieve? What does the audience currently think, feel or do? What would success look like?"></textarea>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Number of concepts</label>
-            <select id="contentNumConcepts">
-              <option value="1" selected>1 concept</option>
-              <option value="3">3 concepts</option>
-              <option value="5">5 concepts</option>
-            </select>
-          </div>
-        </div>
-      </div><!-- end contentForm -->
       <div class="submit-row">
-        <button class="btn-generate" id="generateBtn" onclick="generateConcepts()">Crack the Brief</button>
+        <button class="btn-generate" id="generateBtn" onclick="crackTheBrief()">Crack the Brief</button>
         <div style="display:flex;align-items:center;gap:10px;cursor:pointer;position:relative;" onclick="toggleScamps()">
           <input type="checkbox" id="generateScamps" style="display:none;" />
           <span id="scampsBox" style="display:inline-block;width:22px;height:22px;border:1.5px solid var(--ink);background:white;box-shadow:2px 2px 0 var(--ink);flex-shrink:0;"></span>
@@ -1117,50 +1117,91 @@ const CONTENT_EXAMPLES = {
 
 function loadContentExample(key) {
   const ex = CONTENT_EXAMPLES[key];
-  document.getElementById('contentBrand').value = ex.brand;
-  document.getElementById('contentAudience').value = ex.audience;
+  document.getElementById('brand').value = ex.brand;
+  document.getElementById('audience').value = ex.audience;
   document.getElementById('contentPlatform').value = ex.platform;
   document.getElementById('contentAmbition').value = ex.ambition;
   document.getElementById('contentTerritory').value = ex.territory;
   document.getElementById('contentTone').value = ex.tone;
-  document.getElementById('contentBrief').value = ex.brief;
+  document.getElementById('brief').value = ex.brief;
 }
 
-function setMode(mode) {
-  const campaignForm = document.getElementById('campaignForm');
-  const contentForm = document.getElementById('contentForm');
-  const btnCampaign = document.getElementById('btnCampaign');
-  const btnContent = document.getElementById('btnContent');
-  const generateBtn = document.getElementById('generateBtn');
+var _currentFormat = 'campaign';
 
-  if (mode === 'campaign') {
-    campaignForm.style.display = 'block';
-    contentForm.style.display = 'none';
-    btnCampaign.classList.add('active');
-    btnContent.classList.remove('active');
-    generateBtn.onclick = generateConcepts;
-    generateBtn.textContent = 'Crack the Brief';
+function setFormat(format) {
+  _currentFormat = format;
+
+  // Update chip active states
+  ['campaign','content','social','film','ooh','activation'].forEach(function(f) {
+    var chip = document.getElementById('chip-' + f);
+    if (chip) chip.classList.toggle('active', f === format);
+  });
+
+  // Show/hide conditional field sections
+  ['campaign','content','social','film','ooh','activation'].forEach(function(f) {
+    var el = document.getElementById('fields-' + f);
+    if (el) el.style.display = (f === format) ? '' : 'none';
+  });
+
+  // Update examples row for content format
+  var exRow = document.getElementById('examplesRow');
+  if (format === 'content') {
+    exRow.innerHTML = '<span class="examples-label">Load an example</span>' +
+      '<button class="example-pill" onclick="loadContentExample('duolingo')">Duolingo</button>' +
+      '<button class="example-pill" onclick="loadContentExample('rarebeauty')">Rare Beauty</button>' +
+      '<button class="example-pill" onclick="loadContentExample('spotify')">Spotify</button>' +
+      '<button class="example-pill" onclick="loadContentExample('oatly')">Oatly</button>';
   } else {
-    campaignForm.style.display = 'none';
-    contentForm.style.display = 'block';
-    btnCampaign.classList.remove('active');
-    btnContent.classList.add('active');
-    generateBtn.onclick = generateContentConcepts;
-    generateBtn.textContent = 'Crack the Brief';
+    exRow.innerHTML = '<span class="examples-label">Load an example</span>' +
+      '<button class="example-pill" onclick="loadExample('balter')">Balter</button>' +
+      '<button class="example-pill" onclick="loadExample('moccona')">Moccona</button>' +
+      '<button class="example-pill" onclick="loadExample('qantas')">Qantas</button>' +
+      '<button class="example-pill" onclick="loadExample('guinness')">Guinness</button>' +
+      '<button class="example-pill" onclick="loadExample('up')">Up Bank</button>' +
+      '<button class="example-pill" onclick="loadExample('hj')">Hungry Jack's</button>' +
+      '<button class="example-pill" onclick="loadExample('mg')">MG Motor</button>' +
+      '<button class="example-pill" onclick="loadExample('stan')">Stan</button>' +
+      '<button class="example-pill" onclick="loadExample('nrl')">NRL</button>' +
+      '<button class="example-pill" onclick="loadExample('kitkat')">KitKat</button>' +
+      '<button class="example-pill" onclick="loadExample('specsavers')">Specsavers</button>' +
+      '<button class="example-pill" onclick="loadExample('canva')">Canva</button>' +
+      '<button class="example-pill" onclick="loadExample('woodstock')">Woodstock</button>' +
+      '<button class="example-pill" onclick="loadExample('aesop')">Aesop</button>' +
+      '<button class="example-pill" onclick="loadExample('ringers')">Ringers Western</button>';
+  }
+}
+
+function crackTheBrief() {
+  if (_currentFormat === 'content') {
+    generateContentConcepts();
+  } else {
+    // For all other formats, pass the format as a channel hint to generateConcepts
+    var formatChannelMap = {
+      'campaign':   '',
+      'social':     'Social Media',
+      'film':       'TVC / Film',
+      'ooh':        'Out of Home',
+      'activation': 'Experiential / Activation',
+    };
+    var formatHint = formatChannelMap[_currentFormat] || '';
+    if (formatHint && document.getElementById('channel')) {
+      document.getElementById('channel').value = formatHint;
+    }
+    generateConcepts();
   }
 }
 
 async function generateContentConcepts() {
-  const brand = document.getElementById('contentBrand').value.trim();
-  const brief = document.getElementById('contentBrief').value.trim();
+  const brand = document.getElementById('brand').value.trim();
+  const brief = document.getElementById('brief').value.trim();
   if (!brand || !brief) { showError('Please fill in at least the Brand and Brief fields.'); return; }
 
-  const audience = document.getElementById('contentAudience').value.trim();
+  const audience = document.getElementById('audience').value.trim();
   const platform = document.getElementById('contentPlatform').value;
   const ambition = document.getElementById('contentAmbition').value;
-  const tone = document.getElementById('contentTone').value;
+  const tone = document.getElementById('tone').value;
   const territory = document.getElementById('contentTerritory').value.trim();
-  const numConcepts = document.getElementById('contentNumConcepts').value;
+  const numConcepts = document.getElementById('numConcepts').value;
 
   hideError();
   document.getElementById('generateBtn').disabled = true;
