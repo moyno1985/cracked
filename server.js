@@ -6,6 +6,8 @@ const path = require('path');
 const PORT = process.env.PORT || 3000;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
+const PINECONE_INDEX_HOST = process.env.PINECONE_INDEX_HOST || "cracked-archive-1lf9x0p.svc.aped-4627-b74a.pinecone.io"; // host only, not a secret
 
 const MIME_TYPES = {
   '.html': 'text/html',
@@ -134,6 +136,112 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
       res.end(JSON.stringify(job));
     }
+    return;
+  }
+
+  // ── Semantic search via Pinecone ──────────────────────────────────────────
+  if (req.url === '/api/search') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', async () => {
+      try {
+        const { query } = JSON.parse(body);
+
+        // 1. Embed the query with OpenAI
+        const embedBody = JSON.stringify({ model: 'text-embedding-3-small', input: query });
+        const embedOpts = {
+          hostname: 'api.openai.com',
+          path: '/v1/embeddings',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${OPENAI_API_KEY}`,
+            'Content-Length': Buffer.byteLength(embedBody),
+          },
+        };
+
+        const embedRes = await new Promise((resolve, reject) => {
+          let data = '';
+          const r = https.request(embedOpts, apiRes => {
+            apiRes.on('data', c => data += c);
+            apiRes.on('end', () => resolve(JSON.parse(data)));
+          });
+          r.on('error', reject);
+          r.write(embedBody);
+          r.end();
+        });
+
+        const vector = embedRes.data[0].embedding;
+
+        // 2. Query Pinecone — need the index host URL
+        // Get host from env or discover it
+        let indexHost = PINECONE_INDEX_HOST;
+        if (!indexHost) {
+          // Fallback: query Pinecone control plane for index host
+          const listRes = await new Promise((resolve, reject) => {
+            let data = '';
+            const r = https.request({
+              hostname: 'api.pinecone.io',
+              path: '/indexes/cracked-archive',
+              method: 'GET',
+              headers: { 'Api-Key': PINECONE_API_KEY, 'X-Pinecone-API-Version': '2025-04' },
+            }, apiRes => {
+              apiRes.on('data', c => data += c);
+              apiRes.on('end', () => resolve(JSON.parse(data)));
+            });
+            r.on('error', reject);
+            r.end();
+          });
+          indexHost = listRes.host;
+        }
+
+        const queryBody = JSON.stringify({
+          vector,
+          topK: 15,
+          includeMetadata: true,
+        });
+
+        const pineconeRes = await new Promise((resolve, reject) => {
+          let data = '';
+          const r = https.request({
+            hostname: indexHost,
+            path: '/query',
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Api-Key': PINECONE_API_KEY,
+              'X-Pinecone-API-Version': '2025-04',
+              'Content-Length': Buffer.byteLength(queryBody),
+            },
+          }, apiRes => {
+            apiRes.on('data', c => data += c);
+            apiRes.on('end', () => resolve(JSON.parse(data)));
+          });
+          r.on('error', reject);
+          r.write(queryBody);
+          r.end();
+        });
+
+        const results = (pineconeRes.matches || []).map(m => ({
+          c: m.metadata.c,
+          b: m.metadata.b,
+          a: m.metadata.a,
+          y: m.metadata.y,
+          cat: m.metadata.cat,
+          award: m.metadata.award,
+          src: m.metadata.src,
+          desc: m.metadata.desc,
+          score: m.score,
+        }));
+
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.end(JSON.stringify({ results }));
+      } catch (err) {
+        console.error('Search error:', err.message);
+        res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.end(JSON.stringify({ error: err.message, results: [] }));
+      }
+    });
     return;
   }
 

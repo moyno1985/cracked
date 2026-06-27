@@ -1444,11 +1444,32 @@ async function generateConcepts() {
   document.getElementById('results').classList.remove('active');
   startLoader();
 
-  const archiveResults = searchArchive(brief, brand, category);
-  const archiveContext = archiveResults.length > 0
-    ? '\n\nRELEVANT AWARD-WINNING CAMPAIGNS FROM THE REAL ARCHIVE:\n' +
-      archiveResults.slice(0,10).map(e => `- ${e.c} — ${e.b} [${e.award}, ${e.y}]`).join('\n')
-    : '';
+  // Semantic search via Pinecone
+  let archiveContext = '';
+  try {
+    const searchQuery = `${brand} ${brief} ${category || ''} ${ambition || ''}`.trim();
+    const searchRes = await fetch('/api/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: searchQuery })
+    });
+    const searchData = await searchRes.json();
+    const results = searchData.results || [];
+    if (results.length > 0) {
+      archiveContext = '\n\nRELEVANT AWARD-WINNING CAMPAIGNS FROM THE CRACKED ARCHIVE:\n' +
+        results.slice(0, 12).map(e => {
+          const desc = e.desc ? ` — "${e.desc.slice(0, 120)}"` : '';
+          return `- ${e.c} (${e.b || e.a || 'Unknown'}) [${e.award}, ${e.src ? e.src.toUpperCase() : ''} ${e.y}]${desc}`;
+        }).join('\n');
+    }
+  } catch(err) {
+    // Fall back to local keyword search if Pinecone unavailable
+    const fallback = searchArchive(brief, brand, category);
+    if (fallback.length > 0) {
+      archiveContext = '\n\nRELEVANT AWARD-WINNING CAMPAIGNS FROM THE CRACKED ARCHIVE:\n' +
+        fallback.slice(0,10).map(e => `- ${e.c} — ${e.b} [${e.award}, ${e.y}]`).join('\n');
+    }
+  }
 
   const systemPrompt = `You are a senior creative director and strategist with encyclopedic knowledge of every Cannes Lions Grand Prix and Gold winning campaign from 1954 to 2025 — covering all categories including Film, Outdoor, PR, Brand Experience, Social & Influencer, Innovation, Creative Strategy, Direct, Health & Wellness, and more.
 
