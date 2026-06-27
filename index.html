@@ -85,13 +85,25 @@
     justify-content: space-between;
   }
 
+  .logo-mark {
+    width: 14px;
+    height: 14px;
+    color: var(--yellow);
+    flex-shrink: 0;
+    transform: rotate(15deg);
+    margin-right: 6px;
+    position: relative;
+    top: -2px;
+  }
+
   .logo {
     font-family: 'Rock Salt', cursive;
     font-weight: 400;
     font-size: 32px;
     color: var(--ink);
     letter-spacing: -0.02em;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
   }
 
 
@@ -728,7 +740,15 @@
 <body>
 
 <header>
-  <div class="logo"><span>Cracked</span></div>
+  <div class="logo">
+    <svg class="logo-mark" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <line x1="10" y1="2" x2="10" y2="18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="2" y1="10" x2="18" y2="10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="4" y1="4" x2="16" y2="16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="16" y1="4" x2="4" y2="16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+    <span>Cracked</span>
+  </div>
 </header>
 <div style="position:fixed;top:16px;right:20px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);z-index:100;">Private Beta v1</div>
 
