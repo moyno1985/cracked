@@ -1621,16 +1621,18 @@ function searchArchive(brief, brand, category) {
     const query = (brief + ' ' + brand + ' ' + category).toLowerCase();
     const words = query.split(/\s+/).filter(w => w.length > 3);
     const scored = CRACKED_ARCHIVE.map(entry => {
-        const text = ((entry.c||'') + ' ' + (entry.b||'') + ' ' + (entry.cat||'')).toLowerCase();
+        const text = ((entry.c||'') + ' ' + (entry.b||'') + ' ' + (entry.cat||'') + ' ' + (entry.desc||'')).toLowerCase();
         let score = 0;
         for (const word of words) {
             if (text.includes(word)) score += 1;
             if ((entry.b||'').toLowerCase().includes(word)) score += 2;
             if ((entry.cat||'').toLowerCase().includes(word)) score += 1;
+            if ((entry.desc||'').toLowerCase().includes(word)) score += 1;
         }
         if (entry.award === 'GRAND PRIX') score += 3;
         if (entry.award === 'GOLD') score += 2;
         if (entry.award === 'SILVER') score += 1;
+        if (entry.award === 'WEBBY WINNER') score += 1;
         return Object.assign({}, entry, {score: score});
     });
     return scored.filter(e => e.score > 0).sort((a,b) => b.score - a.score).slice(0, 25);
