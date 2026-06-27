@@ -41,9 +41,8 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 6px;
-    margin-bottom: 28px;
-    margin-top: 4px;
+    gap: 4px;
+    margin-bottom: 20px;
   }
   .format-chips-label {
     font-family: 'Space Mono', monospace;
@@ -51,23 +50,27 @@
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--ink-light);
-    margin-right: 4px;
+    margin-right: 6px;
   }
   .format-chip {
     font-family: 'Space Mono', monospace;
     font-size: 9px;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 5px 11px;
-    border: 1px solid #ccc;
+    padding: 4px 10px;
+    border: 1px solid transparent;
     background: transparent;
-    color: var(--ink-mid);
+    color: var(--ink-light);
     cursor: pointer;
-    transition: all 0.12s;
-    border-radius: 2px;
+    transition: all 0.1s;
+    border-radius: 20px;
   }
-  .format-chip:hover { border-color: var(--ink); color: var(--ink); }
-  .format-chip.active { background: var(--ink); color: var(--yellow); border-color: var(--ink); }
+  .format-chip:hover { color: var(--ink); }
+  .format-chip.active {
+    background: var(--ink);
+    color: var(--yellow);
+    border-color: var(--ink);
+  }
   .conditional-fields { margin-top: 0; }
 
   /* HEADER */
@@ -749,13 +752,6 @@
         </div>
       </div>
 
-      <div class="form-row">
-        <div class="form-group full">
-          <label>The Brief</label>
-          <textarea id="brief" placeholder="Describe the creative challenge. The more specific you are, the better the ideas."></textarea>
-        </div>
-      </div>
-
       <!-- Format chips -->
       <div class="format-chips" id="formatChips">
         <span class="format-chips-label">Format</span>
@@ -765,6 +761,13 @@
         <button class="format-chip" onclick="setFormat('film')" id="chip-film">Film &amp; TV</button>
         <button class="format-chip" onclick="setFormat('ooh')" id="chip-ooh">OOH</button>
         <button class="format-chip" onclick="setFormat('activation')" id="chip-activation">Activation</button>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group full">
+          <label>The Brief</label>
+          <textarea id="brief" placeholder="Describe the creative challenge. The more specific you are, the better the ideas."></textarea>
+        </div>
       </div>
 
       <!-- Conditional fields — shown based on chip selection -->
