@@ -38,22 +38,33 @@
   .format-chips {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 32px;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 28px;
+    margin-top: 4px;
+  }
+  .format-chips-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-right: 4px;
   }
   .format-chip {
     font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.1em;
+    font-size: 9px;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    padding: 8px 16px;
-    border: 1.5px solid var(--ink);
-    background: var(--white);
+    padding: 5px 11px;
+    border: 1px solid #ccc;
+    background: transparent;
     color: var(--ink-mid);
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.12s;
+    border-radius: 2px;
   }
-  .format-chip:hover { background: var(--paper); color: var(--ink); }
+  .format-chip:hover { border-color: var(--ink); color: var(--ink); }
   .format-chip.active { background: var(--ink); color: var(--yellow); border-color: var(--ink); }
   .conditional-fields { margin-top: 0; }
 
@@ -733,7 +744,7 @@
       any brief.
     </h1>
     <div class="hero-sub">
-      <p>The creative DNA of 70 years of award-winning work. Input your brief. Get ideas that crack it.</p>
+      <p>An AI trained on the best award-winning work from Cannes Lions, D&AD, Clio and beyond. Get scamp-worthy ideas in seconds.</p>
 
     </div>
   </div>
@@ -786,6 +797,7 @@
 
       <!-- Format chips -->
       <div class="format-chips" id="formatChips">
+        <span class="format-chips-label">Format</span>
         <button class="format-chip active" onclick="setFormat('campaign')" id="chip-campaign">Full Campaign</button>
         <button class="format-chip" onclick="setFormat('content')" id="chip-content">Content Series</button>
         <button class="format-chip" onclick="setFormat('social')" id="chip-social">Social</button>
