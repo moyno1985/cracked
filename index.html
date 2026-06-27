@@ -41,31 +41,31 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 4px;
-    margin-bottom: 20px;
+    gap: 8px;
+    margin-bottom: 24px;
   }
   .format-chips-label {
     font-family: 'Space Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.15em;
+    font-size: 10px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--ink-light);
-    margin-right: 6px;
+    margin-right: 4px;
   }
   .format-chip {
     font-family: 'Space Mono', monospace;
-    font-size: 9px;
+    font-size: 11px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 4px 10px;
-    border: 1px solid transparent;
+    padding: 10px 18px;
+    border: 1.5px solid #dddbd5;
     background: transparent;
-    color: var(--ink-light);
+    color: var(--ink-mid);
     cursor: pointer;
-    transition: all 0.1s;
-    border-radius: 20px;
+    transition: all 0.12s;
+    border-radius: 4px;
   }
-  .format-chip:hover { color: var(--ink); }
+  .format-chip:hover { border-color: var(--ink); color: var(--ink); background: var(--paper); }
   .format-chip.active {
     background: var(--ink);
     color: var(--yellow);
