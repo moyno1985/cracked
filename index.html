@@ -330,10 +330,27 @@
 
   textarea {
     resize: vertical;
-    min-height: 220px;
+    min-height: 100px;
     line-height: 1.8;
     font-size: 1.05rem;
     padding-top: 12px;
+  }
+
+  #brief {
+    background: #ffffff;
+    border: 1.5px solid var(--ink);
+    border-bottom: 1.5px solid var(--ink);
+    padding: 20px 24px;
+    min-height: 220px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    box-shadow: 3px 3px 0 var(--ink);
+    color: var(--ink);
+  }
+
+  #brief::placeholder {
+    color: var(--ink-light);
+    font-size: 1rem;
   }
 
   select {
