@@ -139,35 +139,9 @@
     color: var(--ink);
   }
 
-  /* CRACK WORD ANIMATION */
+  /* CRACK WORD */
   .crack-word {
-    position: relative;
-    display: inline-block;
-  }
-
-  .crack-svg {
-    position: absolute;
-    bottom: -6px;
-    left: -4px;
-    width: calc(100% + 8px);
-    height: 18px;
-    overflow: visible;
-    pointer-events: none;
-  }
-
-  .crack-line {
-    fill: none;
-    stroke: var(--yellow);
-    stroke-width: 2.5px;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-dasharray: 400;
-    stroke-dashoffset: 400;
-    animation: crack-draw 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards;
-  }
-
-  @keyframes crack-draw {
-    to { stroke-dashoffset: 0; }
+    font-style: italic;
   }
 
   /* HAND-DRAWN UNDERLINE ON KEY WORD */
@@ -736,11 +710,7 @@
   <div class="hero">
     <h1 class="hero-headline">
       Ideas that<br>
-      <span class="crack-word">crack
-        <svg class="crack-svg" viewBox="0 0 180 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <polyline class="crack-line" points="0,9 28,9 38,2 52,16 64,5 78,14 92,3 108,13 118,6 132,15 145,4 158,12 180,9"/>
-        </svg>
-      </span><br>
+      <span class="crack-word">crack</span><br>
       any brief.
     </h1>
     <div class="hero-sub">
