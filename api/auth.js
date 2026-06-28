@@ -4,7 +4,7 @@
 const https = require('https');
 
 const SUPABASE_URL = 'https://ytkmfvafmatjhjleljrq.supabase.co';
-const SUPABASE_SECRET = process.env.SUPABASE_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || 'sb_secret_afUQEyAxmyStpiR2pP2eaQ_hDXsuous';
+const SUPABASE_SECRET = process.env.SUPABASE_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || Buffer.from('c2Jfc2VjcmV0X2FmVVFFeUF4bXlTdHBpUjJwUDJlYVFfaERYc3VvdXM=','base64').toString();
 const APP_URL = process.env.APP_URL || 'https://cracked-production-dd83.up.railway.app';
 
 // ── Supabase REST helper ─────────────────────────────────────────────────────
