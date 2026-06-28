@@ -974,7 +974,7 @@ function loadFromHistory(item) {
       <div class="concept-num">Concept ${String(i+1).padStart(2,'0')}</div>
       <div class="concept-name-wrap"><span class="concept-name"><span class="highlight-line">${c.name || ''}</span></span></div>
       ${c.logline ? `<div class="concept-logline">"${c.logline}"</div>` : ''}
-      ${c.concept ? `<div class="concept-body">${c.concept}</div>` : ''}
+      ${c.concept ? `<div class="concept-body">${c.concept}</div>` : '<div class="concept-body" style="color:var(--ink-light);font-style:italic;">Re-run this brief to see the full concept.</div>'}
       ${c.keyInsight ? `<span class="concept-label">The insight</span><div class="concept-body">${c.keyInsight}</div>` : ''}
       ${c.executionIdea ? `<span class="concept-label">Bring it to life</span><div class="concept-body">${c.executionIdea}</div>` : ''}
       <div class="concept-image" style="display:none;"></div>
