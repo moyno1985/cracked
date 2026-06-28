@@ -139,6 +139,18 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Temp debug endpoint
+  if (req.url === '/api/debug-env') {
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+    res.end(JSON.stringify({
+      hasPineconeKey: !!process.env.PINECONE_API_KEY,
+      hasPineconeHost: !!process.env.PINECONE_INDEX_HOST,
+      hasOpenAI: !!process.env.OPENAI_API_KEY,
+      pineconeKeyPrefix: (process.env.PINECONE_API_KEY || '').slice(0, 8),
+    }));
+    return;
+  }
+
   // ── Semantic search via Pinecone ──────────────────────────────────────────
   if (req.url === '/api/search') {
     let body = '';
