@@ -968,7 +968,7 @@ function renderHistory() {
               <div style="font-family:'Fraunces',serif;font-weight:700;font-size:11px;color:var(--ink);">${c.name}</div>
               ${c.logline ? `<div style="font-size:10px;color:var(--ink-mid);line-height:1.4;margin-top:2px;">${c.logline.slice(0,80)}${c.logline.length>80?'…':''}</div>` : ''}
             </div>
-            <button onclick="event.stopPropagation();skipConcept(${h.id},${i})" title="Skip this concept" style="background:none;border:1px solid #dddbd5;color:var(--ink-light);cursor:pointer;font-size:10px;padding:2px 6px;flex-shrink:0;border-radius:2px;">Skip</button>
+            <button onclick="event.stopPropagation();skipConcept(${h.id},${i})" title="Delete this concept" style="background:none;border:none;color:var(--ink-light);cursor:pointer;font-size:14px;padding:2px 4px;flex-shrink:0;line-height:1;">🗑</button>
           </div>
         `).join('')}
       </div>
