@@ -1292,10 +1292,12 @@ function renderHistory() {
 
 <script>
 // Auto-grow textarea
-document.getElementById('brief').addEventListener('input', function() {
-  this.style.height = 'auto';
-  this.style.height = Math.max(260, this.scrollHeight) + 'px';
-});
+function autoGrowBrief() {
+  const el = document.getElementById('brief');
+  el.style.height = 'auto';
+  el.style.height = Math.max(260, el.scrollHeight) + 'px';
+}
+document.getElementById('brief').addEventListener('input', autoGrowBrief);
 
 document.getElementById('formDate').textContent = new Date().toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'}).toUpperCase();
 
@@ -1487,7 +1489,7 @@ function loadContentExample(key) {
   document.getElementById('contentAmbition').value = ex.ambition;
   document.getElementById('contentTerritory').value = ex.territory;
   document.getElementById('tone').value = ex.tone;
-  document.getElementById('brief').value = ex.brief;
+  document.getElementById('brief').value = ex.brief; autoGrowBrief();
 }
 
 var _currentFormat = 'campaign';
@@ -1744,7 +1746,7 @@ function loadExample(key) {
   document.getElementById('brand').value = ex.brand;
   document.getElementById('audience').value = ex.audience;
   document.getElementById('ambition').value = ex.ambition;
-  document.getElementById('brief').value = ex.brief;
+  document.getElementById('brief').value = ex.brief; autoGrowBrief();
   document.getElementById('tone').value = ex.tone;
 }
 
