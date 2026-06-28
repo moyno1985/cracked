@@ -130,9 +130,11 @@
     msg.className = 'message error';
     msg.style.display = 'block';
   }
-  fetch('/api/auth/session').then(r => r.json()).then(d => {
-    if (d.authenticated) location.href = '/app.html';
-  }).catch(() => {});
+  if (!new URLSearchParams(location.search).has('preview')) {
+    fetch('/api/auth/session').then(r => r.json()).then(d => {
+      if (d.authenticated) location.href = '/app.html';
+    }).catch(() => {});
+  }
   async function handleSubmit(e) {
     e.preventDefault();
     const email = document.getElementById('email').value.trim();
