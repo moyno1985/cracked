@@ -998,10 +998,12 @@ function renderHistory() {
   </div>
 </header>
 <div style="position:fixed;top:16px;right:20px;z-index:100;">
-  <button onclick="toggleSidebar()" aria-label="Menu" style="background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:4px;">
-    <span style="display:block;width:20px;height:1.5px;background:var(--ink-mid);"></span>
-    <span style="display:block;width:20px;height:1.5px;background:var(--ink-mid);"></span>
-    <span style="display:block;width:20px;height:1.5px;background:var(--ink-mid);"></span>
+  <button onclick="toggleSidebar()" aria-label="Menu" style="background:none;border:none;cursor:pointer;padding:4px;">
+    <svg width="32" height="26" viewBox="0 0 32 26" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2 4 C6 3.5, 14 3.8, 30 4.2" stroke="#111110" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+      <path d="M2 13 C5 12.6, 16 13.2, 29 12.8" stroke="#111110" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+      <path d="M2 22 C7 21.8, 15 22.3, 30 21.9" stroke="#111110" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+    </svg>
   </button>
 </div>
 
