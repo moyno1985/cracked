@@ -725,8 +725,11 @@
   }
 
   @media (max-width: 900px) {
-    main { padding: 24px 20px; }
-    header { padding: 0 20px; }
+    main { padding: 8px 16px; }
+    header { padding: 0 16px; }
+    .examples-row { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .example-pill, .examples-label { flex-shrink: 0; }
+    .brief-form { margin-top: 12px; }
     .form-row { grid-template-columns: 1fr; }
     footer { flex-direction: column; gap: 8px; padding: 20px; }
     .header-right { display: none; }
