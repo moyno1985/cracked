@@ -346,8 +346,9 @@
   }
 
   textarea {
-    resize: vertical;
-    min-height: 100px;
+    resize: none;
+    min-height: 260px;
+    overflow: hidden;
     line-height: 1.8;
     font-size: 1.05rem;
     padding-top: 12px;
@@ -1290,6 +1291,12 @@ function renderHistory() {
 </footer>
 
 <script>
+// Auto-grow textarea
+document.getElementById('brief').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.max(260, this.scrollHeight) + 'px';
+});
+
 document.getElementById('formDate').textContent = new Date().toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'}).toUpperCase();
 
 const EXAMPLES = {
