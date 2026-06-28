@@ -734,11 +734,162 @@
     footer { flex-direction: column; gap: 8px; padding: 20px; }
     .header-right { display: none; }
   }
+
+  /* ── HISTORY SIDEBAR ── */
+  .sidebar-toggle {
+    position: fixed;
+    top: 16px;
+    left: 20px;
+    z-index: 200;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .sidebar-toggle span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--ink);
+    transition: all 0.2s;
+  }
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 320px;
+    background: var(--white);
+    border-right: 1.5px solid var(--ink);
+    box-shadow: 4px 0 0 var(--ink);
+    z-index: 300;
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 299;
+  }
+  .sidebar-overlay.open { display: block; }
+  .sidebar-header {
+    background: var(--ink);
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .sidebar-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+  .sidebar-close {
+    background: none;
+    border: none;
+    color: var(--ink-light);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+  }
+  .sidebar-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+  }
+  .sidebar-empty {
+    text-align: center;
+    color: var(--ink-light);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 48px;
+    line-height: 1.8;
+  }
+  .history-item {
+    border: 1px solid #dddbd5;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.12s;
+    background: white;
+  }
+  .history-item:hover {
+    border-color: var(--ink);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  .history-brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--ink);
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .history-meta {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 4px;
+  }
+  .history-brief {
+    font-size: 11px;
+    color: var(--ink-mid);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .history-delete {
+    float: right;
+    background: none;
+    border: none;
+    color: var(--ink-light);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    margin-left: 8px;
+  }
+  .history-delete:hover { color: var(--ink); }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
+<button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="History">
+  <span></span><span></span><span></span>
+</button>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <span class="sidebar-title">Brief History</span>
+    <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
+  </div>
+  <div class="sidebar-body" id="sidebarBody">
+    <p class="sidebar-empty">Your generated briefs<br>will appear here</p>
+  </div>
+</div>
+
 <script>
 // Check authentication on load
 (async function() {
@@ -763,6 +914,67 @@
     location.href = '/login.html';
   }
 })();
+
+// ── BRIEF HISTORY SIDEBAR ────────────────────────────────────────────────────
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+  if (sidebar.classList.contains('open')) renderHistory();
+}
+
+function getHistory() {
+  try { return JSON.parse(localStorage.getItem('cracked_history') || '[]'); }
+  catch { return []; }
+}
+
+function saveHistory(history) {
+  localStorage.setItem('cracked_history', JSON.stringify(history.slice(0, 50)));
+}
+
+function addToHistory(brand, audience, brief, format) {
+  const history = getHistory();
+  history.unshift({
+    id: Date.now(),
+    brand: brand || 'Untitled',
+    audience: audience || '',
+    brief: brief || '',
+    format: format || 'Full Campaign',
+    date: new Date().toLocaleDateString('en-AU', {day:'numeric', month:'short', year:'numeric'}),
+  });
+  saveHistory(history);
+}
+
+function deleteFromHistory(id) {
+  const history = getHistory().filter(h => h.id !== id);
+  saveHistory(history);
+  renderHistory();
+}
+
+function loadFromHistory(item) {
+  document.getElementById('brand').value = item.brand || '';
+  document.getElementById('audience').value = item.audience || '';
+  document.getElementById('brief').value = item.brief || '';
+  toggleSidebar();
+}
+
+function renderHistory() {
+  const body = document.getElementById('sidebarBody');
+  const history = getHistory();
+  if (!history.length) {
+    body.innerHTML = '<p class="sidebar-empty">Your generated briefs<br>will appear here</p>';
+    return;
+  }
+  body.innerHTML = history.map(h => `
+    <div class="history-item" onclick="loadFromHistory(${JSON.stringify(h).replace(/"/g, '&quot;')})">
+      <button class="history-delete" onclick="event.stopPropagation();deleteFromHistory(${h.id})">×</button>
+      <div class="history-brand">${h.brand}</div>
+      <div class="history-meta">${h.format} · ${h.date}</div>
+      ${h.brief ? `<div class="history-brief">${h.brief.slice(0, 120)}${h.brief.length > 120 ? '…' : ''}</div>` : ''}
+    </div>
+  `).join('');
+}
 </script>
 
 <header>
@@ -1471,6 +1683,9 @@ async function generateConcepts() {
   document.getElementById('loading').classList.add('active');
   document.getElementById('results').classList.remove('active');
   startLoader();
+
+  // Save to history
+  addToHistory(brand, audience, brief, _currentFormat);
 
   // Semantic search via Pinecone
   let archiveContext = '';
