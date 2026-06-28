@@ -288,8 +288,9 @@ async function deductCredit(req, res, next) {
     return;
   }
 
-  // Pro users have unlimited credits
-  if (user.is_pro) {
+  // Owner bypass + Pro users have unlimited credits
+  const OWNER = 'maurice.d.moynihan@gmail.com';
+  if (user.email === OWNER || user.is_pro) {
     next();
     return;
   }
