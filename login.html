@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cracked — Sign In</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,700&family=Space+Mono:wght@400;700&family=Rock+Salt&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #111110;
+    --yellow: #FFE566;
+    --paper: #F5F3EE;
+    --ink-mid: #4C4A46;
+    --ink-light: #99978F;
+  }
+
+  body {
+    font-family: 'Space Mono', monospace;
+    background: var(--paper);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .card {
+    background: white;
+    border: 1.5px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    max-width: 420px;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .card-header {
+    background: var(--ink);
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-text {
+    font-family: 'Rock Salt', cursive;
+    color: white;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+
+  .logo-star {
+    font-size: 18px;
+    color: var(--yellow);
+  }
+
+  .card-body {
+    padding: 36px 28px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+
+  .subtitle {
+    font-size: 11px;
+    color: var(--ink-light);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  label {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-mid);
+    margin-bottom: 6px;
+  }
+
+  input[type="email"] {
+    width: 100%;
+    border: none;
+    border-bottom: 1.5px solid #dddbd5;
+    background: transparent;
+    font-family: 'Space Mono', monospace;
+    font-size: 15px;
+    padding: 10px 0;
+    outline: none;
+    color: var(--ink);
+    transition: border-color 0.15s;
+    margin-bottom: 28px;
+  }
+
+  input[type="email"]:focus { border-bottom-color: var(--ink); }
+  input[type="email"]::placeholder { color: var(--ink-light); }
+
+  .btn {
+    width: 100%;
+    background: var(--yellow);
+    border: 1.5px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    color: var(--ink);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 18px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.1s;
+  }
+
+  .btn:hover { transform: translate(1px, 1px); box-shadow: 2px 2px 0 var(--ink); }
+  .btn:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--ink); }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .message {
+    margin-top: 20px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 12px;
+    border: 1px solid transparent;
+  }
+
+  .message.success { background: #f0fdf4; border-color: #86efac; color: #166534; }
+  .message.error { background: #fef2f2; border-color: #fca5a5; color: #991b1b; }
+
+  .trial-note {
+    margin-top: 24px;
+    font-size: 10px;
+    color: var(--ink-light);
+    text-align: center;
+    line-height: 1.6;
+    letter-spacing: 0.04em;
+  }
+
+  .trial-note strong { color: var(--ink-mid); }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <span class="logo-text">Cracked</span>
+    <span class="logo-star">★</span>
+  </div>
+  <div class="card-body">
+    <h1>Sign in</h1>
+    <p class="subtitle">Enter your email and we'll send you a magic link. No password needed.</p>
+
+    <form id="loginForm" onsubmit="handleSubmit(event)">
+      <label for="email">Email address</label>
+      <input type="email" id="email" placeholder="you@agency.com" required autocomplete="email" />
+      <button type="submit" class="btn" id="submitBtn">Send me a link</button>
+    </form>
+
+    <div class="message" id="message" style="display:none"></div>
+
+    <p class="trial-note">
+      New users get <strong>10 free generations</strong>.<br>
+      Upgrade to Pro for unlimited access — $29/month.
+    </p>
+  </div>
+</div>
+
+<script>
+  // Show error from URL params
+  const params = new URLSearchParams(location.search);
+  if (params.get('error')) {
+    const msg = document.getElementById('message');
+    const errors = { invalid: 'This link is invalid or already used.', expired: 'This link has expired. Request a new one.', failed: 'Something went wrong. Try again.' };
+    msg.textContent = errors[params.get('error')] || 'Something went wrong.';
+    msg.className = 'message error';
+    msg.style.display = 'block';
+  }
+
+  // Check if already logged in
+  fetch('/api/auth/session').then(r => r.json()).then(d => {
+    if (d.authenticated) location.href = '/app.html';
+  }).catch(() => {});
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const btn = document.getElementById('submitBtn');
+    const msg = document.getElementById('message');
+
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    msg.style.display = 'none';
+
+    try {
+      const res = await fetch('/api/auth/request-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+
+      if (data.ok) {
+        msg.textContent = `Link sent to ${email}. Check your inbox.`;
+        msg.className = 'message success';
+        document.getElementById('loginForm').style.display = 'none';
+      } else {
+        msg.textContent = data.error || 'Something went wrong.';
+        msg.className = 'message error';
+        btn.disabled = false;
+        btn.textContent = 'Send me a link';
+      }
+    } catch {
+      msg.textContent = 'Network error. Try again.';
+      msg.className = 'message error';
+      btn.disabled = false;
+      btn.textContent = 'Send me a link';
+    }
+
+    msg.style.display = 'block';
+  }
+</script>
+</body>
+</html>

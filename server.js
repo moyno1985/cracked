@@ -2,6 +2,7 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
+const auth = require('./api/auth');
 
 const PORT = process.env.PORT || 3000;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -67,7 +68,23 @@ const jobs = {};
 const server = http.createServer((req, res) => {
   if (req.method === 'OPTIONS') { handleCors(res); return; }
 
+  // ── Auth routes ──────────────────────────────────────────────────────────────
+  if (req.url === '/api/auth/request-link') { auth.requestLink(req, res); return; }
+  if (req.url.startsWith('/api/auth/verify')) { auth.verifyLink(req, res); return; }
+  if (req.url === '/api/auth/session') { auth.getSession(req, res); return; }
+  if (req.url === '/api/auth/logout') { auth.logout(req, res); return; }
+
+  // ── Protect app.html ─────────────────────────────────────────────────────────
+  if (req.url === '/app.html' || req.url === '/app') {
+    auth.requireAuth(req, res, () => {
+      serveFile(res, path.join(__dirname, 'app.html'));
+    });
+    return;
+  }
+
   if (req.url === '/api/claude' || req.url === '/.netlify/functions/claude') {
+    // Check + deduct credit before generating
+    auth.deductCredit(req, res, () => {
     let body = '';
     req.on('data', chunk => body += chunk);
     req.on('end', () => {
@@ -84,6 +101,7 @@ const server = http.createServer((req, res) => {
       };
       proxyRequest(options, body, res);
     });
+    }); // end deductCredit
     return;
   }
 
