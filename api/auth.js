@@ -4,7 +4,7 @@
 const https = require('https');
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://ytkmfvafmatjhjleljrq.supabase.co';
-const SUPABASE_SECRET = process.env.SUPABASE_SECRET;
+const SUPABASE_SECRET = process.env.SUPABASE_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
 const APP_URL = process.env.APP_URL || 'https://cracked-production-dd83.up.railway.app';
 
 // ── Supabase REST helper ─────────────────────────────────────────────────────
