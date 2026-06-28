@@ -111,16 +111,18 @@ async function requestLink(req, res) {
       const emailLower = email.toLowerCase().trim();
 
       // Upsert user
-      await supabase('POST', 'users?on_conflict=email', {
+      const userRes = await supabase('POST', 'users?on_conflict=email', {
         email: emailLower,
         credits_remaining: 10,
       });
+      console.log('user upsert response:', JSON.stringify(userRes));
 
       // Create magic link token
       const tokenRes = await supabase('POST', 'magic_links', { email: emailLower });
+      console.log('magic_links response:', JSON.stringify(tokenRes));
       const token = tokenRes.data?.[0]?.token;
 
-      if (!token) throw new Error('Failed to create magic link');
+      if (!token) throw new Error('Failed to create magic link: ' + JSON.stringify(tokenRes));
 
       await sendMagicLinkEmail(emailLower, token);
 
