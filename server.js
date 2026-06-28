@@ -263,7 +263,14 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  let filePath = req.url === '/' ? '/index.html' : req.url;
+  // Root redirects to login (login auto-redirects to app if session exists)
+  if (req.url === '/' || req.url === '/index.html') {
+    res.writeHead(302, { Location: '/login.html' });
+    res.end();
+    return;
+  }
+
+  let filePath = req.url;
   filePath = path.join(__dirname, filePath);
   serveFile(res, filePath);
 });
