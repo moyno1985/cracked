@@ -359,6 +359,9 @@
   const dotsWrap = document.getElementById('dots');
   const total = slides.length;
 
+  // Clone all slides and append for seamless infinite loop
+  slides.forEach(slide => carousel.appendChild(slide.cloneNode(true)));
+
   const dots = Array.from({length: total}, (_, i) => {
     const d = document.createElement('div');
     d.className = 'dot' + (i === 0 ? ' active' : '');
@@ -371,7 +374,7 @@
   }
 
   function currentIndex() {
-    return Math.round(carousel.scrollLeft / getSlideWidth());
+    return Math.round(carousel.scrollLeft / getSlideWidth()) % total;
   }
 
   function updateDots() {
@@ -415,17 +418,18 @@
     }
   }, { passive: false });
 
-
   let lastTime = 0;
   const SPEED = 0.022; // px per ms
+  // originalWidth = width of the original (non-cloned) slides
+  let originalWidth = null;
   function autoScroll(ts) {
     if (!paused && !dragging) {
       const delta = lastTime ? (ts - lastTime) * SPEED : 0;
       carousel.scrollLeft += delta;
-      // Loop back to start seamlessly
-      const maxScroll = carousel.scrollWidth - carousel.clientWidth;
-      if (carousel.scrollLeft >= maxScroll - 2) {
-        carousel.scrollLeft = 0;
+      // Seamless loop: when we reach end of originals, jump back by original width
+      if (!originalWidth) originalWidth = getSlideWidth() * total;
+      if (carousel.scrollLeft >= originalWidth) {
+        carousel.scrollLeft -= originalWidth;
       }
     }
     lastTime = ts;
