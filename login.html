@@ -145,15 +145,6 @@
     display: flex; gap: 8px; align-items: center;
     padding: 8px 40px 18px;
   }
-  .carousel-arrow {
-    background: none; border: 1px solid rgba(255,255,255,0.18);
-    color: rgba(255,255,255,0.45); font-size: 14px;
-    width: 28px; height: 28px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; transition: all 0.15s; flex-shrink: 0;
-    user-select: none;
-  }
-  .carousel-arrow:hover { border-color: rgba(255,255,255,0.55); color: white; }
   .carousel-dots { display: flex; gap: 5px; align-items: center; margin-left: 4px; }
   .dot {
     width: 4px; height: 4px; border-radius: 50%;
@@ -287,8 +278,6 @@
       </div><!-- /carousel-track -->
     </div>
     <div class="carousel-controls">
-      <button class="carousel-arrow" id="prevBtn">&#8592;</button>
-      <button class="carousel-arrow" id="nextBtn">&#8594;</button>
       <div class="carousel-dots" id="dots"></div>
     </div>
   </div>
