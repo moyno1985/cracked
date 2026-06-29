@@ -76,8 +76,8 @@
     overflow-y: scroll;
     scroll-snap-type: none;
     -webkit-overflow-scrolling: touch;
-    /* padding buffer absorbs the 1.04x scale overhang on all sides */
-    padding: 24px 40px 36px;
+    /* padding buffer absorbs the hover scale overhang on all sides */
+    padding: 32px 40px 44px;
     scrollbar-width: none;
     cursor: grab;
   }
@@ -98,9 +98,9 @@
     z-index: 1;
   }
   .scamp-slide:hover {
-    transform: scale(1.035);
-    box-shadow: 8px 0 14px rgba(0,0,0,0.45), -4px 0 8px rgba(0,0,0,0.22);
-    clip-path: inset(0 -30px);
+    transform: scale(1.07);
+    box-shadow: 12px 0 20px rgba(0,0,0,0.5), -6px 0 12px rgba(0,0,0,0.28);
+    clip-path: inset(0 -40px);
     z-index: 10;
   }
 
