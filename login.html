@@ -289,5 +289,96 @@
     msg.style.display = 'block';
   }
 </script>
+
+<canvas id="sharpie" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('sharpie');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Each point: {x, y, t} where t is timestamp
+  const points = [];
+  const FADE = 500;      // ms until fully gone
+  const MAX_WIDTH = 2.8; // max stroke width
+  let last = null;
+  let raf = null;
+  let active = false;
+
+  window.addEventListener('mousemove', (e) => {
+    const now = performance.now();
+    points.push({ x: e.clientX, y: e.clientY, t: now });
+    last = now;
+    if (!active) { active = true; draw(); }
+  });
+
+  function draw() {
+    const now = performance.now();
+    ctx.clearRect(0, 0, W, H);
+
+    // Remove expired points
+    while (points.length && now - points[0].t > FADE) points.shift();
+
+    if (points.length < 2) {
+      active = false;
+      return;
+    }
+
+    // Draw segments between consecutive points
+    for (let i = 1; i < points.length; i++) {
+      const p0 = points[i - 1];
+      const p1 = points[i];
+      const age = now - p1.t;
+      const alpha = Math.max(0, 1 - age / FADE);
+      if (alpha <= 0) continue;
+
+      // Detect which side of screen (dark left vs light right)
+      const midX = (p0.x + p1.x) / 2;
+      const onDark = midX < W * 0.57; // left panel threshold
+
+      // Color: warm cream on dark, soft dark on light
+      const color = onDark
+        ? `rgba(255, 245, 200, ${alpha * 0.55})`
+        : `rgba(60, 50, 40, ${alpha * 0.18})`;
+
+      // Slightly randomised width for sharpie texture
+      const jitter = Math.random() * 0.6;
+      const speed = Math.hypot(p1.x - p0.x, p1.y - p0.y);
+      const width = Math.max(0.8, MAX_WIDTH - speed * 0.012 + jitter);
+
+      ctx.beginPath();
+      ctx.moveTo(p0.x, p0.y);
+      ctx.lineTo(p1.x, p1.y);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      // Sharpie texture: slightly rough edges via shadow
+      ctx.shadowColor = onDark
+        ? `rgba(255, 240, 160, ${alpha * 0.15})`
+        : `rgba(40, 30, 20, ${alpha * 0.06})`;
+      ctx.shadowBlur = 1.5;
+
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+
+    // Keep looping if there are points to fade
+    if (points.length > 0) {
+      raf = requestAnimationFrame(draw);
+    } else {
+      active = false;
+    }
+  }
+})();
+</script>
 </body>
 </html>
