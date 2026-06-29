@@ -1980,7 +1980,18 @@ You must respond ONLY with a valid JSON object. No preamble, no markdown, no exp
 
 The inspiredBy array should contain 2–3 real Cannes Lions winning campaigns that share a strategic or creative DNA with the concept. Only reference campaigns from the REAL ARCHIVE DATA provided in this prompt. Do not invent campaigns.`;
 
-  const userPrompt = `Generate ${numConcepts} original advertising campaign concepts for the following brief:\n\nBrand: ${brand}\nCategory: ${category||'Not specified'}\nTarget Audience: ${audience||'Not specified'}\nCampaign Ambition: ${ambition||'Not specified'}\nTone: ${tone||'Not specified'}\n\nThe Brief:\n${brief}\n\n${archiveContext}\n\nEach concept should feel genuinely brave — the kind of idea a jury would argue about. Avoid safe, predictable territory. Think about what the brand could OWN culturally, not just what it could say.`;
+  const formatInstructions = {
+    'film':       'IMPORTANT: All concepts MUST be film/TVC ideas — television commercials or cinema films. Every execution must be a video/moving-image execution. No print, no OOH, no static formats. Think cinematically: scenes, dialogue, VO, emotion, editing. The executionIdea must describe a specific film scene or sequence.',
+    'campaign':   'Concepts should be full integrated campaigns led by a strong film/TVC hero execution, with supporting touchpoints that extend the film idea.',
+    'social':     'IMPORTANT: All concepts MUST be native social media ideas — built for feeds, stories, short-form video, or community. No TV commercials.',
+    'ooh':        'IMPORTANT: All concepts MUST be Out-of-Home executions — billboards, posters, ambient, experiential print. No film or video executions.',
+    'print':      'IMPORTANT: All concepts MUST be print executions — press ads, magazine ads, or still-image formats. No film, no video, no digital.',
+    'activation': 'IMPORTANT: All concepts MUST be live brand activations or experiential ideas — events, stunts, or physical brand experiences.',
+    'content':    'IMPORTANT: All concepts MUST be branded content series — episodic, made for streaming or social, with a repeatable format.',
+  };
+  const formatInstruction = formatInstructions[_currentFormat] || '';
+
+  const userPrompt = `Generate ${numConcepts} original advertising campaign concepts for the following brief:\n\nBrand: ${brand}\nCategory: ${category||'Not specified'}\nTarget Audience: ${audience||'Not specified'}\nCampaign Ambition: ${ambition||'Not specified'}\nTone: ${tone||'Not specified'}\nFormat: ${channel||'Not specified'}\n\nThe Brief:\n${brief}\n\n${formatInstruction ? formatInstruction + '\n\n' : ''}${archiveContext}\n\nEach concept should feel genuinely brave — the kind of idea a jury would argue about. Avoid safe, predictable territory. Think about what the brand could OWN culturally, not just what it could say.`;
 
   try {
     const response = await fetch('/api/claude', {
