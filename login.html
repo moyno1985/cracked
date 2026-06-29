@@ -357,13 +357,20 @@
   // Clone all slides for seamless infinite loop (CSS animation handles the scroll)
   slides.forEach(slide => track.appendChild(slide.cloneNode(true)));
 
-  // Dots — decorative only
   const dots = Array.from({length: total}, (_, i) => {
     const d = document.createElement('div');
     d.className = 'dot' + (i === 0 ? ' active' : '');
     dotsWrap.appendChild(d);
     return d;
   });
+
+  // Cycle dots in sync with animation (55s / 6 slides ≈ 9.2s each)
+  let dotIndex = 0;
+  function cycleDots() {
+    dots.forEach((d, i) => d.classList.toggle('active', i === dotIndex));
+    dotIndex = (dotIndex + 1) % total;
+  }
+  setInterval(cycleDots, Math.round((55 / total) * 1000));
 
   const carousel = document.getElementById('carousel');
   const DURATION = 55; // seconds, must match CSS
@@ -388,7 +395,11 @@
   }
 
   function clamp(x) {
-    const minX = -(track.scrollWidth / 2 - carousel.clientWidth + 60);
+    // Measure where the original content ends (right edge of last original slide)
+    const originalSlides = Array.from(track.querySelectorAll('.scamp-slide')).slice(0, total);
+    const last = originalSlides[total - 1];
+    const originalEnd = last.offsetLeft + last.offsetWidth + 60; // 60px right buffer
+    const minX = -(originalEnd - carousel.clientWidth);
     return Math.min(0, Math.max(minX, x));
   }
 
