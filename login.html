@@ -446,7 +446,7 @@
   resize();
   window.addEventListener('resize', resize);
 
-  const FADE = 320;
+  const FADE = 180;
   const LINE_WIDTH = 3.2;
 
   let points = [];
@@ -515,13 +515,13 @@
 
       // Sharpie: wide solid core
       buildPath();
-      ctx.strokeStyle = `rgba(14, 8, 3, ${a * 0.26})`;
+      ctx.strokeStyle = `rgba(14, 8, 3, ${a * 0.13})`;
       ctx.lineWidth = LINE_WIDTH;
       ctx.stroke();
 
       // Texture: slightly narrower inner stroke for ink variation
       buildPath();
-      ctx.strokeStyle = `rgba(8, 4, 1, ${a * 0.09})`;
+      ctx.strokeStyle = `rgba(8, 4, 1, ${a * 0.045})`;
       ctx.lineWidth = LINE_WIDTH * 0.4;
       ctx.stroke();
     }
