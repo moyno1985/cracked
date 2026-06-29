@@ -867,7 +867,7 @@
   .sidebar-body {
     flex: 1;
     overflow-y: auto;
-    padding: 16px;
+    padding: 14px 14px 8px;
   }
   .sidebar-empty {
     text-align: center;
@@ -879,20 +879,21 @@
     margin-top: 48px;
     line-height: 1.8;
   }
+  /* ── History cards ── */
   .history-item {
     position: relative;
     border: 1px solid #e8e6e0;
-    padding: 13px 14px 12px;
-    margin-bottom: 8px;
+    padding: 14px 14px 38px;
+    margin-bottom: 10px;
     cursor: pointer;
     transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.15s;
     background: #fff;
-    border-radius: 3px;
+    border-radius: 4px;
   }
   .history-item:hover {
     background: #faf9f6;
-    border-color: #c8c5bc;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    border-color: #c0bdb5;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
     transform: translateY(-1px);
   }
   .history-brand {
@@ -912,18 +913,17 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--ink-light);
-    margin-top: 4px;
-    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-bottom: 6px;
   }
   .history-brief {
     font-size: 10.5px;
     color: var(--ink-mid);
-    line-height: 1.45;
+    line-height: 1.5;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    padding-bottom: 26px;
   }
   .history-delete {
     position: absolute;
@@ -931,7 +931,7 @@
     right: 8px;
     background: none;
     border: none;
-    color: #bbb;
+    color: #c5c2bb;
     cursor: pointer;
     font-size: 14px;
     padding: 4px 6px;
@@ -939,7 +939,40 @@
     border-radius: 3px;
     transition: color 0.15s, background 0.15s;
   }
-  .history-delete:hover { color: #222; background: rgba(0,0,0,0.06); }
+  .history-delete:hover { color: #333; background: rgba(0,0,0,0.06); }
+  /* ── Hover actions (Regen / Copy) ── */
+  .history-hover-actions {
+    display: none;
+    position: absolute;
+    bottom: 10px;
+    left: 14px;
+    gap: 6px;
+    align-items: center;
+  }
+  .history-item:hover .history-hover-actions { display: flex; }
+  .hover-action-btn {
+    font-family: 'Space Mono', monospace; font-size: 7.5px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 4px 9px; border: 1px solid #ccc;
+    background: #fff; color: var(--ink-mid);
+    cursor: pointer; transition: all 0.1s; white-space: nowrap;
+    border-radius: 2px;
+  }
+  .hover-action-btn:hover { background: var(--ink); color: var(--yellow); border-color: var(--ink); }
+  /* ── Star ── */
+  .history-star {
+    background: none; border: none;
+    cursor: pointer; font-size: 15px; padding: 1px 4px 1px 8px;
+    line-height: 1; flex-shrink: 0;
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), color 0.15s;
+    color: #d0cdc6;
+    margin-top: -1px;
+  }
+  .history-star::before { content: '☆'; display: block; }
+  .history-star.starred { color: #c9a800; transform: scale(1.15); }
+  .history-star.starred::before { content: '★'; }
+  .history-star:hover { color: #c9a800; transform: scale(1.1); }
+  /* ── Search + filters ── */
   .sidebar-search {
     width: 100%;
     border: none;
@@ -958,40 +991,15 @@
     display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;
   }
   .filter-chip {
-    font-family: 'Space Mono', monospace; font-size: 8px;
+    font-family: 'Space Mono', monospace; font-size: 7.5px;
     letter-spacing: 0.1em; text-transform: uppercase;
     padding: 4px 9px; border: 1px solid #dddbd5;
     background: none; cursor: pointer; color: var(--ink-mid);
-    transition: all 0.1s;
+    transition: all 0.1s; border-radius: 2px;
   }
   .filter-chip.active {
     background: var(--ink); color: var(--yellow); border-color: var(--ink);
   }
-  .history-hover-actions {
-    display: none;
-    position: absolute; bottom: 10px; right: 10px;
-    gap: 6px;
-  }
-  .history-item:hover .history-hover-actions { display: flex; }
-  .hover-action-btn {
-    font-family: 'Space Mono', monospace; font-size: 8px;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    padding: 4px 8px; border: 1px solid var(--ink);
-    background: var(--white); color: var(--ink);
-    cursor: pointer; transition: all 0.1s; white-space: nowrap;
-  }
-  .hover-action-btn:hover { background: var(--ink); color: var(--yellow); }
-  .history-star {
-    background: none; border: none;
-    cursor: pointer; font-size: 14px; padding: 2px 4px 2px 6px;
-    line-height: 1; flex-shrink: 0;
-    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), color 0.15s;
-    color: #ccc;
-  }
-  .history-star::before { content: '☆'; display: block; }
-  .history-star.starred { color: #c9a800; transform: scale(1.15); }
-  .history-star.starred::before { content: '★'; }
-  .history-star:hover { color: #c9a800; transform: scale(1.1); }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -1032,21 +1040,19 @@
     <button id="clearHistoryBtn" onclick="clearHistory()" style="background:none;border:none;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:#b04040;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;opacity:0.8;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">Clear all history</button>
   </div>
   <!-- Sidebar bottom nav -->
-  <div style="border-top:1px solid #dddbd5;padding:16px 16px 20px;flex-shrink:0;display:flex;flex-direction:column;gap:2px;">
-    <a href="/account" style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-mid);text-decoration:none;padding:8px 0;transition:color 0.15s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--ink-mid)'">
-      <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="3.5" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M1 10c0-2.21 2.015-4 4.5-4S10 7.79 10 10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+  <div style="border-top:1px solid #e8e6e0;padding:6px 14px 18px;flex-shrink:0;display:flex;flex-direction:column;">
+    <a href="/account" style="display:flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-mid);text-decoration:none;padding:10px 0;border-bottom:1px solid #f0ede8;transition:color 0.15s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--ink-mid)'">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="4" r="2.3" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 12c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
       Account Settings
     </a>
-    <a id="upgradeLink" href="/upgrade" style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;padding:8px 0;transition:opacity 0.15s;color:var(--ink);">
-      <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1L7 4.5H10.5L7.75 6.75L8.75 10L5.5 7.75L2.25 10L3.25 6.75L0.5 4.5H4L5.5 1Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>
+    <a id="upgradeLink" href="/upgrade" style="display:flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;padding:10px 0;border-bottom:1px solid #f0ede8;transition:opacity 0.15s;color:var(--ink);">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5L8.2 5.2H12L9 7.7L10.1 11.5L6.5 9L2.9 11.5L4 7.7L1 5.2H4.8L6.5 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
       <span id="upgradeLinkText">Upgrade to Pro</span>
     </a>
-    <div style="border-top:1px solid #dddbd5;margin-top:6px;padding-top:14px;">
-      <a href="/api/auth/logout" style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#b04040;text-decoration:none;padding:8px 0;transition:opacity 0.15s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
-        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 1H1.5C1.22 1 1 1.22 1 1.5v8c0 .28.22.5.5.5H4M7.5 8l2.5-2.5L7.5 3M10 5.5H4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Sign out
-      </a>
-    </div>
+    <a href="/api/auth/logout" style="display:flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#b04040;text-decoration:none;padding:10px 0;transition:opacity 0.15s;" onmouseover="this.style.opacity='0.65'" onmouseout="this.style.opacity='1'">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M5 1.5H2.5C2.22 1.5 2 1.72 2 2v9c0 .28.22.5.5.5H5M9 9.5l3-3L9 3.5M12 6.5H5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Sign out
+    </a>
   </div>
 </div>
 
@@ -1648,15 +1654,15 @@ async function writeScript(btn, index) {
     out.textContent = text;
     card.appendChild(out);
     out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    btn.style.display = 'none';
   } catch(e) {
     const out = document.createElement('div');
     out.className = 'script-output';
     out.textContent = 'Failed to write script. Try again.';
     card.appendChild(out);
+    btn.classList.remove('loading');
+    btn.textContent = 'Write the Full Script →';
   }
-
-  btn.classList.remove('loading');
-  btn.textContent = 'Write the Full Script →';
 }
 
 function sketchConcept(btn, index) {
