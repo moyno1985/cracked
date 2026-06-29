@@ -952,6 +952,16 @@
   <div class="sidebar-body" id="sidebarBody">
     <p class="sidebar-empty">Your generated briefs<br>will appear here</p>
   </div>
+  <div id="clearHistoryFooter" style="display:none;padding:12px 16px;border-top:1px solid #dddbd5;flex-shrink:0;">
+    <div id="clearConfirm" style="display:none;font-family:'Space Mono',monospace;font-size:9px;color:var(--ink-mid);line-height:1.8;">
+      Delete all history? This can't be undone.
+      <div style="display:flex;gap:10px;margin-top:8px;">
+        <button onclick="confirmClearHistory()" style="background:var(--ink);color:var(--yellow);border:none;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:6px 12px;cursor:pointer;">Delete all</button>
+        <button onclick="cancelClearHistory()" style="background:none;border:none;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-mid);cursor:pointer;padding:6px 0;">Cancel</button>
+      </div>
+    </div>
+    <button id="clearHistoryBtn" onclick="clearHistory()" style="background:none;border:none;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-light);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;">Clear all history</button>
+  </div>
 </div>
 
 <script>
@@ -1127,13 +1137,29 @@ async function resketchFromHistory(btn, index, brand) {
   btn.textContent = 'Re-scamp this';
 }
 
+function clearHistory() {
+  document.getElementById('clearHistoryBtn').style.display = 'none';
+  document.getElementById('clearConfirm').style.display = 'block';
+}
+function cancelClearHistory() {
+  document.getElementById('clearConfirm').style.display = 'none';
+  document.getElementById('clearHistoryBtn').style.display = 'block';
+}
+function confirmClearHistory() {
+  localStorage.removeItem('cracked_history');
+  cancelClearHistory();
+  renderHistory();
+}
 function renderHistory() {
   const body = document.getElementById('sidebarBody');
   const history = getHistory();
+  const footer = document.getElementById('clearHistoryFooter');
   if (!history.length) {
     body.innerHTML = '<p class="sidebar-empty">Your generated briefs<br>will appear here</p>';
+    if (footer) footer.style.display = 'none';
     return;
   }
+  if (footer) footer.style.display = 'block';
   body.innerHTML = history.map(h => {
     const concepts = (h.concepts || []).filter(c => !c.skipped);
     const conceptsHtml = concepts.length ? `
