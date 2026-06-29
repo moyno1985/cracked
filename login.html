@@ -420,16 +420,14 @@
 
   let lastTime = 0;
   const SPEED = 0.022; // px per ms
-  // originalWidth = width of the original (non-cloned) slides
-  let originalWidth = null;
   function autoScroll(ts) {
     if (!paused && !dragging) {
       const delta = lastTime ? (ts - lastTime) * SPEED : 0;
       carousel.scrollLeft += delta;
-      // Seamless loop: when we reach end of originals, jump back by original width
-      if (!originalWidth) originalWidth = getSlideWidth() * total;
-      if (carousel.scrollLeft >= originalWidth) {
-        carousel.scrollLeft -= originalWidth;
+      // Seamless loop: scrollWidth is doubled (clones), so half = original width
+      const loopPoint = carousel.scrollWidth / 2;
+      if (loopPoint > 0 && carousel.scrollLeft >= loopPoint) {
+        carousel.scrollLeft -= loopPoint;
       }
     }
     lastTime = ts;
