@@ -406,8 +406,14 @@
   carousel.addEventListener('mouseenter', () => { paused = true; });
   carousel.addEventListener('mouseleave', () => { paused = false; });
 
-  // Block vertical page scroll when cursor is over the carousel
-  carousel.addEventListener('wheel', e => { e.preventDefault(); }, { passive: false });
+  // Block vertical page scroll over carousel, allow horizontal scroll through
+  carousel.addEventListener('wheel', e => {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      e.preventDefault(); // vertical — block page scroll
+    } else {
+      carousel.scrollLeft += e.deltaX; // horizontal — scroll carousel
+    }
+  }, { passive: false });
 
 
   let lastTime = 0;
