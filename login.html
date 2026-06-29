@@ -92,13 +92,16 @@
     flex-direction: column;
     gap: 0;
     transform-origin: center center;
-    transition: transform 0.25s ease, filter 0.25s ease;
+    transition: transform 0.25s ease, filter 0.25s ease, z-index 0s;
     will-change: transform;
+    position: relative;
+    z-index: 1;
   }
   .scamp-slide:hover {
     transform: scale(1.035);
     box-shadow: 8px 0 14px rgba(0,0,0,0.45), -4px 0 8px rgba(0,0,0,0.22);
     clip-path: inset(0 -30px);
+    z-index: 10;
   }
 
   .scamp-img-wrap {
