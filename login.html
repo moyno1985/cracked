@@ -291,7 +291,7 @@
 </script>
 
 <canvas id="sharpie" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
-<button id="sharpieToggle" title="Toggle sharpie trail" style="position:fixed;bottom:16px;right:16px;z-index:10000;background:none;border:none;cursor:pointer;opacity:0.35;transition:opacity 0.2s;font-size:16px;line-height:1;padding:4px;" onmouseenter="this.style.opacity='0.7'" onmouseleave="this.style.opacity='0.35'">✏️</button>
+<button id="sharpieToggle" title="Sharpie trail: on" style="position:fixed;bottom:20px;right:20px;z-index:10000;background:white;border:1.5px solid #111;box-shadow:2px 2px 0 #111;cursor:pointer;opacity:0.75;transition:opacity 0.2s;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;padding:6px 10px;color:#111;display:flex;align-items:center;gap:6px;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.75'"><span style="font-size:13px;line-height:1;">🖊️</span> Sharpie: On</button>
 <script>
 (function() {
   const canvas = document.getElementById('sharpie');
@@ -317,8 +317,9 @@
   const toggle = document.getElementById('sharpieToggle');
   toggle.addEventListener('click', () => {
     enabled = !enabled;
-    toggle.style.opacity = enabled ? '0.35' : '0.15';
-    toggle.title = enabled ? 'Toggle sharpie trail' : 'Sharpie trail off';
+    toggle.innerHTML = `<span style="font-size:13px;line-height:1;">🖊️</span> Sharpie: ${enabled ? 'On' : 'Off'}`;
+    toggle.title = `Sharpie trail: ${enabled ? 'on' : 'off'}`;
+    toggle.style.opacity = enabled ? '0.75' : '0.45';
     if (!enabled) { points.length = 0; ctx.clearRect(0, 0, W, H); }
   });
 
@@ -355,23 +356,28 @@
       // Only draw on the right (light) panel
       if (midX < W * 0.57) continue;
 
-      const color = `rgba(35, 22, 12, ${alpha * 0.26})`;
-
-      const jitter = Math.random() * 0.5;
+      const jitter = (Math.random() - 0.5) * 0.4;
       const speed = Math.hypot(p1.x - p0.x, p1.y - p0.y);
-      const width = Math.max(1.0, MAX_WIDTH - speed * 0.014 + jitter);
+      const coreW = Math.max(1.8, MAX_WIDTH - speed * 0.01 + jitter);
 
+      // Sharpie bleed: wide soft halo first, then dense core on top
+      // 1. Outer bleed
       ctx.beginPath();
       ctx.moveTo(p0.x, p0.y);
       ctx.lineTo(p1.x, p1.y);
-      ctx.strokeStyle = color;
-      ctx.lineWidth = width;
+      ctx.strokeStyle = `rgba(28, 16, 8, ${alpha * 0.09})`;
+      ctx.lineWidth = coreW * 2.8;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.shadowColor = `rgba(10, 8, 5, ${alpha * 0.08})`;
-      ctx.shadowBlur = 1.5;
       ctx.stroke();
-      ctx.shadowBlur = 0;
+
+      // 2. Dense core
+      ctx.beginPath();
+      ctx.moveTo(p0.x, p0.y);
+      ctx.lineTo(p1.x, p1.y);
+      ctx.strokeStyle = `rgba(22, 12, 6, ${alpha * 0.55})`;
+      ctx.lineWidth = coreW;
+      ctx.stroke();
     }
 
     // Keep looping if there are points to fade
