@@ -398,7 +398,7 @@
   carousel.addEventListener('mouseleave', () => { paused = false; });
 
   let lastTime = 0;
-  const SPEED = 0.06; // px per ms
+  const SPEED = 0.035; // px per ms
   function autoScroll(ts) {
     if (!paused && !dragging) {
       const delta = lastTime ? (ts - lastTime) * SPEED : 0;
