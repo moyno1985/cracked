@@ -365,12 +365,19 @@
   });
 
   // Cycle dots in sync with animation (55s / 6 slides ≈ 9.2s each)
-  let dotIndex = 0;
-  function cycleDots() {
-    dots.forEach((d, i) => d.classList.toggle('active', i === dotIndex));
-    dotIndex = (dotIndex + 1) % total;
+  // Keep dots in sync with actual carousel position
+  function updateDots() {
+    const x = getTranslateX();
+    const loopWidth = track.scrollWidth / 2;
+    if (loopWidth > 0) {
+      const slideWidth = loopWidth / total;
+      const pos = ((Math.abs(x) % loopWidth) + loopWidth) % loopWidth;
+      const idx = Math.round(pos / slideWidth) % total;
+      dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    }
+    requestAnimationFrame(updateDots);
   }
-  setInterval(cycleDots, Math.round((55 / total) * 1000));
+  requestAnimationFrame(updateDots);
 
   const carousel = document.getElementById('carousel');
   const DURATION = 55; // seconds, must match CSS
