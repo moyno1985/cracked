@@ -387,6 +387,11 @@
     track.style.animation = `carousel-scroll ${DURATION}s linear ${delay}s infinite`;
   }
 
+  function clamp(x) {
+    const minX = -(track.scrollWidth / 2 - carousel.clientWidth);
+    return Math.min(0, Math.max(minX, x));
+  }
+
   // Drag to scroll
   let dragStartX, dragStartTX, isDragging = false;
   carousel.addEventListener('mousedown', e => {
@@ -399,7 +404,7 @@
   });
   window.addEventListener('mousemove', e => {
     if (!isDragging) return;
-    const x = dragStartTX + (e.clientX - dragStartX);
+    const x = clamp(dragStartTX + (e.clientX - dragStartX));
     track.style.transform = `translateX(${x}px)`;
   });
   window.addEventListener('mouseup', () => {
@@ -416,7 +421,7 @@
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
       e.preventDefault();
     } else {
-      const x = getTranslateX() - e.deltaX;
+      const x = clamp(getTranslateX() - e.deltaX);
       track.style.animation = 'none';
       track.style.transform = `translateX(${x}px)`;
       clearTimeout(carousel._wheelTimer);
