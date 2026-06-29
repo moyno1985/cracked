@@ -406,11 +406,6 @@
   carousel.addEventListener('mouseenter', () => { paused = true; });
   carousel.addEventListener('mouseleave', () => { paused = false; });
 
-  // Lift overflow when hovering a card so the scaled card isn't clipped
-  slides.forEach(slide => {
-    slide.addEventListener('mouseenter', () => { carousel.style.overflow = 'visible'; });
-    slide.addEventListener('mouseleave', () => { carousel.style.overflow = ''; });
-  });
 
   let lastTime = 0;
   const SPEED = 0.035; // px per ms
