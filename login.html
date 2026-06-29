@@ -341,17 +341,14 @@
 
       // Detect which side of screen (dark left vs light right)
       const midX = (p0.x + p1.x) / 2;
-      const onDark = midX < W * 0.57; // left panel threshold
+      // Only draw on the right (light) panel
+      if (midX < W * 0.57) continue;
 
-      // Color: warm cream on dark, soft dark on light
-      const color = onDark
-        ? `rgba(255, 245, 200, ${alpha * 0.55})`
-        : `rgba(60, 50, 40, ${alpha * 0.18})`;
+      const color = `rgba(20, 15, 10, ${alpha * 0.28})`;
 
-      // Slightly randomised width for sharpie texture
       const jitter = Math.random() * 0.6;
       const speed = Math.hypot(p1.x - p0.x, p1.y - p0.y);
-      const width = Math.max(0.8, MAX_WIDTH - speed * 0.012 + jitter);
+      const width = Math.max(1.5, MAX_WIDTH - speed * 0.012 + jitter);
 
       ctx.beginPath();
       ctx.moveTo(p0.x, p0.y);
@@ -360,13 +357,8 @@
       ctx.lineWidth = width;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-
-      // Sharpie texture: slightly rough edges via shadow
-      ctx.shadowColor = onDark
-        ? `rgba(255, 240, 160, ${alpha * 0.15})`
-        : `rgba(40, 30, 20, ${alpha * 0.06})`;
+      ctx.shadowColor = `rgba(10, 8, 5, ${alpha * 0.08})`;
       ctx.shadowBlur = 1.5;
-
       ctx.stroke();
       ctx.shadowBlur = 0;
     }
