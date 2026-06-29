@@ -1108,17 +1108,6 @@ function renderHistory() {
     </div>
     <div class="form-body">
 
-      <!-- Examples row — updates based on active format chip -->
-      <div class="examples-row" id="examplesRow">
-        <span class="examples-label">Load an example</span>
-        <button class="example-pill" onclick="loadExample('balter')">Balter</button>
-        <button class="example-pill" onclick="loadExample('guinness')">Guinness</button>
-        <button class="example-pill" onclick="loadExample('qantas')">Qantas</button>
-        <button class="example-pill" onclick="loadExample('kitkat')">KitKat</button>
-        <button class="example-pill" onclick="loadExample('aesop')">Aesop</button>
-        <button class="example-pill" onclick="loadExample('ikea')">IKEA</button>
-      </div>
-
       <!-- Shared fields -->
       <div class="form-row">
         <div class="form-group">
@@ -1131,8 +1120,19 @@ function renderHistory() {
         </div>
       </div>
 
+      <!-- Examples row — visible for new users, hidden for returning -->
+      <div class="examples-row" id="examplesRow">
+        <span class="examples-label">Load an example</span>
+        <button class="example-pill" onclick="loadExample('balter')">Balter</button>
+        <button class="example-pill" onclick="loadExample('guinness')">Guinness</button>
+        <button class="example-pill" onclick="loadExample('qantas')">Qantas</button>
+        <button class="example-pill" onclick="loadExample('kitkat')">KitKat</button>
+        <button class="example-pill" onclick="loadExample('aesop')">Aesop</button>
+        <button class="example-pill" onclick="loadExample('ikea')">IKEA</button>
+      </div>
+      <div id="exampleLink" style="display:none;margin-bottom:16px;"><button onclick="showExamples()" style="background:none;border:none;cursor:pointer;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-light);padding:0;text-decoration:underline;">Load an example →</button></div>
+
       <!-- Format chips -->
-      <div id="exampleLink" style="display:none;margin-bottom:12px;"><button onclick="showExamples()" style="background:none;border:none;cursor:pointer;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-light);padding:0;text-decoration:underline;">Load an example →</button></div>
       <div class="format-chips" id="formatChips">
         <span class="format-chips-label">Format</span>
         <button class="format-chip active" onclick="setFormat('campaign')" id="chip-campaign">Full Campaign</button>
