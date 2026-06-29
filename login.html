@@ -406,6 +406,9 @@
   carousel.addEventListener('mouseenter', () => { paused = true; });
   carousel.addEventListener('mouseleave', () => { paused = false; });
 
+  // Block vertical page scroll when cursor is over the carousel
+  carousel.addEventListener('wheel', e => { e.preventDefault(); }, { passive: false });
+
 
   let lastTime = 0;
   const SPEED = 0.035; // px per ms
