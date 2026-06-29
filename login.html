@@ -366,19 +366,12 @@
       if (alpha <= 0) continue;
 
       const midX = (p0.x + p1.x) / 2;
-      const onDark = midX < W * 0.57;
-
       const jitter = (Math.random() - 0.5) * 0.4;
       const speed = Math.hypot(p1.x - p0.x, p1.y - p0.y);
       const coreW = Math.max(1.8, MAX_WIDTH - speed * 0.01 + jitter);
 
-      // Dark side: warm cream. Light side: dark ink.
-      const bleedColor = onDark
-        ? `rgba(255, 240, 180, ${alpha * 0.07})`
-        : `rgba(28, 16, 8, ${alpha * 0.09})`;
-      const coreColor = onDark
-        ? `rgba(255, 245, 200, ${alpha * 0.38})`
-        : `rgba(22, 12, 6, ${alpha * 0.55})`;
+      const bleedColor = `rgba(28, 16, 8, ${alpha * 0.09})`;
+      const coreColor = `rgba(22, 12, 6, ${alpha * 0.55})`;
 
       // 1. Outer bleed
       ctx.beginPath();
