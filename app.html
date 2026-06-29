@@ -882,9 +882,14 @@
     <span class="sidebar-title">Brief History</span>
     <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
   </div>
-  <div style="padding:12px 16px;border-bottom:1px solid #dddbd5;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
-    <span id="sidebarEmail" style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.08em;color:var(--ink-light);text-transform:uppercase;"></span>
-    <a href="/api/auth/logout" style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-mid);text-decoration:none;">Sign out</a>
+  <div style="padding:14px 16px;border-bottom:1px solid #dddbd5;flex-shrink:0;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <span id="sidebarEmail" style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.08em;color:var(--ink-light);text-transform:uppercase;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+      <a href="/api/auth/logout" style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-mid);text-decoration:none;flex-shrink:0;">Sign out</a>
+    </div>
+    <div id="planIndicator" style="display:inline-flex;align-items:center;gap:6px;">
+      <span id="planBadge" style="font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.15em;text-transform:uppercase;padding:3px 8px;border:1px solid #dddbd5;color:var(--ink-light);">Free Plan</span>
+    </div>
   </div>
   <div class="sidebar-body" id="sidebarBody">
     <p class="sidebar-empty">Your generated briefs<br>will appear here</p>
@@ -905,6 +910,17 @@
     window._crackedUser = data;
     const emailEl = document.getElementById('sidebarEmail');
     if (emailEl && data.email) emailEl.textContent = data.email;
+    // Plan badge
+    const planBadge = document.getElementById('planBadge');
+    if (planBadge) {
+      if (data.isPro) {
+        planBadge.textContent = 'Pro';
+        planBadge.style.cssText = 'font-family:Space Mono,monospace;font-size:8px;letter-spacing:0.15em;text-transform:uppercase;padding:3px 10px;background:var(--yellow);border:1.5px solid var(--ink);color:var(--ink);font-weight:700;';
+      } else {
+        const rem = data.credits !== undefined ? ` · ${data.credits} left` : '';
+        planBadge.textContent = 'Free Plan' + rem;
+      }
+    }
     // Show credits in header
     if (data.credits !== undefined && !data.isPro) {
       const creditsEl = document.createElement('div');
