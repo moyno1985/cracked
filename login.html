@@ -505,7 +505,7 @@
     if (!enabled) { points = []; ctx.clearRect(0, 0, W, H); }
   });
 
-  const interactiveSel = 'input, button, a, .login-card';
+  const interactiveSel = 'input, button, a, .login-card, .scamp-slide, .carousel-controls';
   document.querySelectorAll(interactiveSel).forEach(el => {
     el.addEventListener('mouseenter', () => { overInteractive = true; });
     el.addEventListener('mouseleave', () => { overInteractive = false; });
