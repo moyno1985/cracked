@@ -279,6 +279,7 @@
           <span class="scamp-title">We Know.</span>
         </div>
       </div>
+      </div><!-- /carousel-track -->
     </div>
     <div class="carousel-controls">
       <button class="carousel-arrow" id="prevBtn">&#8592;</button>
@@ -354,14 +355,15 @@
 
 <script>
 (function() {
-  const carousel = document.getElementById('carousel');
-  const slides = carousel.querySelectorAll('.scamp-slide');
+  const track = document.getElementById('carouselTrack');
+  const slides = track.querySelectorAll('.scamp-slide');
   const dotsWrap = document.getElementById('dots');
   const total = slides.length;
 
-  // Clone all slides and append for seamless infinite loop
-  slides.forEach(slide => carousel.appendChild(slide.cloneNode(true)));
+  // Clone all slides for seamless infinite loop (CSS animation handles the scroll)
+  slides.forEach(slide => track.appendChild(slide.cloneNode(true)));
 
+  // Dots — decorative only
   const dots = Array.from({length: total}, (_, i) => {
     const d = document.createElement('div');
     d.className = 'dot' + (i === 0 ? ' active' : '');
@@ -369,71 +371,12 @@
     return d;
   });
 
-  function getSlideWidth() {
-    return slides[0].offsetWidth + 12;
-  }
-
-  function currentIndex() {
-    return Math.round(carousel.scrollLeft / getSlideWidth()) % total;
-  }
-
-  function updateDots() {
-    const idx = currentIndex();
-    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
-  }
-  carousel.addEventListener('scroll', updateDots, {passive: true});
-
-  document.getElementById('nextBtn').addEventListener('click', () => {
-    carousel.scrollBy({left: getSlideWidth(), behavior: 'smooth'});
-  });
-  document.getElementById('prevBtn').addEventListener('click', () => {
-    carousel.scrollBy({left: -getSlideWidth(), behavior: 'smooth'});
-  });
-
-  // Drag
-  let startX, startScroll, dragging = false;
-  carousel.addEventListener('mousedown', e => {
-    dragging = true; startX = e.pageX; startScroll = carousel.scrollLeft;
-    carousel.classList.add('dragging');
-  });
-  window.addEventListener('mousemove', e => {
-    if (!dragging) return;
-    carousel.scrollLeft = startScroll - (e.pageX - startX);
-  });
-  window.addEventListener('mouseup', () => {
-    dragging = false; carousel.classList.remove('dragging');
-  });
-
-  // Auto-scroll — slow, continuous, pauses on hover
-  let paused = false;
-  carousel.addEventListener('mouseenter', () => { paused = true; });
-  carousel.addEventListener('mouseleave', () => { paused = false; });
-
-  // Block vertical page scroll over carousel, allow horizontal scroll through
-  carousel.addEventListener('wheel', e => {
+  // Block vertical page scroll over carousel
+  document.getElementById('carousel').addEventListener('wheel', e => {
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-      e.preventDefault(); // vertical — block page scroll
-    } else {
-      carousel.scrollLeft += e.deltaX; // horizontal — scroll carousel
+      e.preventDefault();
     }
   }, { passive: false });
-
-  let lastTime = 0;
-  const SPEED = 0.022; // px per ms
-  function autoScroll(ts) {
-    if (!paused && !dragging) {
-      const delta = lastTime ? (ts - lastTime) * SPEED : 0;
-      carousel.scrollLeft += delta;
-      // Seamless loop: scrollWidth is doubled (clones), so half = original width
-      const loopPoint = carousel.scrollWidth / 2;
-      if (loopPoint > 0 && carousel.scrollLeft >= loopPoint) {
-        carousel.scrollLeft -= loopPoint;
-      }
-    }
-    lastTime = ts;
-    requestAnimationFrame(autoScroll);
-  }
-  requestAnimationFrame(autoScroll);
 })();
 </script>
 
