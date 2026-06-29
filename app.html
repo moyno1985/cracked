@@ -2152,5 +2152,106 @@ function searchArchive(brief, brand, category) {
 }
 </script>
 
+<canvas id="sharpie" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
+<button id="sharpieToggle" title="Toggle sharpie trail" style="position:fixed;bottom:20px;right:20px;z-index:10000;background:none;border:none;cursor:pointer;padding:4px;transition:opacity 0.25s;opacity:0.25;">
+  <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 13 C4 5, 9 5, 9 11 C9 16, 5 17, 7 12 C9 7, 15 7, 16 12 C17 17, 13 18, 15 13 C17 8, 23 8, 23 13 C23 17, 20 17, 22 13 C24 9, 29 10, 30 11" stroke="#aaa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </svg>
+</button>
+<script>
+(function() {
+  const canvas = document.getElementById('sharpie');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const FADE = 600;
+  const LINE_WIDTH = 4.8;
+
+  let points = [];
+  let active = false;
+  let enabled = false; // off by default
+  let overInteractive = false;
+
+  const toggle = document.getElementById('sharpieToggle');
+  toggle.addEventListener('click', () => {
+    enabled = !enabled;
+    toggle.style.opacity = enabled ? '0.7' : '0.25';
+    toggle.querySelector('path').setAttribute('stroke', enabled ? '#1a1008' : '#aaa');
+    if (!enabled) { points = []; ctx.clearRect(0, 0, W, H); }
+  });
+
+  const interactiveSel = 'input, button, a, select, textarea, .concept-card, .sidebar';
+  document.querySelectorAll(interactiveSel).forEach(el => {
+    el.addEventListener('mouseenter', () => { overInteractive = true; });
+    el.addEventListener('mouseleave', () => { overInteractive = false; });
+  });
+
+  window.addEventListener('mousemove', e => {
+    if (!enabled || overInteractive) return;
+    points.push({ x: e.clientX, y: e.clientY, t: performance.now() });
+    if (!active) { active = true; requestAnimationFrame(draw); }
+  });
+
+  function draw() {
+    const now = performance.now();
+    ctx.clearRect(0, 0, W, H);
+
+    while (points.length && now - points[0].t > FADE) points.shift();
+    if (points.length < 2) { active = false; return; }
+
+    const segments = [];
+    let seg = [points[0]];
+    for (let i = 1; i < points.length; i++) {
+      if (points[i].t - points[i-1].t > 80) {
+        if (seg.length > 1) segments.push(seg);
+        seg = [];
+      }
+      seg.push(points[i]);
+    }
+    if (seg.length > 1) segments.push(seg);
+
+    for (const seg of segments) {
+      if (seg.length < 2) continue;
+      const age = now - seg[seg.length - 1].t;
+      const alpha = Math.max(0, 1 - age / FADE);
+      const a = alpha * alpha;
+
+      const buildPath = () => {
+        ctx.beginPath();
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.moveTo(seg[0].x, seg[0].y);
+        for (let i = 1; i < seg.length - 1; i++) {
+          const mx = (seg[i].x + seg[i+1].x) / 2;
+          const my = (seg[i].y + seg[i+1].y) / 2;
+          ctx.quadraticCurveTo(seg[i].x, seg[i].y, mx, my);
+        }
+        ctx.lineTo(seg[seg.length-1].x, seg[seg.length-1].y);
+      };
+
+      buildPath();
+      ctx.strokeStyle = `rgba(14, 8, 3, ${a * 0.42})`;
+      ctx.lineWidth = LINE_WIDTH;
+      ctx.stroke();
+
+      buildPath();
+      ctx.strokeStyle = `rgba(8, 4, 1, ${a * 0.16})`;
+      ctx.lineWidth = LINE_WIDTH * 0.4;
+      ctx.stroke();
+    }
+
+    if (points.length > 0) requestAnimationFrame(draw);
+    else active = false;
+  }
+})();
+</script>
+
 </body>
 </html>
