@@ -376,10 +376,65 @@
     return d;
   });
 
-  // Block vertical page scroll over carousel
-  document.getElementById('carousel').addEventListener('wheel', e => {
+  const carousel = document.getElementById('carousel');
+  const DURATION = 55; // seconds, must match CSS
+
+  function getTranslateX() {
+    const matrix = new DOMMatrix(window.getComputedStyle(track).transform);
+    return matrix.m41;
+  }
+
+  function resumeFromX(x) {
+    const loopWidth = track.scrollWidth / 2;
+    if (loopWidth <= 0) return;
+    // Normalise x into the range [-loopWidth, 0]
+    let pos = x % loopWidth;
+    if (pos > 0) pos -= loopWidth;
+    const progress = Math.abs(pos) / loopWidth;
+    const delay = -(progress * DURATION);
+    track.style.animation = 'none';
+    // Force reflow so animation restart is picked up
+    void track.offsetWidth;
+    track.style.animation = `carousel-scroll ${DURATION}s linear ${delay}s infinite`;
+  }
+
+  // Drag to scroll
+  let dragStartX, dragStartTX, isDragging = false;
+  carousel.addEventListener('mousedown', e => {
+    isDragging = true;
+    dragStartX = e.clientX;
+    dragStartTX = getTranslateX();
+    track.style.animation = 'none';
+    track.style.transform = `translateX(${dragStartTX}px)`;
+    carousel.style.cursor = 'grabbing';
+  });
+  window.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    const x = dragStartTX + (e.clientX - dragStartX);
+    track.style.transform = `translateX(${x}px)`;
+  });
+  window.addEventListener('mouseup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    carousel.style.cursor = '';
+    const x = getTranslateX();
+    track.style.transform = '';
+    resumeFromX(x);
+  });
+
+  // Horizontal wheel scroll
+  carousel.addEventListener('wheel', e => {
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
       e.preventDefault();
+    } else {
+      const x = getTranslateX() - e.deltaX;
+      track.style.animation = 'none';
+      track.style.transform = `translateX(${x}px)`;
+      clearTimeout(carousel._wheelTimer);
+      carousel._wheelTimer = setTimeout(() => {
+        track.style.transform = '';
+        resumeFromX(x);
+      }, 300);
     }
   }, { passive: false });
 })();
