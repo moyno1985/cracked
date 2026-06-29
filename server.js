@@ -157,6 +157,54 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // ── Script writing ────────────────────────────────────────────────────────
+  if (req.url === '/api/script') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      let parsed;
+      try { parsed = JSON.parse(body); } catch(e) {
+        res.writeHead(400); res.end(JSON.stringify({ error: 'Invalid JSON' })); return;
+      }
+      const { conceptName, logline, concept, brand } = parsed;
+      const prompt = `You are a senior copywriter and TV director. Write a full, production-ready script for the following advertising concept.
+
+Brand: ${brand}
+Concept: ${conceptName}
+Logline: ${logline}
+Idea: ${concept}
+
+Write the complete script in proper screenplay format. Include:
+- Scene headings (INT./EXT.)
+- Action lines (vivid, precise)
+- Any dialogue or VO (voiceover) — clearly labelled
+- On-screen text / supers if needed
+- End card / tagline
+- Total duration estimate (e.g. :30, :60, 2:00)
+
+Write it as if this is going into production tomorrow. Make it feel like award-winning work — surprising, emotionally resonant, beautifully crafted. No preamble, just the script.`;
+
+      const claudeBody = JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 2000,
+        messages: [{ role: 'user', content: prompt }],
+      });
+      const options = {
+        hostname: 'api.anthropic.com',
+        path: '/v1/messages',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01',
+          'Content-Length': Buffer.byteLength(claudeBody),
+        },
+      };
+      proxyRequest(options, claudeBody, res);
+    });
+    return;
+  }
+
   // ── Semantic search via Pinecone ──────────────────────────────────────────
   if (req.url === '/api/search') {
     let body = '';

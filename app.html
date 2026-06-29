@@ -563,6 +563,38 @@
 }
 .sketch-btn:hover { background: var(--yellow); box-shadow: 1px 1px 0 var(--ink); transform: translate(1px,1px); }
 .sketch-btn.loading { color: var(--ink-light); border-color: var(--ink-light); box-shadow: 2px 2px 0 var(--ink-light); cursor: not-allowed; }
+.script-btn {
+  position: static;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--yellow);
+  border: 1.5px solid var(--ink);
+  padding: 7px 14px;
+  cursor: pointer;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+  transition: all 0.12s;
+}
+.script-btn:hover { box-shadow: 1px 1px 0 var(--ink); transform: translate(2px,2px); }
+.script-btn.loading { opacity: 0.6; cursor: not-allowed; }
+.script-output {
+  margin-top: 20px;
+  padding: 20px;
+  background: #fafaf8;
+  border: 1.5px solid var(--ink);
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--ink);
+  white-space: pre-wrap;
+  box-shadow: 3px 3px 0 var(--ink);
+}
 .concept-card:hover {
     box-shadow: 0 0 0 1.5px var(--ink), 2px 2px 0 0 var(--ink);
     transform: translate(2px, 2px);
@@ -1380,6 +1412,45 @@ const EXAMPLES = {
   woodstock: { brand:'Woodstock Bourbon', audience:'Australians 25-45 who drink Woodstock without thinking but could not tell you a single thing about the brand', ambition:'Drive brand fame', brief:"Woodstock has been in Australian fridges since 1980. It's the bourbon at every footy club, every house party, every regional pub. Nobody talks about it. Everyone drinks it. It wins on habit and availability, not aspiration. Woodstock just launched their biggest brand campaign in years — Australia noticed. But does one campaign change 40 years of being the bourbon you drink without thinking? The brand tone should be laconic, honest, unpretentious — the complete opposite of the American bourbon playbook with its heritage mythology and distillery reverence. Woodstock is just a good drink that doesn't need to be more than that. The creative challenge: turn Australia's most habitual drink into Australia's most loved one, without making it something it's not.", tone:'Warm & human' }
 };
 
+async function writeScript(btn, index) {
+  const cards = document.querySelectorAll('.concept-card');
+  const card = cards[index];
+  const conceptName = card.querySelector('.highlight-line').textContent;
+  const logline = card.querySelector('.concept-logline').textContent.replace(/^"|"$/g, '');
+  const concept = card.querySelectorAll('.concept-body')[0].textContent;
+  const brand = window._currentBrand || '';
+
+  btn.classList.add('loading');
+  btn.textContent = 'Writing script...';
+
+  // Remove any existing script output
+  const existing = card.querySelector('.script-output');
+  if (existing) existing.remove();
+
+  try {
+    const res = await fetch('/api/script', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ conceptName, logline, concept, brand }),
+    });
+    const data = await res.json();
+    const text = data.content && data.content[0] ? data.content[0].text : 'Could not generate script.';
+    const out = document.createElement('div');
+    out.className = 'script-output';
+    out.textContent = text;
+    card.appendChild(out);
+    out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch(e) {
+    const out = document.createElement('div');
+    out.className = 'script-output';
+    out.textContent = 'Failed to write script. Try again.';
+    card.appendChild(out);
+  }
+
+  btn.classList.remove('loading');
+  btn.textContent = 'Write the Full Script →';
+}
+
 function sketchConcept(btn, index) {
   var cards = document.querySelectorAll('.concept-card');
   var card = cards[index];
@@ -1961,7 +2032,8 @@ function renderConcepts(concepts, brand) {
       <button class="sketch-btn" onclick="sketchConcept(this, ${i})">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         Scamp this
-      </button>`;
+      </button>
+      ${['film','campaign'].includes(_currentFormat) ? `<button class="script-btn" onclick="writeScript(this, ${i})">Write the Full Script →</button>` : ''}`;
     grid.appendChild(card);
     const imgDiv = card.querySelector('.concept-image');
 
