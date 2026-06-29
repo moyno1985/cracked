@@ -26,7 +26,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    overflow: hidden;
+    overflow: clip;
   }
   .brand-side::before {
     content: '';
@@ -73,7 +73,7 @@
     align-items: flex-start;
     gap: 12px;
     overflow-x: scroll;
-    overflow-y: scroll;
+    overflow-y: visible;
     scroll-snap-type: none;
     -webkit-overflow-scrolling: touch;
     /* padding buffer absorbs the hover scale overhang on all sides */
@@ -405,6 +405,12 @@
   let paused = false;
   carousel.addEventListener('mouseenter', () => { paused = true; });
   carousel.addEventListener('mouseleave', () => { paused = false; });
+
+  // Lift overflow when hovering a card so the scaled card isn't clipped
+  slides.forEach(slide => {
+    slide.addEventListener('mouseenter', () => { carousel.style.overflow = 'visible'; });
+    slide.addEventListener('mouseleave', () => { carousel.style.overflow = ''; });
+  });
 
   let lastTime = 0;
   const SPEED = 0.035; // px per ms
