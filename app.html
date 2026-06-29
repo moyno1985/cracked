@@ -1132,6 +1132,7 @@ function renderHistory() {
       </div>
 
       <!-- Format chips -->
+      <div id="exampleLink" style="display:none;margin-bottom:12px;"><button onclick="showExamples()" style="background:none;border:none;cursor:pointer;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-light);padding:0;text-decoration:underline;">Load an example →</button></div>
       <div class="format-chips" id="formatChips">
         <span class="format-chips-label">Format</span>
         <button class="format-chip active" onclick="setFormat('campaign')" id="chip-campaign">Full Campaign</button>
@@ -1322,6 +1323,25 @@ function autoGrowBrief() {
   el.style.height = Math.max(260, el.scrollHeight) + 'px';
 }
 document.getElementById('brief').addEventListener('input', autoGrowBrief);
+
+// Show/hide examples based on user history
+(function() {
+  const history = JSON.parse(localStorage.getItem('cracked_history') || '[]');
+  const isReturning = history.length > 0;
+  if (isReturning) {
+    const row = document.getElementById('examplesRow');
+    const link = document.getElementById('exampleLink');
+    if (row) row.style.display = 'none';
+    if (link) link.style.display = 'block';
+  }
+})();
+
+function showExamples() {
+  const row = document.getElementById('examplesRow');
+  const link = document.getElementById('exampleLink');
+  if (row) row.style.display = 'flex';
+  if (link) link.style.display = 'none';
+}
 
 document.getElementById('formDate').textContent = new Date().toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'}).toUpperCase();
 
