@@ -1134,11 +1134,12 @@ function renderHistory() {
       <div class="format-chips" id="formatChips">
         <span class="format-chips-label">Format</span>
         <button class="format-chip active" onclick="setFormat('campaign')" id="chip-campaign">Full Campaign</button>
-        <button class="format-chip" onclick="setFormat('content')" id="chip-content">Content Series</button>
         <button class="format-chip" onclick="setFormat('social')" id="chip-social">Social</button>
-        <button class="format-chip" onclick="setFormat('film')" id="chip-film">Film &amp; TV</button>
+        <button class="format-chip" onclick="setFormat('film')" id="chip-film">Film</button>
+        <button class="format-chip" onclick="setFormat('content')" id="chip-content">Content Series</button>
         <button class="format-chip" onclick="setFormat('ooh')" id="chip-ooh">OOH</button>
         <button class="format-chip" onclick="setFormat('activation')" id="chip-activation">Activation</button>
+        <button class="format-chip" onclick="setFormat('print')" id="chip-print">Print</button>
       </div>
 
       <div class="form-row">
@@ -1239,8 +1240,11 @@ function renderHistory() {
           </div>
         </div>
 
-        <!-- Film & TV — no extra fields needed -->
+        <!-- Film — no extra fields needed -->
         <div id="fields-film" style="display:none"></div>
+
+        <!-- Print — no extra fields needed -->
+        <div id="fields-print" style="display:none"></div>
 
         <!-- OOH — no extra fields needed -->
         <div id="fields-ooh" style="display:none"></div>
@@ -1517,13 +1521,13 @@ function setFormat(format) {
   _currentFormat = format;
 
   // Update chip active states
-  ['campaign','content','social','film','ooh','activation'].forEach(function(f) {
+  ['campaign','social','film','content','ooh','activation','print'].forEach(function(f) {
     var chip = document.getElementById('chip-' + f);
     if (chip) chip.classList.toggle('active', f === format);
   });
 
   // Show/hide conditional field sections
-  ['campaign','content','social','film','ooh','activation'].forEach(function(f) {
+  ['campaign','social','film','content','ooh','activation','print'].forEach(function(f) {
     var el = document.getElementById('fields-' + f);
     if (el) el.style.display = (f === format) ? '' : 'none';
   });
@@ -1562,6 +1566,8 @@ function crackTheBrief() {
       'film':       'TVC / Film',
       'ooh':        'Out of Home',
       'activation': 'Experiential / Activation',
+      'print':      'Print',
+      'content':    '',
     };
     var formatHint = formatChannelMap[_currentFormat] || '';
     if (formatHint && document.getElementById('channel')) {
