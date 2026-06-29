@@ -929,6 +929,56 @@
     margin-left: 8px;
   }
   .history-delete:hover { color: var(--ink); }
+  .sidebar-search {
+    width: 100%;
+    border: none;
+    border-bottom: 1.5px solid #dddbd5;
+    background: transparent;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 8px 0;
+    outline: none;
+    color: var(--ink);
+    transition: border-color 0.15s;
+  }
+  .sidebar-search:focus { border-bottom-color: var(--ink); }
+  .sidebar-search::placeholder { color: var(--ink-light); }
+  .filter-chips {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;
+  }
+  .filter-chip {
+    font-family: 'Space Mono', monospace; font-size: 8px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 4px 9px; border: 1px solid #dddbd5;
+    background: none; cursor: pointer; color: var(--ink-mid);
+    transition: all 0.1s;
+  }
+  .filter-chip.active {
+    background: var(--ink); color: var(--yellow); border-color: var(--ink);
+  }
+  .history-item { position: relative; }
+  .history-hover-actions {
+    display: none;
+    position: absolute; bottom: 10px; right: 10px;
+    gap: 6px;
+  }
+  .history-item:hover .history-hover-actions { display: flex; }
+  .hover-action-btn {
+    font-family: 'Space Mono', monospace; font-size: 8px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 4px 8px; border: 1px solid var(--ink);
+    background: var(--white); color: var(--ink);
+    cursor: pointer; transition: all 0.1s; white-space: nowrap;
+  }
+  .hover-action-btn:hover { background: var(--ink); color: var(--yellow); }
+  .history-star {
+    float: right; background: none; border: none;
+    cursor: pointer; font-size: 14px; padding: 0;
+    margin-left: 6px; line-height: 1; opacity: 0.35;
+    transition: opacity 0.15s;
+  }
+  .history-star.starred { opacity: 1; }
+  .history-star:hover { opacity: 0.8; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -941,12 +991,21 @@
     <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
   </div>
   <div style="padding:14px 16px;border-bottom:1px solid #dddbd5;flex-shrink:0;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-      <span id="sidebarEmail" style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.08em;color:var(--ink-light);text-transform:uppercase;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span id="sidebarName" style="font-family:'Fraunces',serif;font-weight:700;font-size:15px;color:var(--ink);"></span>
+        <span id="planBadge" style="font-family:'Space Mono',monospace;font-size:7px;letter-spacing:0.15em;text-transform:uppercase;padding:2px 7px;border:1px solid #dddbd5;color:var(--ink-light);">Free</span>
+      </div>
       <a href="/api/auth/logout" style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-mid);text-decoration:none;flex-shrink:0;">Sign out</a>
     </div>
-    <div id="planIndicator" style="display:inline-flex;align-items:center;gap:6px;">
-      <span id="planBadge" style="font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.15em;text-transform:uppercase;padding:3px 8px;border:1px solid #dddbd5;color:var(--ink-light);">Free Plan</span>
+    <input id="sidebarSearch" class="sidebar-search" placeholder="Search history…" oninput="renderHistory()" />
+    <div class="filter-chips" id="filterChips">
+      <button class="filter-chip active" data-filter="all" onclick="setFilter('all')">All</button>
+      <button class="filter-chip" data-filter="campaign" onclick="setFilter('campaign')">Campaign</button>
+      <button class="filter-chip" data-filter="film" onclick="setFilter('film')">Film</button>
+      <button class="filter-chip" data-filter="social" onclick="setFilter('social')">Social</button>
+      <button class="filter-chip" data-filter="print" onclick="setFilter('print')">Print</button>
+      <button class="filter-chip" data-filter="starred" onclick="setFilter('starred')">★ Starred</button>
     </div>
   </div>
   <div class="sidebar-body" id="sidebarBody">
@@ -976,17 +1035,19 @@
     }
     // Store user data globally
     window._crackedUser = data;
-    const emailEl = document.getElementById('sidebarEmail');
-    if (emailEl && data.email) emailEl.textContent = data.email;
-    // Plan badge
+    const nameEl = document.getElementById('sidebarName');
+    if (nameEl && data.email) {
+      const firstName = data.email.split('@')[0].split('.')[0];
+      nameEl.textContent = firstName.charAt(0).toUpperCase() + firstName.slice(1);
+    }
     const planBadge = document.getElementById('planBadge');
     if (planBadge) {
       if (data.isPro) {
         planBadge.textContent = 'Pro';
-        planBadge.style.cssText = 'font-family:Space Mono,monospace;font-size:8px;letter-spacing:0.15em;text-transform:uppercase;padding:3px 10px;background:var(--yellow);border:1.5px solid var(--ink);color:var(--ink);font-weight:700;';
+        planBadge.style.cssText = 'font-family:Space Mono,monospace;font-size:7px;letter-spacing:0.15em;text-transform:uppercase;padding:2px 7px;background:var(--yellow);border:1.5px solid var(--ink);color:var(--ink);font-weight:700;';
       } else {
-        const rem = data.credits !== undefined ? ` · ${data.credits} left` : '';
-        planBadge.textContent = 'Free Plan' + rem;
+        const rem = data.credits !== undefined ? ` · ${data.credits}` : '';
+        planBadge.textContent = 'Free' + rem;
       }
     }
     // Show credits in header
@@ -1150,17 +1211,63 @@ function confirmClearHistory() {
   cancelClearHistory();
   renderHistory();
 }
+let _activeFilter = 'all';
+function setFilter(f) {
+  _activeFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c =>
+    c.classList.toggle('active', c.dataset.filter === f));
+  renderHistory();
+}
+
+function getStarred() {
+  try { return JSON.parse(localStorage.getItem('cracked_starred') || '[]'); } catch(e) { return []; }
+}
+function toggleStar(id, e) {
+  e.stopPropagation();
+  const starred = getStarred();
+  const idx = starred.indexOf(id);
+  if (idx === -1) starred.push(id); else starred.splice(idx, 1);
+  localStorage.setItem('cracked_starred', JSON.stringify(starred));
+  renderHistory();
+}
+
+function copyHistoryItem(h, e) {
+  e.stopPropagation();
+  const text = [h.brand, h.format, h.brief, ...(h.concepts||[]).filter(c=>!c.skipped).map(c=>c.name+': '+c.logline)].filter(Boolean).join('\n\n');
+  navigator.clipboard.writeText(text).catch(()=>{});
+}
+
 function renderHistory() {
   const body = document.getElementById('sidebarBody');
-  const history = getHistory();
   const footer = document.getElementById('clearHistoryFooter');
+  const search = (document.getElementById('sidebarSearch')?.value || '').toLowerCase();
+  const starred = getStarred();
+  let history = getHistory();
+
+  // Filter
+  if (_activeFilter === 'starred') {
+    history = history.filter(h => starred.includes(h.id));
+  } else if (_activeFilter !== 'all') {
+    history = history.filter(h => (h.format||'').toLowerCase().includes(_activeFilter));
+  }
+  // Search
+  if (search) {
+    history = history.filter(h =>
+      (h.brand||'').toLowerCase().includes(search) ||
+      (h.brief||'').toLowerCase().includes(search) ||
+      (h.concepts||[]).some(c => (c.name||'').toLowerCase().includes(search))
+    );
+  }
+
   if (!history.length) {
-    body.innerHTML = '<p class="sidebar-empty">Your generated briefs<br>will appear here</p>';
+    body.innerHTML = '<p class="sidebar-empty">No briefs found</p>';
     if (footer) footer.style.display = 'none';
     return;
   }
-  if (footer) footer.style.display = 'block';
+  if (footer) footer.style.display = getHistory().length ? 'block' : 'none';
+
   body.innerHTML = history.map(h => {
+    const isStarred = starred.includes(h.id);
     const concepts = (h.concepts || []).filter(c => !c.skipped);
     const conceptsHtml = concepts.length ? `
       <div style="margin-top:10px;border-top:1px dashed #dddbd5;padding-top:10px;">
@@ -1170,18 +1277,24 @@ function renderHistory() {
               <div style="font-family:'Fraunces',serif;font-weight:700;font-size:11px;color:var(--ink);">${c.name}</div>
               ${c.logline ? `<div style="font-size:10px;color:var(--ink-mid);line-height:1.4;margin-top:2px;">${c.logline.slice(0,80)}${c.logline.length>80?'…':''}</div>` : ''}
             </div>
-            <button onclick="event.stopPropagation();skipConcept(${h.id},${i})" title="Delete this concept" style="background:none;border:none;color:var(--ink-light);cursor:pointer;font-size:14px;padding:2px 4px;flex-shrink:0;line-height:1;">🗑</button>
+            <button onclick="event.stopPropagation();skipConcept(${h.id},${i})" title="Delete" style="background:none;border:none;color:var(--ink-light);cursor:pointer;font-size:14px;padding:2px 4px;flex-shrink:0;line-height:1;">🗑</button>
           </div>
         `).join('')}
       </div>
     ` : '';
+    const hJson = JSON.stringify(h).replace(/"/g, '&quot;');
     return `
-      <div class="history-item" onclick="loadFromHistory(${JSON.stringify(h).replace(/"/g, '&quot;')})">
+      <div class="history-item" onclick="loadFromHistory(${hJson})">
+        <button class="history-star ${isStarred?'starred':''}" onclick="toggleStar(${h.id},event)" title="Star">★</button>
         <button class="history-delete" onclick="event.stopPropagation();deleteFromHistory(${h.id})">×</button>
         <div class="history-brand">${h.brand}</div>
         <div class="history-meta">${h.format} · ${h.date}</div>
-        ${h.brief ? `<div class="history-brief">${h.brief.slice(0,100)}${h.brief.length>100?'…':''}</div>` : ''}
+        ${h.brief ? `<div class="history-brief" style="padding-bottom:28px;">${h.brief.slice(0,100)}${h.brief.length>100?'…':''}</div>` : ''}
         ${conceptsHtml}
+        <div class="history-hover-actions">
+          <button class="hover-action-btn" onclick="event.stopPropagation();loadFromHistory(${hJson});document.getElementById('generateBtn').click();">↻ Regen</button>
+          <button class="hover-action-btn" onclick="copyHistoryItem(${hJson.replace(/'/g,'&#39;')},event)">Copy</button>
+        </div>
       </div>
     `;
   }).join('');
