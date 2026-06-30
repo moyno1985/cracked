@@ -43,7 +43,7 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 8px;
   }
   .format-chips-label {
     font-family: 'Space Mono', monospace;
@@ -76,34 +76,35 @@
     border-color: var(--ink);
   }
 
-  /* SOCIAL PLATFORM TAGS — inline removable tags below format row */
   /* ── Platform pills row ── */
   .platform-pills-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 7px;
-    margin-top: 10px;
-    margin-bottom: 16px;
+    gap: 8px;
+    margin-top: 0;
+    padding: 10px 0 16px 0;
+    padding-left: calc(/* FORMAT label width */ 0px);
   }
   .platform-pill {
     font-family: 'Space Mono', monospace;
-    font-size: 8px;
-    letter-spacing: 0.08em;
+    font-size: 9px;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 6px 14px;
-    background: transparent;
+    padding: 7px 14px;
+    background: #f5f5f0;
     color: var(--ink-mid);
-    border: 1.5px solid #d4d1ca;
+    border: 1px solid #dddbd5;
     border-radius: 20px;
     cursor: pointer;
     white-space: nowrap;
+    flex-shrink: 0;
     transition: all 0.12s;
     user-select: none;
   }
-  .platform-pill:hover { border-color: var(--ink); color: var(--ink); }
+  .platform-pill:hover { background: var(--ink); color: var(--yellow); border-color: var(--ink); }
   .platform-pill.selected {
     background: var(--ink);
-    color: #fff;
+    color: var(--yellow);
     border-color: var(--ink);
   }
 
@@ -1463,7 +1464,7 @@ function renderHistory() {
       </div>
 
       <!-- Social platform pills -->
-      <div id="socialTagsRow" style="display:none; margin-bottom:4px;">
+      <div id="socialTagsRow" style="display:none;">
         <div class="platform-pills-row">
           <button class="platform-pill" data-platform="TikTok" onclick="togglePlatformPill(this)">TikTok</button>
           <button class="platform-pill" data-platform="Instagram" onclick="togglePlatformPill(this)">Instagram</button>
