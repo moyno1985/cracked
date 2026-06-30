@@ -100,11 +100,17 @@
     transition: all 0.12s;
     user-select: none;
   }
-  .platform-pill:hover { border-color: var(--ink-mid); color: var(--ink-mid); }
+  .platform-pill:not(.incompatible):hover { border-color: var(--ink-mid); color: var(--ink-mid); }
   .platform-pill.selected {
     background: var(--ink);
     color: var(--yellow);
     border-color: var(--ink);
+  }
+  .platform-pill.incompatible {
+    opacity: 0.28;
+    cursor: not-allowed;
+    border-color: #e2dfd9;
+    color: #b0ada6;
   }
 
   .conditional-fields { margin-top: 16px; }
@@ -1462,15 +1468,18 @@ function renderHistory() {
         <button class="format-chip" onclick="setFormat('print')" id="chip-print">Print</button>
       </div>
 
-      <!-- Social platform presets -->
+      <!-- Social platform pills -->
       <div id="socialTagsRow" style="display:none;">
         <div class="platform-pills-wrap">
-          <button class="platform-pill" data-platforms="TikTok,Instagram Reels,YouTube Shorts" onclick="togglePlatformPreset(this)">Short-form Video</button>
-          <button class="platform-pill" data-platforms="Instagram,Facebook,Threads" onclick="togglePlatformPreset(this)">Broad Social</button>
-          <button class="platform-pill" data-platforms="LinkedIn" onclick="togglePlatformPreset(this)">LinkedIn</button>
-          <button class="platform-pill" data-platforms="X,Threads" onclick="togglePlatformPreset(this)">Microblogging</button>
-          <button class="platform-pill" data-platforms="YouTube" onclick="togglePlatformPreset(this)">YouTube</button>
-          <button class="platform-pill" data-platforms="Pinterest,Snapchat" onclick="togglePlatformPreset(this)">Discovery</button>
+          <button class="platform-pill" data-platform="TikTok" onclick="togglePlatformPill(this)">TikTok</button>
+          <button class="platform-pill" data-platform="Instagram" onclick="togglePlatformPill(this)">Instagram</button>
+          <button class="platform-pill" data-platform="YouTube" onclick="togglePlatformPill(this)">YouTube</button>
+          <button class="platform-pill" data-platform="Facebook" onclick="togglePlatformPill(this)">Facebook</button>
+          <button class="platform-pill" data-platform="X" onclick="togglePlatformPill(this)">X</button>
+          <button class="platform-pill" data-platform="LinkedIn" onclick="togglePlatformPill(this)">LinkedIn</button>
+          <button class="platform-pill" data-platform="Threads" onclick="togglePlatformPill(this)">Threads</button>
+          <button class="platform-pill" data-platform="Pinterest" onclick="togglePlatformPill(this)">Pinterest</button>
+          <button class="platform-pill" data-platform="Snapchat" onclick="togglePlatformPill(this)">Snapchat</button>
         </div>
       </div>
 
@@ -1901,14 +1910,47 @@ function _updateSocialPill() {
   if (chip) chip.textContent = _selectedPlatforms.length ? 'Social • ' + _selectedPlatforms.length : 'Social';
 }
 
-function togglePlatformPreset(btn) {
+var _platformCompat = {
+  'TikTok':    ['Instagram', 'YouTube'],
+  'Instagram': ['TikTok', 'Facebook', 'Threads'],
+  'YouTube':   ['TikTok'],
+  'Facebook':  ['Instagram', 'Threads'],
+  'X':         ['Threads'],
+  'LinkedIn':  [],
+  'Threads':   ['Instagram', 'Facebook', 'X'],
+  'Pinterest': ['Snapchat'],
+  'Snapchat':  ['Pinterest'],
+};
+
+function togglePlatformPill(btn) {
+  if (btn.classList.contains('incompatible')) return;
+  var platform = btn.getAttribute('data-platform');
   var already = btn.classList.contains('selected');
-  document.querySelectorAll('.platform-pill').forEach(function(p) { p.classList.remove('selected'); });
-  _selectedPlatforms = [];
-  if (!already) {
+
+  if (already) {
+    btn.classList.remove('selected');
+    _selectedPlatforms = _selectedPlatforms.filter(function(p) { return p !== platform; });
+  } else {
     btn.classList.add('selected');
-    _selectedPlatforms = btn.getAttribute('data-platforms').split(',').map(function(s) { return s.trim(); });
+    _selectedPlatforms.push(platform);
   }
+
+  // Recalculate which platforms are compatible with the entire current selection
+  var allPills = document.querySelectorAll('.platform-pill');
+  if (_selectedPlatforms.length === 0) {
+    allPills.forEach(function(p) { p.classList.remove('incompatible'); });
+  } else {
+    // A platform is compatible if it appears in the compat list of ALL selected platforms
+    allPills.forEach(function(p) {
+      var name = p.getAttribute('data-platform');
+      if (p.classList.contains('selected')) { p.classList.remove('incompatible'); return; }
+      var compatible = _selectedPlatforms.every(function(sel) {
+        return _platformCompat[sel] && _platformCompat[sel].indexOf(name) !== -1;
+      });
+      p.classList.toggle('incompatible', !compatible);
+    });
+  }
+
   _updateSocialPill();
 }
 
@@ -1946,7 +1988,7 @@ function setFormat(format) {
     } else {
       tagsRow.style.display = 'none';
       _selectedPlatforms = [];
-      document.querySelectorAll('.platform-pill').forEach(function(p) { p.classList.remove('selected'); });
+      document.querySelectorAll('.platform-pill').forEach(function(p) { p.classList.remove('selected', 'incompatible'); });
       _updateSocialPill();
     }
   }
