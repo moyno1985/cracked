@@ -77,104 +77,34 @@
   }
 
   /* SOCIAL PLATFORM TAGS — inline removable tags below format row */
-  /* ── Platform row ── */
-  .platform-row {
+  /* ── Platform pills row ── */
+  .platform-pills-row {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    margin-top: 12px;
+    gap: 7px;
+    margin-top: 10px;
     margin-bottom: 16px;
   }
-  /* Wrapper anchors the popover */
-  .platform-add-wrap {
-    position: relative;
-    flex-shrink: 0;
-  }
-  .social-add-btn {
-    font-family: 'Space Mono', monospace;
-    font-size: 8px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 7px 13px;
-    background: transparent;
-    color: var(--ink-mid);
-    border: 1.5px dashed #c8c5be;
-    border-radius: 20px;
-    cursor: pointer;
-    white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    transition: border-color 0.12s, color 0.12s;
-  }
-  .social-add-btn:hover,
-  .social-add-btn.active { border-color: var(--ink); color: var(--ink); border-style: solid; }
-
-  /* Popover — floats from the add-wrap, overlays content */
-  .platform-popover {
-    display: none;
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    z-index: 500;
-    background: #fff;
-    border: 1px solid #e0ddd7;
-    border-radius: 10px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
-    padding: 10px;
-    min-width: 260px;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .platform-popover.open { display: flex; }
-  .platform-option {
+  .platform-pill {
     font-family: 'Space Mono', monospace;
     font-size: 8px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    padding: 6px 13px;
-    border: 1.5px solid #e0ddd7;
-    background: #fff;
+    padding: 6px 14px;
+    background: transparent;
     color: var(--ink-mid);
+    border: 1.5px solid #d4d1ca;
     border-radius: 20px;
     cursor: pointer;
     white-space: nowrap;
-    transition: all 0.1s;
-  }
-  .platform-option:hover { background: #f4f2ed; border-color: #b0ada6; color: var(--ink); }
-  .platform-option.added {
-    background: var(--ink);
-    color: var(--yellow);
-    border-color: var(--ink);
-  }
-  .platform-option.added:hover { opacity: 0.8; }
-
-  /* Selected pills */
-  .social-tag {
-    font-family: 'Space Mono', monospace;
-    font-size: 8.5px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 6px 8px 6px 12px;
-    background: var(--ink);
-    color: var(--yellow);
-    border: 1.5px solid var(--ink);
-    border-radius: 20px;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
-    white-space: nowrap;
+    transition: all 0.12s;
     user-select: none;
-    transition: opacity 0.12s;
   }
-  .social-tag:hover { opacity: 0.7; }
-  .social-tag-x {
-    font-size: 13px;
-    line-height: 1;
-    opacity: 0.55;
-    margin-left: 1px;
+  .platform-pill:hover { border-color: var(--ink); color: var(--ink); }
+  .platform-pill.selected {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
   }
 
   .conditional-fields { margin-top: 16px; }
@@ -1532,28 +1462,18 @@ function renderHistory() {
         <button class="format-chip" onclick="setFormat('print')" id="chip-print">Print</button>
       </div>
 
-      <!-- Social platform selection -->
-      <div id="socialTagsRow" style="display:none;">
-        <div class="platform-row" id="platformRow">
-          <!-- Add button + anchored popover -->
-          <div class="platform-add-wrap">
-            <button class="social-add-btn" id="socialAddBtn" onclick="togglePlatformPicker(event)">
-              <span style="font-size:11px;line-height:1;">+</span> Add Platform
-            </button>
-            <div class="platform-popover" id="platformPicker">
-              <button class="platform-option" data-platform="TikTok" onclick="togglePlatformOption('TikTok',this)">TikTok</button>
-              <button class="platform-option" data-platform="Instagram" onclick="togglePlatformOption('Instagram',this)">Instagram</button>
-              <button class="platform-option" data-platform="YouTube" onclick="togglePlatformOption('YouTube',this)">YouTube</button>
-              <button class="platform-option" data-platform="X" onclick="togglePlatformOption('X',this)">X</button>
-              <button class="platform-option" data-platform="LinkedIn" onclick="togglePlatformOption('LinkedIn',this)">LinkedIn</button>
-              <button class="platform-option" data-platform="Facebook" onclick="togglePlatformOption('Facebook',this)">Facebook</button>
-              <button class="platform-option" data-platform="Threads" onclick="togglePlatformOption('Threads',this)">Threads</button>
-              <button class="platform-option" data-platform="Snapchat" onclick="togglePlatformOption('Snapchat',this)">Snapchat</button>
-              <button class="platform-option" data-platform="Pinterest" onclick="togglePlatformOption('Pinterest',this)">Pinterest</button>
-            </div>
-          </div>
-          <!-- Selected pills rendered here by JS -->
-          <div id="socialSelectedRow" style="display:contents;"></div>
+      <!-- Social platform pills -->
+      <div id="socialTagsRow" style="display:none; margin-bottom:4px;">
+        <div class="platform-pills-row">
+          <button class="platform-pill" data-platform="TikTok" onclick="togglePlatformPill(this)">TikTok</button>
+          <button class="platform-pill" data-platform="Instagram" onclick="togglePlatformPill(this)">Instagram</button>
+          <button class="platform-pill" data-platform="YouTube" onclick="togglePlatformPill(this)">YouTube</button>
+          <button class="platform-pill" data-platform="X" onclick="togglePlatformPill(this)">X</button>
+          <button class="platform-pill" data-platform="LinkedIn" onclick="togglePlatformPill(this)">LinkedIn</button>
+          <button class="platform-pill" data-platform="Facebook" onclick="togglePlatformPill(this)">Facebook</button>
+          <button class="platform-pill" data-platform="Threads" onclick="togglePlatformPill(this)">Threads</button>
+          <button class="platform-pill" data-platform="Snapchat" onclick="togglePlatformPill(this)">Snapchat</button>
+          <button class="platform-pill" data-platform="Pinterest" onclick="togglePlatformPill(this)">Pinterest</button>
         </div>
       </div>
 
@@ -1984,57 +1904,30 @@ function _updateSocialPill() {
   if (chip) chip.textContent = _selectedPlatforms.length ? 'Social • ' + _selectedPlatforms.length : 'Social';
 }
 
-function _renderSocialTags() {
-  var row = document.getElementById('socialSelectedRow');
-  if (!row) return;
-  row.innerHTML = '';
-  _selectedPlatforms.forEach(function(p) {
-    var tag = document.createElement('button');
-    tag.className = 'social-tag';
-    tag.innerHTML = p + '<span class="social-tag-x">×</span>';
-    tag.onclick = function(e) { e.stopPropagation(); removePlatform(p); };
-    row.appendChild(tag);
-  });
-  // Sync popover option states
-  document.querySelectorAll('.platform-option').forEach(function(o) {
-    o.classList.toggle('added', _selectedPlatforms.indexOf(o.getAttribute('data-platform')) > -1);
-  });
-}
-
-function togglePlatformOption(platform, btn) {
+function togglePlatformPill(btn) {
+  var platform = btn.getAttribute('data-platform');
   var idx = _selectedPlatforms.indexOf(platform);
   if (idx === -1) {
     _selectedPlatforms.push(platform);
+    btn.classList.add('selected');
   } else {
     _selectedPlatforms.splice(idx, 1);
+    btn.classList.remove('selected');
   }
-  _renderSocialTags();
   _updateSocialPill();
 }
 
-function addPlatform(platform, btn) { togglePlatformOption(platform, btn); }
+function addPlatform(platform) {
+  if (_selectedPlatforms.indexOf(platform) === -1) {
+    _selectedPlatforms.push(platform);
+    _updateSocialPill();
+  }
+}
 
 function removePlatform(platform) {
   _selectedPlatforms = _selectedPlatforms.filter(function(p) { return p !== platform; });
-  _renderSocialTags();
   _updateSocialPill();
 }
-
-function togglePlatformPicker(e) {
-  e.stopPropagation();
-  var picker = document.getElementById('platformPicker');
-  var btn = document.getElementById('socialAddBtn');
-  var isOpen = picker.classList.toggle('open');
-  btn.classList.toggle('active', isOpen);
-}
-
-// Close picker on outside click
-document.addEventListener('click', function() {
-  var picker = document.getElementById('platformPicker');
-  var btn = document.getElementById('socialAddBtn');
-  if (picker) picker.classList.remove('open');
-  if (btn) btn.classList.remove('active');
-});
 
 function getSelectedPlatformsText() {
   if (!_selectedPlatforms.length) return 'Social Media';
@@ -2058,7 +1951,7 @@ function setFormat(format) {
     } else {
       tagsRow.style.display = 'none';
       _selectedPlatforms = [];
-      _renderSocialTags();
+      document.querySelectorAll('.platform-pill').forEach(function(p) { p.classList.remove('selected'); });
       _updateSocialPill();
     }
   }
