@@ -40,11 +40,10 @@
   /* FORMAT CHIPS */
   .format-chips {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 6px;
-    margin-bottom: 16px;
-    overflow-x: auto;
+    gap: 8px;
+    margin-bottom: 20px;
   }
   .format-chips-label {
     font-family: 'Space Mono', monospace;
@@ -60,7 +59,7 @@
     font-size: 9px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 6px 12px;
+    padding: 7px 14px;
     border: 1px solid #dddbd5;
     background: #f5f5f0;
     color: var(--ink-mid);
@@ -68,6 +67,7 @@
     transition: all 0.12s;
     border-radius: 20px;
     white-space: nowrap;
+    flex-shrink: 0;
   }
   .format-chip:hover { background: var(--ink); color: var(--yellow); border-color: var(--ink); }
   .format-chip.active {
@@ -81,8 +81,9 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 6px;
-    margin-top: 10px;
+    gap: 8px;
+    margin-top: 12px;
+    margin-bottom: 4px;
     min-height: 0;
     transition: all 0.2s ease;
   }
@@ -115,7 +116,7 @@
     font-size: 8px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    padding: 5px 10px;
+    padding: 6px 11px;
     background: transparent;
     color: var(--ink-light);
     border: 1px dashed #ccc9c3;
@@ -124,6 +125,8 @@
     white-space: nowrap;
     transition: all 0.12s;
     position: relative;
+    display: inline-flex;
+    align-items: center;
   }
   .social-add-btn:hover { border-color: var(--ink); color: var(--ink); }
 
@@ -460,18 +463,25 @@
 
   #brief {
     background: #ffffff;
-    border: 2px solid var(--ink);
-    padding: 28px 32px;
-    min-height: 260px;
-    font-size: 1.15rem;
-    line-height: 1.6;
-    box-shadow: 4px 4px 0 var(--ink);
+    border: 1.5px solid #dddbd5;
+    padding: 24px 28px;
+    min-height: 220px;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    box-shadow: none;
     color: var(--ink);
+    border-radius: 4px;
+    transition: border-color 0.15s;
+  }
+
+  #brief:focus {
+    border-color: var(--ink);
+    outline: none;
   }
 
   #brief::placeholder {
-    color: #999;
-    font-size: 1.05rem;
+    color: #bbb;
+    font-size: 1rem;
   }
 
   select {
