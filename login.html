@@ -174,22 +174,13 @@
 
   /* ── BRAND LOGO in hero ── */
   .brand-logo-wrap {
-    position: relative;
     display: inline-block;
     margin-bottom: 44px;
-    isolation: isolate;
-  }
-  .brand-logo-wrap::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--yellow);
-    mix-blend-mode: multiply;
   }
   .brand-logo {
     display: block;
     width: 130px;
-    filter: invert(1);
+    filter: brightness(0) saturate(100%) invert(91%) sepia(60%) saturate(600%) hue-rotate(336deg) brightness(102%);
   }
 
   /* ── RIGHT PANEL ── */
@@ -199,6 +190,16 @@
     padding: 48px 48px; position: relative;
     background: #0c0b0a;
     border-left: 1px solid rgba(255,255,255,0.04);
+  }
+  .copyright {
+    position: absolute;
+    bottom: 24px;
+    left: 0; right: 0;
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: rgba(240,237,228,0.18);
+    letter-spacing: 0.04em;
   }
   .login-card {
     position: relative;
@@ -353,9 +354,9 @@
       </form>
       <div class="message" id="message" style="display:none"></div>
       <p class="trial-note">New users get <strong>10 free generations</strong> &nbsp;·&nbsp; Pro — unlimited for $29/month.</p>
-      <p class="trial-note" style="margin-top: 16px; border-top: none; padding-top: 0;">&copy; 2026 Cracked Creative Pty Ltd</p>
     </div>
   </div>
+  <p class="copyright">&copy; 2026 Cracked Creative Pty Ltd</p>
 </div>
 
 <script>
@@ -551,6 +552,29 @@
 
   setPlaceholder(legends[0]);
   setInterval(cycle, 5000);
+})();
+</script>
+
+<script>
+(function() {
+  var img = document.querySelector('.brand-logo');
+  function strip() {
+    var canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    var d = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    for (var i = 0; i < d.data.length; i += 4) {
+      if (d.data[i] > 200 && d.data[i+1] > 200 && d.data[i+2] > 200) {
+        d.data[i+3] = 0;
+      }
+    }
+    ctx.putImageData(d, 0, 0);
+    img.src = canvas.toDataURL('image/png');
+  }
+  if (img.complete && img.naturalWidth) strip();
+  else img.addEventListener('load', strip);
 })();
 </script>
 
