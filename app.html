@@ -130,29 +130,26 @@
   }
   .social-add-btn:hover { border-color: var(--ink); color: var(--ink); }
 
-  /* Platform picker dropdown */
+  /* Platform picker — inline, flows in document (no absolute) */
   .platform-picker {
     display: none;
-    position: absolute;
-    top: calc(100% + 6px);
-    left: 0;
-    background: #fff;
-    border: 1px solid #e2e0da;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.10);
-    z-index: 300;
-    padding: 8px;
-    min-width: 200px;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 10px 12px;
+    background: #fafaf8;
+    border: 1px solid #e8e6e0;
+    border-radius: 8px;
   }
-  .platform-picker.open { display: flex; flex-wrap: wrap; gap: 5px; }
+  .platform-picker.open { display: flex; }
   .platform-option {
     font-family: 'Space Mono', monospace;
     font-size: 8px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 5px 10px;
+    padding: 5px 11px;
     border: 1px solid #dddbd5;
-    background: #f5f5f0;
+    background: #fff;
     color: var(--ink-mid);
     border-radius: 20px;
     cursor: pointer;
@@ -160,7 +157,7 @@
     transition: all 0.12s;
   }
   .platform-option:hover { background: var(--ink); color: var(--yellow); border-color: var(--ink); }
-  .platform-option.added { opacity: 0.3; pointer-events: none; }
+  .platform-option.added { background: var(--ink); color: var(--yellow); border-color: var(--ink); opacity: 0.4; pointer-events: none; }
 
   .conditional-fields { margin-top: 16px; }
 
@@ -1517,22 +1514,22 @@ function renderHistory() {
         <button class="format-chip" onclick="setFormat('print')" id="chip-print">Print</button>
       </div>
 
-      <!-- Social platform tags — inline removable tags + add picker -->
-      <div class="social-tags-row" id="socialTagsRow" style="display:none;">
-        <!-- selected tags injected here by JS -->
-        <div style="position:relative;">
+      <!-- Social platform tags — inline removable pills + inline picker -->
+      <div id="socialTagsRow" style="display:none; margin-top:12px; margin-bottom:4px;">
+        <div class="social-tags-row" id="socialSelectedRow">
+          <!-- selected pills injected here by JS -->
           <button class="social-add-btn" id="socialAddBtn" onclick="togglePlatformPicker(event)">+ Add platform</button>
-          <div class="platform-picker" id="platformPicker">
-            <button class="platform-option" data-platform="TikTok" onclick="addPlatform('TikTok',this)">TikTok</button>
-            <button class="platform-option" data-platform="Instagram" onclick="addPlatform('Instagram',this)">Instagram</button>
-            <button class="platform-option" data-platform="YouTube" onclick="addPlatform('YouTube',this)">YouTube</button>
-            <button class="platform-option" data-platform="X" onclick="addPlatform('X',this)">X</button>
-            <button class="platform-option" data-platform="LinkedIn" onclick="addPlatform('LinkedIn',this)">LinkedIn</button>
-            <button class="platform-option" data-platform="Facebook" onclick="addPlatform('Facebook',this)">Facebook</button>
-            <button class="platform-option" data-platform="Threads" onclick="addPlatform('Threads',this)">Threads</button>
-            <button class="platform-option" data-platform="Snapchat" onclick="addPlatform('Snapchat',this)">Snapchat</button>
-            <button class="platform-option" data-platform="Pinterest" onclick="addPlatform('Pinterest',this)">Pinterest</button>
-          </div>
+        </div>
+        <div class="platform-picker" id="platformPicker">
+          <button class="platform-option" data-platform="TikTok" onclick="addPlatform('TikTok',this)">TikTok</button>
+          <button class="platform-option" data-platform="Instagram" onclick="addPlatform('Instagram',this)">Instagram</button>
+          <button class="platform-option" data-platform="YouTube" onclick="addPlatform('YouTube',this)">YouTube</button>
+          <button class="platform-option" data-platform="X" onclick="addPlatform('X',this)">X</button>
+          <button class="platform-option" data-platform="LinkedIn" onclick="addPlatform('LinkedIn',this)">LinkedIn</button>
+          <button class="platform-option" data-platform="Facebook" onclick="addPlatform('Facebook',this)">Facebook</button>
+          <button class="platform-option" data-platform="Threads" onclick="addPlatform('Threads',this)">Threads</button>
+          <button class="platform-option" data-platform="Snapchat" onclick="addPlatform('Snapchat',this)">Snapchat</button>
+          <button class="platform-option" data-platform="Pinterest" onclick="addPlatform('Pinterest',this)">Pinterest</button>
         </div>
       </div>
 
@@ -1964,10 +1961,10 @@ function _updateSocialPill() {
 }
 
 function _renderSocialTags() {
-  var row = document.getElementById('socialTagsRow');
+  var row = document.getElementById('socialSelectedRow');
   if (!row) return;
-  // Remove existing tags (keep the add-btn wrapper as last child)
-  var addWrapper = row.lastElementChild;
+  // Remove existing pills, keep the add-btn as last child
+  var addBtn = document.getElementById('socialAddBtn');
   row.innerHTML = '';
   _selectedPlatforms.forEach(function(p) {
     var tag = document.createElement('button');
@@ -1976,7 +1973,7 @@ function _renderSocialTags() {
     tag.onclick = function() { removePlatform(p); };
     row.appendChild(tag);
   });
-  row.appendChild(addWrapper);
+  row.appendChild(addBtn);
   // Mark picker options as added
   document.querySelectorAll('.platform-option').forEach(function(o) {
     o.classList.toggle('added', _selectedPlatforms.indexOf(o.getAttribute('data-platform')) > -1);
