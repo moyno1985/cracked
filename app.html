@@ -1620,8 +1620,7 @@ function renderHistory() {
         <button class="btn-generate" id="generateBtn" onclick="crackTheBrief()">Crack the Brief</button>
         <div style="display:flex;align-items:center;gap:10px;cursor:pointer;position:relative;" onclick="toggleScamps()">
           <input type="checkbox" id="generateScamps" style="display:none;" />
-          <span id="scampsBox" style="display:inline-block;width:22px;height:22px;border:1.5px solid var(--ink);background:white;box-shadow:2px 2px 0 var(--ink);flex-shrink:0;"></span>
-          <svg id="scampsTick" style="display:none;width:14px;height:14px;flex-shrink:0;" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1.5,6 5,9.5 10.5,2.5" stroke="#111110" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="scampsBox" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--ink);background:white;box-shadow:2px 2px 0 var(--ink);flex-shrink:0;"></span>
           <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-mid);">Scamp concepts</span>
         </div>
 
@@ -2253,19 +2252,13 @@ function renderContentConcepts(concepts, brand) {
 }
 
 function toggleScamps() {
-  var cb = document.getElementById("generateScamps");
+  var cb  = document.getElementById("generateScamps");
   var box = document.getElementById("scampsBox");
-  var tick = document.getElementById("scampsTick");
   cb.checked = !cb.checked;
   box.style.background = cb.checked ? "#FFE566" : "white";
-  var isMobile = window.innerWidth <= 900;
-  if (isMobile) {
-    box.innerHTML = cb.checked ? '<span style="font-size:22px;font-weight:900;font-family:Georgia,serif;position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);">✓</span>' : '';
-    box.style.position = cb.checked ? 'relative' : '';
-  } else {
-    box.innerHTML = '';
-    if (tick) tick.style.display = cb.checked ? "block" : "none";
-  }
+  box.innerHTML = cb.checked
+    ? '<svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:13px;height:13px;"><polyline points="2,7.5 5.5,11 12,3" stroke="#111110" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    : '';
 }
 
 function loadExample(key) {
