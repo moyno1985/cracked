@@ -75,6 +75,15 @@
     color: var(--yellow);
     border-color: var(--ink);
   }
+  .format-descriptor {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    color: var(--ink-light);
+    min-height: 14px;
+    margin-bottom: 6px;
+    transition: opacity 0.15s;
+  }
 
   /* ── Platform pills — secondary sub-row under SOCIAL ── */
   .platform-pills-wrap {
@@ -1459,14 +1468,15 @@ function renderHistory() {
       <!-- Format chips -->
       <div class="format-chips" id="formatChips">
         <span class="format-chips-label">Format</span>
-        <button class="format-chip active" onclick="setFormat('campaign')" id="chip-campaign">Full Campaign</button>
-        <button class="format-chip" onclick="setFormat('social')" id="chip-social">Social</button>
-        <button class="format-chip" onclick="setFormat('film')" id="chip-film">Film</button>
-        <button class="format-chip" onclick="setFormat('content')" id="chip-content">Content Series</button>
-        <button class="format-chip" onclick="setFormat('ooh')" id="chip-ooh">OOH</button>
-        <button class="format-chip" onclick="setFormat('activation')" id="chip-activation">Activation</button>
-        <button class="format-chip" onclick="setFormat('print')" id="chip-print">Print</button>
+        <button class="format-chip active" onclick="setFormat('campaign')" id="chip-campaign" onmouseenter="showFormatDesc('campaign')" onmouseleave="showFormatDesc(_currentFormat)">Full Campaign</button>
+        <button class="format-chip" onclick="setFormat('social')" id="chip-social" onmouseenter="showFormatDesc('social')" onmouseleave="showFormatDesc(_currentFormat)">Social</button>
+        <button class="format-chip" onclick="setFormat('film')" id="chip-film" onmouseenter="showFormatDesc('film')" onmouseleave="showFormatDesc(_currentFormat)">Film</button>
+        <button class="format-chip" onclick="setFormat('content')" id="chip-content" onmouseenter="showFormatDesc('content')" onmouseleave="showFormatDesc(_currentFormat)">Content Series</button>
+        <button class="format-chip" onclick="setFormat('ooh')" id="chip-ooh" onmouseenter="showFormatDesc('ooh')" onmouseleave="showFormatDesc(_currentFormat)">OOH</button>
+        <button class="format-chip" onclick="setFormat('activation')" id="chip-activation" onmouseenter="showFormatDesc('activation')" onmouseleave="showFormatDesc(_currentFormat)">Activation</button>
+        <button class="format-chip" onclick="setFormat('print')" id="chip-print" onmouseenter="showFormatDesc('print')" onmouseleave="showFormatDesc(_currentFormat)">Print</button>
       </div>
+      <p class="format-descriptor" id="formatDescriptor"></p>
 
       <!-- Social platform pills -->
       <div id="socialTagsRow" style="display:none;">
@@ -1903,6 +1913,7 @@ function loadContentExample(key) {
 }
 
 var _currentFormat = 'campaign';
+showFormatDesc('campaign');
 var _selectedPlatforms = [];
 
 function _updateSocialPill() {
@@ -1971,6 +1982,21 @@ function getSelectedPlatformsText() {
   return _selectedPlatforms.join(', ');
 }
 
+var _formatDescriptions = {
+  'campaign':   'An integrated idea that works across multiple channels and touchpoints.',
+  'social':     'Native content built for a specific social platform — feed, stories, or short-form video.',
+  'film':       'A single video or TVC, from a 15-second cut to a few minutes.',
+  'content':    'An episodic series of content — YouTube, podcast, branded entertainment, or social series.',
+  'ooh':        'Outdoor and ambient — posters, billboards, transit, and experiential formats.',
+  'activation': 'Live events, stunts, and real-world experiences that generate earned media.',
+  'print':      'Press, magazine, and editorial — ideas that live on the page.',
+};
+
+function showFormatDesc(format) {
+  var el = document.getElementById('formatDescriptor');
+  if (el) el.textContent = _formatDescriptions[format] || '';
+}
+
 function setFormat(format) {
   _currentFormat = format;
 
@@ -2020,6 +2046,7 @@ function setFormat(format) {
       '<button class="example-pill" onclick="loadExample(&quot;ikea&quot;)">IKEA</button>',
     ].join('');
   }
+  showFormatDesc(format);
 }
 
 function crackTheBrief() {
