@@ -74,6 +74,33 @@ const server = http.createServer((req, res) => {
   if (req.url === '/api/auth/session') { auth.getSession(req, res); return; }
   if (req.url === '/api/auth/logout') { auth.logout(req, res); return; }
 
+  // ── Stats ─────────────────────────────────────────────────────────────────────
+  if (req.url === '/api/stats') {
+    const https = require('https');
+    const r = https.request({
+      hostname: 'api.pinecone.io',
+      path: '/indexes/cracked-archive',
+      method: 'GET',
+      headers: { 'Api-Key': process.env.PINECONE_API_KEY, 'X-Pinecone-API-Version': '2025-04' },
+    }, apiRes => {
+      let data = '';
+      apiRes.on('data', c => data += c);
+      apiRes.on('end', () => {
+        try {
+          const idx = JSON.parse(data);
+          const count = idx.status && idx.status.vectorCount != null ? idx.status.vectorCount : null;
+          res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=3600' });
+          res.end(JSON.stringify({ count }));
+        } catch(e) {
+          res.writeHead(500); res.end('{}');
+        }
+      });
+    });
+    r.on('error', () => { res.writeHead(500); res.end('{}'); });
+    r.end();
+    return;
+  }
+
   // ── Protect app.html ─────────────────────────────────────────────────────────
   if (req.url === '/app.html' || req.url === '/app') {
     auth.requireAuth(req, res, () => {

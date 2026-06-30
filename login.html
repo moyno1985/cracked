@@ -313,7 +313,7 @@
       <h2 class="hero-headline">Ideas that<br><em>crack</em><br>any brief.</h2>
       <div class="hero-stats-group">
         <div class="hero-stat">
-          <span class="hero-stat-number">30,054</span>
+          <span class="hero-stat-number" id="statCount">30,054</span>
           <span class="hero-stat-label">award-winning<br>campaigns</span>
         </div>
         <div class="hero-sources">
@@ -770,6 +770,13 @@
     else active = false;
   }
 })();
+</script>
+<script>
+fetch('/api/stats').then(r => r.json()).then(data => {
+  if (data.count != null) {
+    document.getElementById('statCount').textContent = Number(data.count).toLocaleString();
+  }
+}).catch(() => {});
 </script>
 </body>
 </html>
