@@ -209,36 +209,37 @@
   }
   .card-body { padding: 40px 32px 36px; background: #0F0F0F; }
   h1 { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 900; margin-bottom: 12px; color: #F0EDE4; font-style: italic; line-height: 0.95; letter-spacing: -0.02em; }
-  .subtitle { font-size: 9.5px; color: rgba(240,237,228,0.45); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 36px; line-height: 2; }
-  label { display: block; font-size: 8px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(240,237,228,0.4); margin-bottom: 10px; }
+  .subtitle { font-size: 14px; color: rgba(240,237,228,0.6); letter-spacing: 0.03em; text-transform: none; margin-bottom: 36px; line-height: 1.7; font-weight: 400; }
+  label { display: block; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(240,237,228,0.45); margin-bottom: 12px; }
   input[type="email"] {
-    width: 100%; border: none; border-bottom: 1px solid rgba(255,255,255,0.15);
-    background: transparent; font-family: 'Space Mono', monospace; font-size: 14px;
-    padding: 10px 0; outline: none; color: #F0EDE4;
-    transition: border-color 0.15s; margin-bottom: 28px;
+    width: 100%; border: none; border-bottom: 1px solid rgba(255,255,255,0.2);
+    background: transparent; font-family: 'Space Mono', monospace; font-size: 16px;
+    padding: 12px 0; outline: none; color: #F0EDE4;
+    transition: border-color 0.15s; margin-bottom: 32px;
   }
   input[type="email"]::placeholder { color: rgba(240,237,228,0.2); }
   input[type="email"]:focus { border-bottom-color: rgba(240,237,228,0.6); }
   .social-proof {
     font-family: 'Space Mono', monospace;
-    font-size: 8.5px; letter-spacing: 0.06em; text-transform: uppercase;
-    color: rgba(240,237,228,0.28); margin-bottom: 20px; line-height: 1.8;
+    font-size: 12px; letter-spacing: 0.03em; text-transform: none;
+    color: rgba(240,237,228,0.4); margin-bottom: 28px; line-height: 1.8;
   }
   .btn {
-    width: 100%; background: #111110; border: none;
-    box-shadow: 0 1px 0 rgba(240,237,228,0.08); color: #F0EDE4;
+    width: 100%; background: var(--yellow); border: none;
+    color: #111110;
     font-family: 'Space Mono', monospace; font-weight: 700;
-    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
-    padding: 16px; cursor: pointer; transition: all 0.15s; border-radius: 2px;
+    font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 20px; cursor: pointer; transition: all 0.15s; border-radius: 2px;
+    margin-top: 8px;
   }
-  .btn:hover { background: #1e1d1b; opacity: 1; }
+  .btn:hover { background: #f5d800; opacity: 1; }
   .btn:active { opacity: 0.85; }
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .message { margin-top: 14px; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; text-align: center; padding: 10px; border: 1px solid transparent; border-radius: 2px; }
   .message.success { background: rgba(134,239,172,0.1); border-color: rgba(134,239,172,0.3); color: #86efac; }
   .message.error { background: rgba(252,165,165,0.1); border-color: rgba(252,165,165,0.3); color: #fca5a5; }
-  .trial-note { margin-top: 20px; font-size: 9px; color: rgba(240,237,228,0.3); text-align: center; line-height: 1.9; letter-spacing: 0.04em; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 18px; }
-  .trial-note strong { color: rgba(240,237,228,0.55); font-weight: 400; }
+  .trial-note { margin-top: 24px; font-size: 12px; color: rgba(240,237,228,0.35); text-align: center; line-height: 1.9; letter-spacing: 0.02em; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px; }
+  .trial-note strong { color: rgba(240,237,228,0.6); font-weight: 700; }
 
   @media (max-width: 860px) {
     body { flex-direction: column; }
@@ -254,13 +255,6 @@
   <a href="/" class="logo-link">
     <div class="logo">Cracked</div>
   </a>
-  <button aria-label="Menu" style="background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:4px;">
-    <svg width="32" height="26" viewBox="0 0 32 26" xmlns="http://www.w3.org/2000/svg">
-      <path d="M2 4 C6 3.5, 14 3.8, 30 4.2" stroke="#F0EDE4" stroke-width="2.8" stroke-linecap="round" fill="none"/>
-      <path d="M2 13 C5 12.6, 16 13.2, 29 12.8" stroke="#F0EDE4" stroke-width="2.8" stroke-linecap="round" fill="none"/>
-      <path d="M2 22 C7 21.8, 15 22.3, 30 21.9" stroke="#F0EDE4" stroke-width="2.8" stroke-linecap="round" fill="none"/>
-    </svg>
-  </button>
 </header>
 
 
