@@ -76,24 +76,36 @@
     border-color: var(--ink);
   }
 
-  /* ── Platform pills row ── */
+  /* ── Platform pills — secondary sub-row under SOCIAL ── */
+  .platform-pills-wrap {
+    padding: 6px 0 14px 0;
+    border-left: 2px solid rgba(0,0,0,0.06);
+    margin-left: 2px;
+    padding-left: 14px;
+  }
+  .platform-pills-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    display: block;
+    margin-bottom: 7px;
+  }
   .platform-pills-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 0;
-    padding: 10px 0 16px 0;
-    padding-left: calc(/* FORMAT label width */ 0px);
+    gap: 6px;
   }
   .platform-pill {
     font-family: 'Space Mono', monospace;
-    font-size: 9px;
+    font-size: 7.5px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 7px 14px;
-    background: #f5f5f0;
-    color: var(--ink-mid);
-    border: 1px solid #dddbd5;
+    padding: 5px 11px;
+    background: transparent;
+    color: #b0ada6;
+    border: 1px solid #e2dfd9;
     border-radius: 20px;
     cursor: pointer;
     white-space: nowrap;
@@ -101,7 +113,7 @@
     transition: all 0.12s;
     user-select: none;
   }
-  .platform-pill:hover { background: var(--ink); color: var(--yellow); border-color: var(--ink); }
+  .platform-pill:hover { border-color: var(--ink-mid); color: var(--ink-mid); }
   .platform-pill.selected {
     background: var(--ink);
     color: var(--yellow);
@@ -1465,16 +1477,19 @@ function renderHistory() {
 
       <!-- Social platform pills -->
       <div id="socialTagsRow" style="display:none;">
-        <div class="platform-pills-row">
-          <button class="platform-pill" data-platform="TikTok" onclick="togglePlatformPill(this)">TikTok</button>
-          <button class="platform-pill" data-platform="Instagram" onclick="togglePlatformPill(this)">Instagram</button>
-          <button class="platform-pill" data-platform="YouTube" onclick="togglePlatformPill(this)">YouTube</button>
-          <button class="platform-pill" data-platform="X" onclick="togglePlatformPill(this)">X</button>
-          <button class="platform-pill" data-platform="LinkedIn" onclick="togglePlatformPill(this)">LinkedIn</button>
-          <button class="platform-pill" data-platform="Facebook" onclick="togglePlatformPill(this)">Facebook</button>
-          <button class="platform-pill" data-platform="Threads" onclick="togglePlatformPill(this)">Threads</button>
-          <button class="platform-pill" data-platform="Snapchat" onclick="togglePlatformPill(this)">Snapchat</button>
-          <button class="platform-pill" data-platform="Pinterest" onclick="togglePlatformPill(this)">Pinterest</button>
+        <div class="platform-pills-wrap">
+          <span class="platform-pills-label">Platforms</span>
+          <div class="platform-pills-row">
+            <button class="platform-pill" data-platform="TikTok" onclick="togglePlatformPill(this)">TikTok</button>
+            <button class="platform-pill" data-platform="Instagram" onclick="togglePlatformPill(this)">Instagram</button>
+            <button class="platform-pill" data-platform="YouTube" onclick="togglePlatformPill(this)">YouTube</button>
+            <button class="platform-pill" data-platform="X" onclick="togglePlatformPill(this)">X</button>
+            <button class="platform-pill" data-platform="LinkedIn" onclick="togglePlatformPill(this)">LinkedIn</button>
+            <button class="platform-pill" data-platform="Facebook" onclick="togglePlatformPill(this)">Facebook</button>
+            <button class="platform-pill" data-platform="Threads" onclick="togglePlatformPill(this)">Threads</button>
+            <button class="platform-pill" data-platform="Snapchat" onclick="togglePlatformPill(this)">Snapchat</button>
+            <button class="platform-pill" data-platform="Pinterest" onclick="togglePlatformPill(this)">Pinterest</button>
+          </div>
         </div>
       </div>
 
