@@ -570,20 +570,25 @@
     return Math.min(0, Math.max(minX, x));
   }
 
-  // Pause animation on card hover
-  track.addEventListener('mouseenter', e => {
-    if (e.target.closest('.scamp-slide')) track.style.animationPlayState = 'paused';
-  }, true);
-  track.addEventListener('mouseleave', e => {
-    if (e.target.closest('.scamp-slide') && !isDragging) track.style.animationPlayState = '';
-  }, true);
+  // Pause animation on card hover — freeze position, resume from same spot on leave
   track.addEventListener('mouseover', e => {
-    if (e.target.closest('.scamp-slide')) track.style.animationPlayState = 'paused';
+    if (!e.target.closest('.scamp-slide') || isDragging) return;
+    if (track._hovering) return;
+    track._hovering = true;
+    clearTimeout(carousel._wheelTimer); // cancel any pending wheel resume
+    const x = getTranslateX();
+    track._hoverX = x;
+    track.style.animation = 'none';
+    track.style.transform = `translateX(${x}px)`;
   });
   track.addEventListener('mouseout', e => {
-    if (e.target.closest('.scamp-slide') && !e.relatedTarget?.closest('.scamp-slide') && !isDragging) {
-      track.style.animationPlayState = '';
-    }
+    if (!e.target.closest('.scamp-slide') || isDragging) return;
+    if (e.relatedTarget?.closest('.scamp-slide')) return; // still over a card
+    track._hovering = false;
+    const x = track._hoverX !== undefined ? track._hoverX : getTranslateX();
+    track.style.transform = '';
+    delete track._hoverX;
+    resumeFromX(x);
   });
 
   // Drag to scroll
