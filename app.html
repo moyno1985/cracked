@@ -1462,18 +1462,15 @@ function renderHistory() {
         <button class="format-chip" onclick="setFormat('print')" id="chip-print">Print</button>
       </div>
 
-      <!-- Social platform pills -->
+      <!-- Social platform presets -->
       <div id="socialTagsRow" style="display:none;">
         <div class="platform-pills-wrap">
-          <button class="platform-pill" data-platform="TikTok" onclick="togglePlatformPill(this)">TikTok</button>
-          <button class="platform-pill" data-platform="Instagram" onclick="togglePlatformPill(this)">Instagram</button>
-          <button class="platform-pill" data-platform="YouTube" onclick="togglePlatformPill(this)">YouTube</button>
-          <button class="platform-pill" data-platform="X" onclick="togglePlatformPill(this)">X</button>
-          <button class="platform-pill" data-platform="LinkedIn" onclick="togglePlatformPill(this)">LinkedIn</button>
-          <button class="platform-pill" data-platform="Facebook" onclick="togglePlatformPill(this)">Facebook</button>
-          <button class="platform-pill" data-platform="Threads" onclick="togglePlatformPill(this)">Threads</button>
-          <button class="platform-pill" data-platform="Snapchat" onclick="togglePlatformPill(this)">Snapchat</button>
-          <button class="platform-pill" data-platform="Pinterest" onclick="togglePlatformPill(this)">Pinterest</button>
+          <button class="platform-pill" data-platforms="TikTok,Instagram Reels,YouTube Shorts" onclick="togglePlatformPreset(this)">Short-form Video</button>
+          <button class="platform-pill" data-platforms="Instagram,Facebook,Threads" onclick="togglePlatformPreset(this)">Broad Social</button>
+          <button class="platform-pill" data-platforms="LinkedIn" onclick="togglePlatformPreset(this)">LinkedIn</button>
+          <button class="platform-pill" data-platforms="X,Threads" onclick="togglePlatformPreset(this)">Microblogging</button>
+          <button class="platform-pill" data-platforms="YouTube" onclick="togglePlatformPreset(this)">YouTube</button>
+          <button class="platform-pill" data-platforms="Pinterest,Snapchat" onclick="togglePlatformPreset(this)">Discovery</button>
         </div>
       </div>
 
@@ -1904,14 +1901,13 @@ function _updateSocialPill() {
   if (chip) chip.textContent = _selectedPlatforms.length ? 'Social • ' + _selectedPlatforms.length : 'Social';
 }
 
-function togglePlatformPill(btn) {
-  var platform = btn.getAttribute('data-platform');
+function togglePlatformPreset(btn) {
   var already = btn.classList.contains('selected');
   document.querySelectorAll('.platform-pill').forEach(function(p) { p.classList.remove('selected'); });
   _selectedPlatforms = [];
   if (!already) {
     btn.classList.add('selected');
-    _selectedPlatforms = [platform];
+    _selectedPlatforms = btn.getAttribute('data-platforms').split(',').map(function(s) { return s.trim(); });
   }
   _updateSocialPill();
 }
