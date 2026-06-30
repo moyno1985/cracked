@@ -81,9 +81,8 @@
   }
   .carousel {
     flex: 1; min-height: 0;
-    overflow: visible;
-    clip-path: inset(0 0 -80px 0);
-    padding: 24px 0 16px;
+    overflow: hidden;
+    padding: 20px 0 8px;
   }
   .carousel-track {
     display: flex;
@@ -119,11 +118,13 @@
     width: 100%;
     background: #1a1917;
     overflow: hidden;
+    height: clamp(150px, 28vh, 220px);
   }
   .scamp-img-wrap img {
     width: 100%;
-    height: auto;
-    display: block;
+    height: 100%;
+    object-fit: contain;
+    object-position: top;
     display: block;
     transition: transform 0.5s ease;
     user-select: none;
