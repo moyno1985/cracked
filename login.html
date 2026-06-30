@@ -570,6 +570,22 @@
     return Math.min(0, Math.max(minX, x));
   }
 
+  // Pause animation on card hover
+  track.addEventListener('mouseenter', e => {
+    if (e.target.closest('.scamp-slide')) track.style.animationPlayState = 'paused';
+  }, true);
+  track.addEventListener('mouseleave', e => {
+    if (e.target.closest('.scamp-slide') && !isDragging) track.style.animationPlayState = '';
+  }, true);
+  track.addEventListener('mouseover', e => {
+    if (e.target.closest('.scamp-slide')) track.style.animationPlayState = 'paused';
+  });
+  track.addEventListener('mouseout', e => {
+    if (e.target.closest('.scamp-slide') && !e.relatedTarget?.closest('.scamp-slide') && !isDragging) {
+      track.style.animationPlayState = '';
+    }
+  });
+
   // Drag to scroll
   let dragStartX, dragStartTX, isDragging = false;
   carousel.addEventListener('mousedown', e => {
