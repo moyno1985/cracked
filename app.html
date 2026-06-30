@@ -84,21 +84,6 @@
     align-items: center;
     gap: 6px;
   }
-  .platform-add-btn {
-    font-family: 'Space Mono', monospace;
-    font-size: 7.5px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 5px 11px;
-    background: transparent;
-    color: #b0ada6;
-    border: 1px solid #e2dfd9;
-    border-radius: 20px;
-    cursor: default;
-    white-space: nowrap;
-    flex-shrink: 0;
-    user-select: none;
-  }
   .platform-pill {
     font-family: 'Space Mono', monospace;
     font-size: 7.5px;
@@ -1480,7 +1465,6 @@ function renderHistory() {
       <!-- Social platform pills -->
       <div id="socialTagsRow" style="display:none;">
         <div class="platform-pills-wrap">
-          <span class="platform-add-btn">+ Add Platform</span>
           <button class="platform-pill" data-platform="TikTok" onclick="togglePlatformPill(this)">TikTok</button>
           <button class="platform-pill" data-platform="Instagram" onclick="togglePlatformPill(this)">Instagram</button>
           <button class="platform-pill" data-platform="YouTube" onclick="togglePlatformPill(this)">YouTube</button>
@@ -1922,13 +1906,12 @@ function _updateSocialPill() {
 
 function togglePlatformPill(btn) {
   var platform = btn.getAttribute('data-platform');
-  var idx = _selectedPlatforms.indexOf(platform);
-  if (idx === -1) {
-    _selectedPlatforms.push(platform);
+  var already = btn.classList.contains('selected');
+  document.querySelectorAll('.platform-pill').forEach(function(p) { p.classList.remove('selected'); });
+  _selectedPlatforms = [];
+  if (!already) {
     btn.classList.add('selected');
-  } else {
-    _selectedPlatforms.splice(idx, 1);
-    btn.classList.remove('selected');
+    _selectedPlatforms = [platform];
   }
   _updateSocialPill();
 }
