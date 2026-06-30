@@ -32,7 +32,7 @@
   .brand-side::before {
     content: '';
     position: absolute; inset: 0;
-    background: rgba(245,242,236,0.08);
+    background: rgba(11,10,9,0.75);
     pointer-events: none; z-index: 0;
   }
 
@@ -43,24 +43,24 @@
   }
   .hero-headline {
     font-family: 'Fraunces', serif; font-weight: 900;
-    font-size: clamp(38px, 3.8vw, 60px);
-    line-height: 0.93; letter-spacing: -0.04em;
-    color: #1a1714; margin-bottom: 22px;
+    font-size: clamp(42px, 4.2vw, 68px);
+    line-height: 0.91; letter-spacing: -0.04em;
+    color: var(--white); margin-bottom: 24px;
   }
-  .hero-headline em { font-style: italic; color: #a0732a; }
+  .hero-headline em { font-style: italic; color: var(--yellow); }
   .hero-sub {
-    font-size: 8px; color: rgba(20,15,8,0.40);
+    font-size: 8px; color: rgba(248,247,243,0.32);
     letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.7;
     margin-bottom: 16px;
   }
   .hero-cred {
-    font-size: 8.5px; color: rgba(20,15,8,0.50);
+    font-size: 8.5px; color: rgba(248,247,243,0.45);
     letter-spacing: 0.05em; line-height: 2;
-    border-top: 1px solid rgba(0,0,0,0.10);
+    border-top: 1px solid rgba(255,255,255,0.08);
     padding-top: 18px; margin-top: 0;
   }
   .hero-cred strong {
-    color: #a0732a; font-weight: 700;
+    color: var(--yellow); font-weight: 700;
   }
 
   /* ── Carousel ── */
@@ -135,19 +135,19 @@
   .scamp-brand {
     font-size: 8px; font-weight: 700;
     letter-spacing: 0.2em; text-transform: uppercase;
-    color: #a0732a;
+    color: var(--yellow);
   }
   .scamp-title {
     font-family: 'Fraunces', serif;
     font-style: italic; font-weight: 700;
-    font-size: 12px; color: rgba(20,15,8,0.55);
+    font-size: 12px; color: rgba(248,247,243,0.65);
     line-height: 1.25;
   }
   .scamp-slide {
-    opacity: 0.5;
+    opacity: 0.82;
     transition: opacity 0.25s ease, transform 0.25s ease, filter 0.25s ease;
   }
-  .scamp-slide:hover { opacity: 0.8; }
+  .scamp-slide:hover { opacity: 1; }
 
   /* Arrows + dots */
   .carousel-controls {
@@ -158,9 +158,9 @@
   .carousel-dots { display: flex; gap: 5px; align-items: center; margin-left: 4px; }
   .dot {
     width: 4px; height: 4px; border-radius: 50%;
-    background: rgba(0,0,0,0.18); transition: all 0.25s;
+    background: rgba(255,255,255,0.22); transition: all 0.25s;
   }
-  .dot.active { background: #a0732a; width: 14px; border-radius: 2px; }
+  .dot.active { background: var(--yellow); width: 14px; border-radius: 2px; }
 
   /* ── HEADER ── */
   header {
@@ -195,56 +195,66 @@
 
   /* ── RIGHT PANEL ── */
   .login-side {
-    flex: 0.72;
+    flex: 0.68;
     display: flex; align-items: center; justify-content: center;
-    padding: 48px 40px; position: relative;
+    padding: 48px 48px; position: relative;
+    background: #0c0b0a;
+    border-left: 1px solid rgba(255,255,255,0.04);
   }
-  .login-side::before {
-    content: ''; position: absolute; inset: 0;
-    background: rgba(245,242,236,0.35); pointer-events: none;
-  }
-  .login-side::before { display: none; }
   .login-card {
     position: relative;
-    background: #0F0F0F;
+    background: transparent;
     border: none;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.28);
-    width: 100%; max-width: 380px; overflow: hidden;
-    border-radius: 2px;
+    box-shadow: none;
+    width: 100%; max-width: 360px;
   }
-  .card-body { padding: 40px 32px 36px; background: #0F0F0F; }
-  h1 { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 900; margin-bottom: 12px; color: #F0EDE4; font-style: italic; line-height: 0.95; letter-spacing: -0.02em; }
-  .subtitle { font-size: 14px; color: rgba(240,237,228,0.6); letter-spacing: 0.03em; text-transform: none; margin-bottom: 36px; line-height: 1.7; font-weight: 400; }
-  label { display: block; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(240,237,228,0.45); margin-bottom: 12px; }
+  .card-body {
+    padding: 0;
+    background: transparent;
+  }
+  .card-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--yellow); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .card-eyebrow::before {
+    content: ''; display: block;
+    width: 24px; height: 2px; background: var(--yellow);
+    flex-shrink: 0;
+  }
+  h1 { font-family: 'Fraunces', serif; font-size: 46px; font-weight: 900; margin-bottom: 14px; color: #F0EDE4; font-style: italic; line-height: 0.92; letter-spacing: -0.03em; }
+  .subtitle { font-size: 13px; color: rgba(240,237,228,0.5); letter-spacing: 0.01em; text-transform: none; margin-bottom: 40px; line-height: 1.75; font-weight: 400; }
+  label { display: block; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(240,237,228,0.35); margin-bottom: 10px; }
   input[type="email"] {
-    width: 100%; border: none; border-bottom: 1px solid rgba(255,255,255,0.2);
+    width: 100%; border: none; border-bottom: 1px solid rgba(255,255,255,0.14);
     background: transparent; font-family: 'Space Mono', monospace; font-size: 16px;
     padding: 12px 0; outline: none; color: #F0EDE4;
     transition: border-color 0.15s; margin-bottom: 32px;
   }
-  input[type="email"]::placeholder { color: rgba(240,237,228,0.2); }
-  input[type="email"]:focus { border-bottom-color: rgba(240,237,228,0.6); }
+  input[type="email"]::placeholder { color: rgba(240,237,228,0.18); }
+  input[type="email"]:focus { border-bottom-color: var(--yellow); }
   .social-proof {
     font-family: 'Space Mono', monospace;
-    font-size: 12px; letter-spacing: 0.03em; text-transform: none;
-    color: rgba(240,237,228,0.4); margin-bottom: 28px; line-height: 1.8;
+    font-size: 11px; letter-spacing: 0.02em; text-transform: none;
+    color: rgba(240,237,228,0.35); margin-bottom: 28px; line-height: 1.9;
   }
   .btn {
     width: 100%; background: var(--yellow); border: none;
     color: #111110;
     font-family: 'Space Mono', monospace; font-weight: 700;
-    font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
-    padding: 20px; cursor: pointer; transition: all 0.15s; border-radius: 2px;
+    font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 20px; cursor: pointer; transition: all 0.15s; border-radius: 1px;
     margin-top: 8px;
   }
-  .btn:hover { background: #f5d800; opacity: 1; }
+  .btn:hover { background: #f5d800; }
   .btn:active { opacity: 0.85; }
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .message { margin-top: 14px; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; text-align: center; padding: 10px; border: 1px solid transparent; border-radius: 2px; }
   .message.success { background: rgba(134,239,172,0.1); border-color: rgba(134,239,172,0.3); color: #86efac; }
   .message.error { background: rgba(252,165,165,0.1); border-color: rgba(252,165,165,0.3); color: #fca5a5; }
-  .trial-note { margin-top: 24px; font-size: 12px; color: rgba(240,237,228,0.35); text-align: center; line-height: 1.9; letter-spacing: 0.02em; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px; }
-  .trial-note strong { color: rgba(240,237,228,0.6); font-weight: 700; }
+  .trial-note { margin-top: 28px; font-size: 11px; color: rgba(240,237,228,0.28); text-align: center; line-height: 1.9; letter-spacing: 0.01em; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 22px; }
+  .trial-note strong { color: rgba(240,237,228,0.55); font-weight: 700; }
 
   @media (max-width: 860px) {
     body { flex-direction: column; }
@@ -339,6 +349,7 @@
 <div class="login-side">
   <div class="login-card">
     <div class="card-body">
+      <div class="card-eyebrow">Private Beta</div>
       <h1>Sign in.</h1>
       <p class="subtitle">Enter your email — we'll send you a magic link.<br>No password needed.</p>
       <p class="social-proof">Join thousands of creatives using Cracked to crack briefs faster.</p>
