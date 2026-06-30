@@ -2593,7 +2593,7 @@ function searchArchive(brief, brand, category) {
   }
   toggle.addEventListener('click', () => {
     enabled = !enabled;
-    toggle.style.opacity = enabled ? '0.7' : '0.25';
+    toggle.style.opacity = enabled ? '0.7' : '0.28';
     toggle.querySelector('path').setAttribute('stroke', enabled ? '#1a1008' : '#aaa');
     if (!enabled) { points = []; ctx.clearRect(0, 0, W, H); }
   });
@@ -2648,12 +2648,12 @@ function searchArchive(brief, brand, category) {
       };
 
       buildPath();
-      ctx.strokeStyle = `rgba(14, 8, 3, ${a * 0.035})`;
+      ctx.strokeStyle = `rgba(14, 8, 3, ${a * 0.039})`;
       ctx.lineWidth = LINE_WIDTH;
       ctx.stroke();
 
       buildPath();
-      ctx.strokeStyle = `rgba(8, 4, 1, ${a * 0.012})`;
+      ctx.strokeStyle = `rgba(8, 4, 1, ${a * 0.013})`;
       ctx.lineWidth = LINE_WIDTH * 0.4;
       ctx.stroke();
     }
