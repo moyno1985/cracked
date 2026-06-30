@@ -32,7 +32,7 @@
   .brand-side::before {
     content: '';
     position: absolute; inset: 0;
-    background: rgba(11,10,9,0.80);
+    background: rgba(245,242,236,0.08);
     pointer-events: none; z-index: 0;
   }
 
@@ -45,22 +45,22 @@
     font-family: 'Fraunces', serif; font-weight: 900;
     font-size: clamp(38px, 3.8vw, 60px);
     line-height: 0.93; letter-spacing: -0.04em;
-    color: var(--white); margin-bottom: 22px;
+    color: #1a1714; margin-bottom: 22px;
   }
-  .hero-headline em { font-style: italic; color: var(--yellow); }
+  .hero-headline em { font-style: italic; color: #a0732a; }
   .hero-sub {
-    font-size: 8px; color: rgba(248,247,243,0.30);
+    font-size: 8px; color: rgba(20,15,8,0.40);
     letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.7;
     margin-bottom: 16px;
   }
   .hero-cred {
-    font-size: 8.5px; color: rgba(248,247,243,0.45);
+    font-size: 8.5px; color: rgba(20,15,8,0.50);
     letter-spacing: 0.05em; line-height: 2;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    border-top: 1px solid rgba(0,0,0,0.10);
     padding-top: 18px; margin-top: 0;
   }
   .hero-cred strong {
-    color: var(--yellow); font-weight: 700;
+    color: #a0732a; font-weight: 700;
   }
 
   /* ── Carousel ── */
@@ -135,14 +135,19 @@
   .scamp-brand {
     font-size: 8px; font-weight: 700;
     letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--yellow);
+    color: #a0732a;
   }
   .scamp-title {
     font-family: 'Fraunces', serif;
     font-style: italic; font-weight: 700;
-    font-size: 12px; color: rgba(248,247,243,0.65);
+    font-size: 12px; color: rgba(20,15,8,0.55);
     line-height: 1.25;
   }
+  .scamp-slide {
+    opacity: 0.5;
+    transition: opacity 0.25s ease, transform 0.25s ease, filter 0.25s ease;
+  }
+  .scamp-slide:hover { opacity: 0.8; }
 
   /* Arrows + dots */
   .carousel-controls {
@@ -153,9 +158,9 @@
   .carousel-dots { display: flex; gap: 5px; align-items: center; margin-left: 4px; }
   .dot {
     width: 4px; height: 4px; border-radius: 50%;
-    background: rgba(255,255,255,0.22); transition: all 0.25s;
+    background: rgba(0,0,0,0.18); transition: all 0.25s;
   }
-  .dot.active { background: var(--yellow); width: 14px; border-radius: 2px; }
+  .dot.active { background: #a0732a; width: 14px; border-radius: 2px; }
 
   /* ── HEADER ── */
   header {
