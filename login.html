@@ -510,12 +510,10 @@
 <script>
 (function() {
   const track = document.getElementById('carouselTrack');
-  const slides = track.querySelectorAll('.scamp-slide');
+  // HTML already has 6 originals + 6 aria-hidden clones — don't re-clone
+  const slides = Array.from(track.querySelectorAll('.scamp-slide')).filter(s => !s.hasAttribute('aria-hidden'));
   const dotsWrap = document.getElementById('dots');
   const total = slides.length;
-
-  // Clone all slides for seamless infinite loop (CSS animation handles the scroll)
-  slides.forEach(slide => track.appendChild(slide.cloneNode(true)));
 
   const dots = Array.from({length: total}, (_, i) => {
     const d = document.createElement('div');
@@ -550,14 +548,15 @@
   function resumeFromX(x) {
     const loopWidth = track.scrollWidth / 2;
     if (loopWidth <= 0) return;
-    // Normalise x into the range [-loopWidth, 0]
     let pos = x % loopWidth;
     if (pos > 0) pos -= loopWidth;
     const progress = Math.abs(pos) / loopWidth;
     const delay = -(progress * DURATION);
+    // Hold position with transform while swapping animation to prevent snap to 0
     track.style.animation = 'none';
-    // Force reflow so animation restart is picked up
+    track.style.transform = `translateX(${x}px)`;
     void track.offsetWidth;
+    track.style.transform = '';
     track.style.animation = `carousel-scroll ${DURATION}s linear ${delay}s infinite`;
   }
 
@@ -586,7 +585,6 @@
     if (e.relatedTarget?.closest('.scamp-slide')) return; // still over a card
     track._hovering = false;
     const x = track._hoverX !== undefined ? track._hoverX : getTranslateX();
-    track.style.transform = '';
     delete track._hoverX;
     resumeFromX(x);
   });
