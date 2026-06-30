@@ -79,11 +79,25 @@
   /* ── Platform pills — secondary sub-row under SOCIAL ── */
   .platform-pills-wrap {
     padding: 10px 0 14px 0;
-  }
-  .platform-pills-row {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 6px;
+  }
+  .platform-add-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 7.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 5px 11px;
+    background: var(--ink);
+    color: var(--yellow);
+    border: 1px solid var(--ink);
+    border-radius: 20px;
+    cursor: default;
+    white-space: nowrap;
+    flex-shrink: 0;
+    user-select: none;
   }
   .platform-pill {
     font-family: 'Space Mono', monospace;
@@ -1466,17 +1480,16 @@ function renderHistory() {
       <!-- Social platform pills -->
       <div id="socialTagsRow" style="display:none;">
         <div class="platform-pills-wrap">
-          <div class="platform-pills-row">
-            <button class="platform-pill" data-platform="TikTok" onclick="togglePlatformPill(this)">TikTok</button>
-            <button class="platform-pill" data-platform="Instagram" onclick="togglePlatformPill(this)">Instagram</button>
-            <button class="platform-pill" data-platform="YouTube" onclick="togglePlatformPill(this)">YouTube</button>
-            <button class="platform-pill" data-platform="X" onclick="togglePlatformPill(this)">X</button>
-            <button class="platform-pill" data-platform="LinkedIn" onclick="togglePlatformPill(this)">LinkedIn</button>
-            <button class="platform-pill" data-platform="Facebook" onclick="togglePlatformPill(this)">Facebook</button>
-            <button class="platform-pill" data-platform="Threads" onclick="togglePlatformPill(this)">Threads</button>
-            <button class="platform-pill" data-platform="Snapchat" onclick="togglePlatformPill(this)">Snapchat</button>
-            <button class="platform-pill" data-platform="Pinterest" onclick="togglePlatformPill(this)">Pinterest</button>
-          </div>
+          <span class="platform-add-btn">+ Add Platform</span>
+          <button class="platform-pill" data-platform="TikTok" onclick="togglePlatformPill(this)">TikTok</button>
+          <button class="platform-pill" data-platform="Instagram" onclick="togglePlatformPill(this)">Instagram</button>
+          <button class="platform-pill" data-platform="YouTube" onclick="togglePlatformPill(this)">YouTube</button>
+          <button class="platform-pill" data-platform="X" onclick="togglePlatformPill(this)">X</button>
+          <button class="platform-pill" data-platform="LinkedIn" onclick="togglePlatformPill(this)">LinkedIn</button>
+          <button class="platform-pill" data-platform="Facebook" onclick="togglePlatformPill(this)">Facebook</button>
+          <button class="platform-pill" data-platform="Threads" onclick="togglePlatformPill(this)">Threads</button>
+          <button class="platform-pill" data-platform="Snapchat" onclick="togglePlatformPill(this)">Snapchat</button>
+          <button class="platform-pill" data-platform="Pinterest" onclick="togglePlatformPill(this)">Pinterest</button>
         </div>
       </div>
 
