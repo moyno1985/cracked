@@ -81,73 +81,84 @@
     overflow: hidden;
     max-height: 0;
     opacity: 0;
-    transition: max-height 0.28s ease, opacity 0.22s ease, margin-top 0.28s ease;
+    transition: max-height 0.26s ease, opacity 0.2s ease;
     margin-top: 0;
   }
   .social-expander.open {
-    max-height: 140px;
+    max-height: 120px;
     opacity: 1;
-    margin-top: 14px;
+    margin-top: 10px;
   }
   .social-expander-inner {
-    padding: 14px 16px 12px;
-    background: #f7f6f2;
-    border: 1px solid #e2e0da;
-    border-radius: 10px;
+    padding: 10px 14px 10px;
+    background: transparent;
+    border-left: 2px solid #e2e0da;
+    border-radius: 0;
   }
   .social-expander-hint {
     font-family: 'Space Mono', monospace;
-    font-size: 8.5px;
+    font-size: 8px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--ink-light);
-    margin-bottom: 10px;
+    color: #bbb9b3;
+    margin-bottom: 8px;
   }
   .social-platform-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 6px;
+    gap: 5px;
+    margin-bottom: 5px;
   }
   .social-platform-row.secondary {
-    padding-top: 2px;
-    border-top: 1px solid #e2e0da;
-    margin-top: 4px;
+    margin-top: 2px;
   }
   .platform-chip {
     font-family: 'Space Mono', monospace;
     font-size: 8.5px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 5px 11px;
-    border: 1px solid #d4d2cc;
-    background: #fff;
+    padding: 5px 10px;
+    border: 1px solid #dddbd5;
+    background: #f5f5f0;
     color: var(--ink-mid);
     cursor: pointer;
     border-radius: 20px;
     transition: all 0.12s;
     white-space: nowrap;
     user-select: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
   }
   .platform-chip:hover {
     border-color: var(--ink);
     color: var(--ink);
-    background: #fff;
+    background: #efefea;
   }
   .platform-chip.selected {
     background: var(--ink);
     color: var(--yellow);
     border-color: var(--ink);
   }
-  .platform-chip.selected::after {
-    content: ' ×';
-    font-size: 10px;
-    opacity: 0.7;
+  .platform-chip .chip-x {
+    font-size: 11px;
+    line-height: 1;
+    opacity: 0.6;
+    margin-left: 1px;
+  }
+  .platform-chip.selected .chip-x {
+    opacity: 0.55;
   }
   .social-platform-row.secondary .platform-chip {
-    font-size: 8px;
-    color: var(--ink-light);
-    border-color: #dddbd5;
+    font-size: 7.5px;
+    color: #aaa8a2;
+    border-color: #e8e6e0;
+    background: transparent;
+  }
+  .social-platform-row.secondary .platform-chip:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+    background: #f5f5f0;
   }
   .social-platform-row.secondary .platform-chip.selected {
     color: var(--yellow);
@@ -1508,17 +1519,17 @@ function renderHistory() {
         <div class="social-expander-inner">
           <div class="social-expander-hint">Choose as many as needed</div>
           <div class="social-platform-row" id="socialPrimaryRow">
-            <button class="platform-chip" data-platform="TikTok" onclick="togglePlatform(this)">TikTok</button>
-            <button class="platform-chip" data-platform="Instagram" onclick="togglePlatform(this)">Instagram</button>
-            <button class="platform-chip" data-platform="YouTube" onclick="togglePlatform(this)">YouTube</button>
-            <button class="platform-chip" data-platform="X" onclick="togglePlatform(this)">X</button>
-            <button class="platform-chip" data-platform="LinkedIn" onclick="togglePlatform(this)">LinkedIn</button>
+            <button class="platform-chip" data-platform="TikTok" onclick="togglePlatform(this)">TikTok<span class="chip-x">×</span></button>
+            <button class="platform-chip" data-platform="Instagram" onclick="togglePlatform(this)">Instagram<span class="chip-x">×</span></button>
+            <button class="platform-chip" data-platform="YouTube" onclick="togglePlatform(this)">YouTube<span class="chip-x">×</span></button>
+            <button class="platform-chip" data-platform="X" onclick="togglePlatform(this)">X<span class="chip-x">×</span></button>
+            <button class="platform-chip" data-platform="LinkedIn" onclick="togglePlatform(this)">LinkedIn<span class="chip-x">×</span></button>
           </div>
           <div class="social-platform-row secondary" id="socialSecondaryRow">
-            <button class="platform-chip" data-platform="Facebook" onclick="togglePlatform(this)">Facebook</button>
-            <button class="platform-chip" data-platform="Threads" onclick="togglePlatform(this)">Threads</button>
-            <button class="platform-chip" data-platform="Snapchat" onclick="togglePlatform(this)">Snapchat</button>
-            <button class="platform-chip" data-platform="Pinterest" onclick="togglePlatform(this)">Pinterest</button>
+            <button class="platform-chip" data-platform="Facebook" onclick="togglePlatform(this)">Facebook<span class="chip-x">×</span></button>
+            <button class="platform-chip" data-platform="Threads" onclick="togglePlatform(this)">Threads<span class="chip-x">×</span></button>
+            <button class="platform-chip" data-platform="Snapchat" onclick="togglePlatform(this)">Snapchat<span class="chip-x">×</span></button>
+            <button class="platform-chip" data-platform="Pinterest" onclick="togglePlatform(this)">Pinterest<span class="chip-x">×</span></button>
           </div>
         </div>
       </div>
@@ -1955,6 +1966,13 @@ function togglePlatform(btn) {
     _selectedPlatforms.push(platform);
     btn.classList.add('selected');
   }
+  // Update Social pill label
+  var socialChip = document.getElementById('chip-social');
+  if (socialChip) {
+    socialChip.textContent = _selectedPlatforms.length
+      ? 'Social • ' + _selectedPlatforms.length + ' selected'
+      : 'Social';
+  }
 }
 
 function getSelectedPlatformsText() {
@@ -1978,6 +1996,12 @@ function setFormat(format) {
       expander.classList.add('open');
     } else {
       expander.classList.remove('open');
+      // Reset pill label when leaving social
+      var socialChip = document.getElementById('chip-social');
+      if (socialChip) socialChip.textContent = 'Social';
+      // Clear platform selections
+      _selectedPlatforms = [];
+      document.querySelectorAll('.platform-chip').forEach(function(c) { c.classList.remove('selected'); });
     }
   }
 
