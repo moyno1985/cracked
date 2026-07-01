@@ -2413,20 +2413,15 @@ The inspiredBy array should contain 2–3 real Cannes Lions winning campaigns th
     'film':       'IMPORTANT: All concepts MUST be film/TVC ideas — television commercials or cinema films. Every execution must be a video/moving-image execution. No print, no OOH, no static formats. Think cinematically: scenes, dialogue, VO, emotion, editing. The executionIdea must describe a specific film scene or sequence.',
     'campaign':   'Concepts should be full integrated campaigns led by a strong film/TVC hero execution, with supporting touchpoints that extend the film idea.',
     'social':     'IMPORTANT: All concepts MUST be native social media ideas — built for feeds, stories, short-form video, or community. No TV commercials.' + (_selectedPlatforms.length ? ' Target platform(s): ' + _selectedPlatforms.join(', ') + '. Make every execution feel genuinely native to those specific platforms — the format, length, and mechanic should only work there.' : ''),
-    'ooh':        'IMPORTANT: All concepts MUST be Out-of-Home executions — billboards, posters, ambient, experiential print. No film or video executions.',
-    'print':      (function() {
-      var printInstructions = {
-        'press':     'IMPORTANT: All concepts MUST be press or magazine ads — single image with headline and copy. Ideas that reward reading. The craft is in the headline and art direction. No film, no OOH, no digital.',
-        'poster':    'IMPORTANT: All concepts MUST be poster executions — bold, graphic ideas that work at distance. Minimal copy. The image does the work. No film, no digital.',
-        'billboard':'IMPORTANT: All concepts MUST be billboard ideas — 7 words or less, no body copy, pure concept. If it needs explanation it fails. Brutal simplicity. No film, no digital.',
-        'ambient':   'IMPORTANT: All concepts MUST be ambient executions — the environment IS the medium. The location, object, or context is what makes the idea. Contextual cleverness over messaging. No film, no traditional print.',
-        'dm':        'IMPORTANT: All concepts MUST be direct mail ideas — physical, tactile, can be 3D. Lands in someone\'s hands. The physicality is part of the idea. No film, no digital.',
-        'guerrilla': 'IMPORTANT: All concepts MUST be guerrilla executions — unexpected placement is the whole idea. The surprise and context create the impact. No traditional media.',
-      };
-      return _currentPrintSubformat
-        ? printInstructions[_currentPrintSubformat] || 'IMPORTANT: All concepts MUST be print executions. No film, no video, no digital.'
-        : 'IMPORTANT: All concepts MUST be print executions — press ads, magazine ads, posters, or still-image formats. No film, no video, no digital.';
-    })(),
+    'ooh':        'IMPORTANT: All concepts MUST be Out-of-Home executions — large-format spectaculars, transit (bus shelters, subway, airports), DOOH digital screens, building wraps, or street furniture. Scale and location are the medium. No film or video productions, no print ads.',
+    'print':      ({
+      'press':     'IMPORTANT: All concepts MUST be press or magazine ads — single image with headline and copy. Ideas that reward reading. The craft is in the headline and art direction. No film, no OOH, no digital.',
+      'poster':    'IMPORTANT: All concepts MUST be poster executions — bold, graphic ideas that work at distance. Minimal copy. The image does the work. No film, no digital.',
+      'billboard': 'IMPORTANT: All concepts MUST be billboard ideas — 7 words or less, no body copy, pure concept. If it needs explanation it fails. Brutal simplicity. No film, no digital.',
+      'ambient':   'IMPORTANT: All concepts MUST be ambient executions — the environment IS the medium. The location, object, or context is what makes the idea. Contextual cleverness over messaging. No film, no traditional print.',
+      'dm':        'IMPORTANT: All concepts MUST be direct mail ideas — physical, tactile, can be 3D. Lands in someone\'s hands. The physicality is part of the idea. No film, no digital.',
+      'guerrilla': 'IMPORTANT: All concepts MUST be guerrilla executions — unexpected placement is the whole idea. The surprise and context create the impact. No traditional media.',
+    })[_currentPrintSubformat] || 'IMPORTANT: All concepts MUST be print executions — press ads, magazine ads, posters, or still-image formats. No film, no video, no digital.',
     'activation': 'IMPORTANT: All concepts MUST be live brand activations or experiential ideas — events, stunts, or physical brand experiences.',
     'content':    'IMPORTANT: All concepts MUST be branded content series — episodic, made for streaming or social, with a repeatable format.',
   };
