@@ -1477,6 +1477,18 @@ function renderHistory() {
       </div>
       <p class="format-descriptor" id="formatDescriptor"></p>
 
+      <!-- Print subformat pills -->
+      <div id="printTagsRow" style="display:none;">
+        <div class="platform-pills-wrap">
+          <button class="platform-pill" data-print="press" onclick="selectPrintPill(this)">Press / Magazine</button>
+          <button class="platform-pill" data-print="poster" onclick="selectPrintPill(this)">Poster / OOH</button>
+          <button class="platform-pill" data-print="billboard" onclick="selectPrintPill(this)">Billboard</button>
+          <button class="platform-pill" data-print="ambient" onclick="selectPrintPill(this)">Ambient</button>
+          <button class="platform-pill" data-print="dm" onclick="selectPrintPill(this)">Direct Mail</button>
+          <button class="platform-pill" data-print="guerrilla" onclick="selectPrintPill(this)">Guerrilla</button>
+        </div>
+      </div>
+
       <!-- Social platform pills -->
       <div id="socialTagsRow" style="display:none;">
         <div class="platform-pills-wrap">
@@ -1911,6 +1923,7 @@ function loadContentExample(key) {
 }
 
 var _currentFormat = 'campaign';
+var _currentPrintSubformat = null;
 showFormatDesc('campaign');
 var _selectedPlatforms = [];
 
@@ -1980,6 +1993,30 @@ function getSelectedPlatformsText() {
   return _selectedPlatforms.join(', ');
 }
 
+var _printSubformatDescriptions = {
+  'press':     'Single image, headline, copy — ideas that reward reading.',
+  'poster':    'Must work at distance — bold image, minimal words.',
+  'billboard': '7 words or less. No body copy. Pure concept.',
+  'ambient':   'The environment is the medium — context is the idea.',
+  'dm':        'Physical, tactile, can be 3D — lands in someone\'s hands.',
+  'guerrilla': 'Unexpected placement is the whole idea.',
+};
+
+function selectPrintPill(btn) {
+  var sub = btn.getAttribute('data-print');
+  if (_currentPrintSubformat === sub) {
+    _currentPrintSubformat = null;
+    btn.classList.remove('selected');
+    showFormatDesc('print');
+  } else {
+    _currentPrintSubformat = sub;
+    document.querySelectorAll('[data-print]').forEach(function(p) { p.classList.remove('selected'); });
+    btn.classList.add('selected');
+    var el = document.getElementById('formatDescriptor');
+    if (el) el.textContent = _printSubformatDescriptions[sub] || '';
+  }
+}
+
 var _formatDescriptions = {
   'campaign':   'An integrated idea that works across multiple channels and touchpoints.',
   'social':     'Native content built for a specific social platform — feed, stories, or short-form video.',
@@ -1987,7 +2024,7 @@ var _formatDescriptions = {
   'content':    'An episodic series of content — YouTube, podcast, branded entertainment, or social series.',
   'ooh':        'Outdoor and ambient — posters, billboards, transit, and experiential formats.',
   'activation': 'Live events, stunts, and real-world experiences that generate earned media.',
-  'print':      'Press, magazine, and editorial — ideas that live on the page.',
+  'print':      'Press, poster, billboard, ambient, direct mail, guerrilla — pick a subformat.',
 };
 
 function showFormatDesc(format) {
@@ -2014,6 +2051,18 @@ function setFormat(format) {
       _selectedPlatforms = [];
       document.querySelectorAll('.platform-pill').forEach(function(p) { p.classList.remove('selected', 'incompatible'); });
       _updateSocialPill();
+    }
+  }
+
+  // Show/hide print subformat pills
+  var printRow = document.getElementById('printTagsRow');
+  if (printRow) {
+    if (format === 'print') {
+      printRow.style.display = 'flex';
+    } else {
+      printRow.style.display = 'none';
+      _currentPrintSubformat = null;
+      document.querySelectorAll('[data-print]').forEach(function(p) { p.classList.remove('selected'); });
     }
   }
 
@@ -2365,7 +2414,19 @@ The inspiredBy array should contain 2–3 real Cannes Lions winning campaigns th
     'campaign':   'Concepts should be full integrated campaigns led by a strong film/TVC hero execution, with supporting touchpoints that extend the film idea.',
     'social':     'IMPORTANT: All concepts MUST be native social media ideas — built for feeds, stories, short-form video, or community. No TV commercials.' + (_selectedPlatforms.length ? ' Target platform(s): ' + _selectedPlatforms.join(', ') + '. Make every execution feel genuinely native to those specific platforms — the format, length, and mechanic should only work there.' : ''),
     'ooh':        'IMPORTANT: All concepts MUST be Out-of-Home executions — billboards, posters, ambient, experiential print. No film or video executions.',
-    'print':      'IMPORTANT: All concepts MUST be print executions — press ads, magazine ads, or still-image formats. No film, no video, no digital.',
+    'print':      (function() {
+      var printInstructions = {
+        'press':     'IMPORTANT: All concepts MUST be press or magazine ads — single image with headline and copy. Ideas that reward reading. The craft is in the headline and art direction. No film, no OOH, no digital.',
+        'poster':    'IMPORTANT: All concepts MUST be poster executions — bold, graphic ideas that work at distance. Minimal copy. The image does the work. No film, no digital.',
+        'billboard':'IMPORTANT: All concepts MUST be billboard ideas — 7 words or less, no body copy, pure concept. If it needs explanation it fails. Brutal simplicity. No film, no digital.',
+        'ambient':   'IMPORTANT: All concepts MUST be ambient executions — the environment IS the medium. The location, object, or context is what makes the idea. Contextual cleverness over messaging. No film, no traditional print.',
+        'dm':        'IMPORTANT: All concepts MUST be direct mail ideas — physical, tactile, can be 3D. Lands in someone\'s hands. The physicality is part of the idea. No film, no digital.',
+        'guerrilla': 'IMPORTANT: All concepts MUST be guerrilla executions — unexpected placement is the whole idea. The surprise and context create the impact. No traditional media.',
+      };
+      return _currentPrintSubformat
+        ? printInstructions[_currentPrintSubformat] || 'IMPORTANT: All concepts MUST be print executions. No film, no video, no digital.'
+        : 'IMPORTANT: All concepts MUST be print executions — press ads, magazine ads, posters, or still-image formats. No film, no video, no digital.';
+    })(),
     'activation': 'IMPORTANT: All concepts MUST be live brand activations or experiential ideas — events, stunts, or physical brand experiences.',
     'content':    'IMPORTANT: All concepts MUST be branded content series — episodic, made for streaming or social, with a repeatable format.',
   };
