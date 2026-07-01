@@ -46,12 +46,9 @@
     flex-shrink: 0;
   }
   .brand-bottom-group {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
+    margin-top: auto;
+    flex-shrink: 0;
     position: relative; z-index: 1;
-    padding-bottom: 28px;
   }
   .brand-top {
     position: relative; z-index: 1;
@@ -112,23 +109,20 @@
 
   /* ── Carousel ── */
   .carousel-wrap {
-    flex: 1;
-    min-height: 0;
     position: relative; z-index: 1;
     display: flex; flex-direction: column;
     padding: 4px 0 0;
-    overflow: visible;
   }
 
   .carousel {
-    flex: 1; min-height: 0;
     overflow: hidden;
-    padding: 20px 0 8px;
+    padding: 20px 0 0;
+    height: 220px;
   }
   .carousel-track {
     display: flex;
-    align-items: stretch;
-    height: 100%;
+    align-items: flex-start;
+    height: 200px;
     gap: 16px;
     padding: 0 40px;
     will-change: transform;
@@ -155,13 +149,13 @@
   }
 
   .scamp-img-wrap {
-    flex: 1;
-    min-height: 0;
+    width: 100%;
+    height: 200px;
     overflow: hidden;
   }
   .scamp-img-wrap img {
     width: 100%;
-    height: 100%;
+    height: 200px;
     object-fit: cover;
     object-position: top center;
     display: block;
