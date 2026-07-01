@@ -127,7 +127,8 @@
   }
   .carousel-track {
     display: flex;
-    align-items: flex-start;
+    align-items: stretch;
+    height: 100%;
     gap: 16px;
     padding: 0 40px;
     will-change: transform;
@@ -142,27 +143,28 @@
     scroll-snap-align: none;
     display: flex;
     flex-direction: column;
-    gap: 0;
     transform-origin: center center;
     transition: transform 0.25s ease, filter 0.25s ease;
     position: relative;
     z-index: 1;
   }
   .scamp-slide:hover {
-    transform: scale(1.19);
-    filter: drop-shadow(0 4px 16px rgba(0,0,0,0.18));
+    transform: scale(1.05);
+    filter: drop-shadow(0 4px 24px rgba(0,0,0,0.32));
     z-index: 10;
   }
 
   .scamp-img-wrap {
-    width: 100%;
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
   }
   .scamp-img-wrap img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: contain;
+    object-position: top left;
     display: block;
-    transition: transform 0.5s ease;
     user-select: none;
     pointer-events: none;
   }
