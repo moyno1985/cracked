@@ -1482,11 +1482,19 @@ function renderHistory() {
       <div id="printTagsRow" style="display:none;">
         <div class="platform-pills-wrap">
           <button class="platform-pill" data-print="press" onclick="selectPrintPill(this)">Press / Magazine</button>
-          <button class="platform-pill" data-print="poster" onclick="selectPrintPill(this)">Poster / OOH</button>
-          <button class="platform-pill" data-print="billboard" onclick="selectPrintPill(this)">Billboard</button>
-          <button class="platform-pill" data-print="ambient" onclick="selectPrintPill(this)">Ambient</button>
+          <button class="platform-pill" data-print="poster" onclick="selectPrintPill(this)">Poster</button>
           <button class="platform-pill" data-print="dm" onclick="selectPrintPill(this)">Direct Mail</button>
-          <button class="platform-pill" data-print="guerrilla" onclick="selectPrintPill(this)">Guerrilla</button>
+        </div>
+      </div>
+
+      <!-- OOH subformat pills -->
+      <div id="oohTagsRow" style="display:none;">
+        <div class="platform-pills-wrap">
+          <button class="platform-pill" data-ooh="billboard" onclick="selectOohPill(this)">Billboard</button>
+          <button class="platform-pill" data-ooh="transit" onclick="selectOohPill(this)">Transit / DOOH</button>
+          <button class="platform-pill" data-ooh="ambient" onclick="selectOohPill(this)">Ambient</button>
+          <button class="platform-pill" data-ooh="spectacular" onclick="selectOohPill(this)">Spectacular</button>
+          <button class="platform-pill" data-ooh="guerrilla" onclick="selectOohPill(this)">Guerrilla</button>
         </div>
       </div>
 
@@ -1986,13 +1994,20 @@ function getSelectedPlatformsText() {
 }
 
 var _printSubformatDescriptions = {
-  'press':     'Single image, headline, copy — ideas that reward reading.',
-  'poster':    'Must work at distance — bold image, minimal words.',
-  'billboard': '7 words or less. No body copy. Pure concept.',
-  'ambient':   'The environment is the medium — context is the idea.',
-  'dm':        'Physical, tactile, can be 3D — lands in someone\'s hands.',
-  'guerrilla': 'Unexpected placement is the whole idea.',
+  'press':  'Single image, headline, copy — ideas that reward reading.',
+  'poster': 'Must work at distance — bold image, minimal words.',
+  'dm':     'Physical, tactile, can be 3D — lands in someone\'s hands.',
 };
+
+var _oohSubformatDescriptions = {
+  'billboard':  '7 words or less. No body copy. Pure concept.',
+  'transit':    'Bus shelters, subway, airports — captive audience, close range.',
+  'ambient':    'The environment is the medium — context creates the idea.',
+  'spectacular':'Scale is the idea — building wraps, projections, city landmarks.',
+  'guerrilla':  'Unexpected placement is the whole point.',
+};
+
+var _currentOohSubformat = null;
 
 function selectPrintPill(btn) {
   var sub = btn.getAttribute('data-print');
@@ -2009,14 +2024,29 @@ function selectPrintPill(btn) {
   }
 }
 
+function selectOohPill(btn) {
+  var sub = btn.getAttribute('data-ooh');
+  if (_currentOohSubformat === sub) {
+    _currentOohSubformat = null;
+    btn.classList.remove('selected');
+    showFormatDesc('ooh');
+  } else {
+    _currentOohSubformat = sub;
+    document.querySelectorAll('[data-ooh]').forEach(function(p) { p.classList.remove('selected'); });
+    btn.classList.add('selected');
+    var el = document.getElementById('formatDescriptor');
+    if (el) el.textContent = _oohSubformatDescriptions[sub] || '';
+  }
+}
+
 var _formatDescriptions = {
   'campaign':   'An integrated idea that works across multiple channels and touchpoints.',
   'social':     'Native content built for a specific social platform — feed, stories, or short-form video.',
   'film':       'A single video or TVC, from a 15-second cut to a few minutes.',
   'content':    'An episodic series of content — YouTube, podcast, branded entertainment, or social series.',
-  'ooh':        'Outdoor and ambient — posters, billboards, transit, and experiential formats.',
+  'ooh':        'Ideas that live in the physical environment — pick a subformat below.',
   'activation': 'Live events, stunts, and real-world experiences that generate earned media.',
-  'print':      'Press, poster, billboard, ambient, direct mail, guerrilla — pick a subformat.',
+  'print':      'Ink on paper — press ads, posters, direct mail. Pick a subformat below.',
 };
 
 function showFormatDesc(format) {
@@ -2055,6 +2085,18 @@ function setFormat(format) {
       printRow.style.display = 'none';
       _currentPrintSubformat = null;
       document.querySelectorAll('[data-print]').forEach(function(p) { p.classList.remove('selected'); });
+    }
+  }
+
+  // Show/hide OOH subformat pills
+  var oohRow = document.getElementById('oohTagsRow');
+  if (oohRow) {
+    if (format === 'ooh') {
+      oohRow.style.display = 'flex';
+    } else {
+      oohRow.style.display = 'none';
+      _currentOohSubformat = null;
+      document.querySelectorAll('[data-ooh]').forEach(function(p) { p.classList.remove('selected'); });
     }
   }
 
@@ -2385,15 +2427,18 @@ The inspiredBy array should contain 2–3 real Cannes Lions winning campaigns th
     'film':       'IMPORTANT: All concepts MUST be film/TVC ideas — television commercials or cinema films. Every execution must be a video/moving-image execution. No print, no OOH, no static formats. Think cinematically: scenes, dialogue, VO, emotion, editing. The executionIdea must describe a specific film scene or sequence.',
     'campaign':   'Concepts should be full integrated campaigns led by a strong film/TVC hero execution, with supporting touchpoints that extend the film idea.',
     'social':     'IMPORTANT: All concepts MUST be native social media ideas — built for feeds, stories, short-form video, or community. No TV commercials.' + (_selectedPlatforms.length ? ' Target platform(s): ' + _selectedPlatforms.join(', ') + '. Make every execution feel genuinely native to those specific platforms — the format, length, and mechanic should only work there.' : ''),
-    'ooh':        'IMPORTANT: All concepts MUST be Out-of-Home executions — large-format spectaculars, transit (bus shelters, subway, airports), DOOH digital screens, building wraps, or street furniture. Scale and location are the medium. No film or video productions, no print ads.',
+    'ooh':        ({
+      'billboard':  'IMPORTANT: All concepts MUST be billboard executions — 7 words or less, no body copy, pure visual concept. If it needs explanation it fails. Brutal simplicity at scale. No film, no print ads.',
+      'transit':    'IMPORTANT: All concepts MUST be transit OOH — bus shelters, subway platforms, airports. Closer proximity than billboards, so more copy is possible, but the idea must still land in seconds. No film, no print ads.',
+      'ambient':    'IMPORTANT: All concepts MUST be ambient OOH — the environment IS the medium. The location, object, or context creates the meaning. Contextual cleverness over messaging. No film, no traditional print.',
+      'spectacular':'IMPORTANT: All concepts MUST be large-format spectaculars — building wraps, landmark takeovers, projections, or city-scale installations. Scale and surprise are the craft. No film, no print ads.',
+      'guerrilla':  'IMPORTANT: All concepts MUST be guerrilla OOH — unexpected placement in the real world is the whole idea. The surprise, context, and earned media potential create the impact. No traditional paid media.',
+    })[_currentOohSubformat] || 'IMPORTANT: All concepts MUST be Out-of-Home executions — ideas that live in the physical environment. Billboards, transit, ambient, spectaculars, or guerrilla. Scale and location are the medium. No film, no print ads.',
     'print':      ({
-      'press':     'IMPORTANT: All concepts MUST be press or magazine ads — single image with headline and copy. Ideas that reward reading. The craft is in the headline and art direction. No film, no OOH, no digital.',
-      'poster':    'IMPORTANT: All concepts MUST be poster executions — bold, graphic ideas that work at distance. Minimal copy. The image does the work. No film, no digital.',
-      'billboard': 'IMPORTANT: All concepts MUST be billboard ideas — 7 words or less, no body copy, pure concept. If it needs explanation it fails. Brutal simplicity. No film, no digital.',
-      'ambient':   'IMPORTANT: All concepts MUST be ambient executions — the environment IS the medium. The location, object, or context is what makes the idea. Contextual cleverness over messaging. No film, no traditional print.',
-      'dm':        'IMPORTANT: All concepts MUST be direct mail ideas — physical, tactile, can be 3D. Lands in someone\'s hands. The physicality is part of the idea. No film, no digital.',
-      'guerrilla': 'IMPORTANT: All concepts MUST be guerrilla executions — unexpected placement is the whole idea. The surprise and context create the impact. No traditional media.',
-    })[_currentPrintSubformat] || 'IMPORTANT: All concepts MUST be print executions — press ads, magazine ads, posters, or still-image formats. No film, no video, no digital.',
+      'press':  'IMPORTANT: All concepts MUST be press or magazine ads — single image with headline and copy. Ideas that reward reading. The craft is in the headline, the art direction, and the relationship between image and words. No film, no OOH.',
+      'poster': 'IMPORTANT: All concepts MUST be poster executions — bold, graphic ideas that work at distance. Minimal copy. The image does the work. Designed to be displayed, not read. No film, no OOH.',
+      'dm':     'IMPORTANT: All concepts MUST be direct mail ideas — physical, tactile, can be 3D. The piece lands in someone\'s hands. The physicality and personalisation are part of the idea. No film, no OOH.',
+    })[_currentPrintSubformat] || 'IMPORTANT: All concepts MUST be print executions — press ads, magazine ads, posters, or direct mail. Ink on paper, static image, designed craft. No film, no video, no OOH.',
     'activation': 'IMPORTANT: All concepts MUST be live brand activations or experiential ideas — events, stunts, or physical brand experiences.',
     'content':    'IMPORTANT: All concepts MUST be branded content series — episodic, made for streaming or social, with a repeatable format.',
   };
