@@ -122,8 +122,8 @@
 
   .carousel {
     flex: 1; min-height: 0;
-    overflow: visible;
-    padding: 20px 0 28px;
+    overflow: hidden;
+    padding: 20px 0 8px;
   }
   .carousel-track {
     display: flex;
@@ -156,11 +156,13 @@
 
   .scamp-img-wrap {
     width: 100%;
+    aspect-ratio: 4 / 3;
     overflow: hidden;
   }
   .scamp-img-wrap img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
     display: block;
     transition: transform 0.5s ease;
     user-select: none;
@@ -200,6 +202,7 @@
     flex-shrink: 0;
     display: flex; gap: 8px; align-items: center;
     padding: 16px 40px 20px;
+    position: relative; z-index: 10;
   }
   .carousel-dots { display: flex; gap: 5px; align-items: center; margin-left: 4px; }
   .dot {
