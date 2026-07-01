@@ -38,12 +38,11 @@
   }
 
   /* FORMAT CHIPS */
-  .format-chips {
+  .format-chips-group {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
+    align-items: flex-start;
+    gap: 0;
+    margin-bottom: 4px;
   }
   .format-chips-label {
     font-family: 'Space Mono', monospace;
@@ -51,8 +50,23 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--ink-light);
-    margin-right: 4px;
     white-space: nowrap;
+    padding-top: 8px;
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+  .format-chips-col {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+  }
+  .format-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
   }
   .format-chip {
     font-family: 'Space Mono', monospace;
@@ -1465,51 +1479,55 @@ function renderHistory() {
       </div>
       <div id="exampleLink" style="display:none;margin-bottom:16px;"><button onclick="showExamples()" style="background:none;border:none;cursor:pointer;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-light);padding:0;text-decoration:underline;">Load an example →</button></div>
 
-      <!-- Format chips -->
-      <div class="format-chips" id="formatChips">
+      <!-- Format chips + sub-pills -->
+      <div class="format-chips-group">
         <span class="format-chips-label">Format</span>
-        <button class="format-chip active" onclick="setFormat('campaign')" id="chip-campaign" onmouseenter="showFormatDesc('campaign')" onmouseleave="showFormatDesc(_currentFormat)">Full Campaign</button>
-        <button class="format-chip" onclick="setFormat('social')" id="chip-social" onmouseenter="showFormatDesc('social')" onmouseleave="showFormatDesc(_currentFormat)">Social</button>
-        <button class="format-chip" onclick="setFormat('film')" id="chip-film" onmouseenter="showFormatDesc('film')" onmouseleave="showFormatDesc(_currentFormat)">Film</button>
-        <button class="format-chip" onclick="setFormat('content')" id="chip-content" onmouseenter="showFormatDesc('content')" onmouseleave="showFormatDesc(_currentFormat)">Content Series</button>
-        <button class="format-chip" onclick="setFormat('ooh')" id="chip-ooh" onmouseenter="showFormatDesc('ooh')" onmouseleave="showFormatDesc(_currentFormat)">OOH</button>
-        <button class="format-chip" onclick="setFormat('activation')" id="chip-activation" onmouseenter="showFormatDesc('activation')" onmouseleave="showFormatDesc(_currentFormat)">Activation</button>
-        <button class="format-chip" onclick="setFormat('print')" id="chip-print" onmouseenter="showFormatDesc('print')" onmouseleave="showFormatDesc(_currentFormat)">Print</button>
-      </div>
-      <p class="format-descriptor" id="formatDescriptor"></p>
+        <div class="format-chips-col">
+          <div class="format-chips" id="formatChips">
+            <button class="format-chip active" onclick="setFormat('campaign')" id="chip-campaign" onmouseenter="showFormatDesc('campaign')" onmouseleave="showFormatDesc(_currentFormat)">Full Campaign</button>
+            <button class="format-chip" onclick="setFormat('social')" id="chip-social" onmouseenter="showFormatDesc('social')" onmouseleave="showFormatDesc(_currentFormat)">Social</button>
+            <button class="format-chip" onclick="setFormat('film')" id="chip-film" onmouseenter="showFormatDesc('film')" onmouseleave="showFormatDesc(_currentFormat)">Film</button>
+            <button class="format-chip" onclick="setFormat('content')" id="chip-content" onmouseenter="showFormatDesc('content')" onmouseleave="showFormatDesc(_currentFormat)">Content Series</button>
+            <button class="format-chip" onclick="setFormat('ooh')" id="chip-ooh" onmouseenter="showFormatDesc('ooh')" onmouseleave="showFormatDesc(_currentFormat)">OOH</button>
+            <button class="format-chip" onclick="setFormat('activation')" id="chip-activation" onmouseenter="showFormatDesc('activation')" onmouseleave="showFormatDesc(_currentFormat)">Activation</button>
+            <button class="format-chip" onclick="setFormat('print')" id="chip-print" onmouseenter="showFormatDesc('print')" onmouseleave="showFormatDesc(_currentFormat)">Print</button>
+          </div>
+          <p class="format-descriptor" id="formatDescriptor"></p>
 
-      <!-- Print subformat pills -->
-      <div id="printTagsRow" style="display:none;">
-        <div class="platform-pills-wrap">
-          <button class="platform-pill" data-print="press" onclick="selectPrintPill(this)">Press / Magazine</button>
-          <button class="platform-pill" data-print="poster" onclick="selectPrintPill(this)">Poster</button>
-          <button class="platform-pill" data-print="dm" onclick="selectPrintPill(this)">Direct Mail</button>
-        </div>
-      </div>
+          <!-- Print subformat pills -->
+          <div id="printTagsRow" style="display:none;">
+            <div class="platform-pills-wrap">
+              <button class="platform-pill" data-print="press" onclick="selectPrintPill(this)">Press / Magazine</button>
+              <button class="platform-pill" data-print="poster" onclick="selectPrintPill(this)">Poster</button>
+              <button class="platform-pill" data-print="dm" onclick="selectPrintPill(this)">Direct Mail</button>
+            </div>
+          </div>
 
-      <!-- OOH subformat pills -->
-      <div id="oohTagsRow" style="display:none;">
-        <div class="platform-pills-wrap">
-          <button class="platform-pill" data-ooh="billboard" onclick="selectOohPill(this)">Billboard</button>
-          <button class="platform-pill" data-ooh="transit" onclick="selectOohPill(this)">Transit / DOOH</button>
-          <button class="platform-pill" data-ooh="ambient" onclick="selectOohPill(this)">Ambient</button>
-          <button class="platform-pill" data-ooh="spectacular" onclick="selectOohPill(this)">Spectacular</button>
-          <button class="platform-pill" data-ooh="guerrilla" onclick="selectOohPill(this)">Guerrilla</button>
-        </div>
-      </div>
+          <!-- OOH subformat pills -->
+          <div id="oohTagsRow" style="display:none;">
+            <div class="platform-pills-wrap">
+              <button class="platform-pill" data-ooh="billboard" onclick="selectOohPill(this)">Billboard</button>
+              <button class="platform-pill" data-ooh="transit" onclick="selectOohPill(this)">Transit / DOOH</button>
+              <button class="platform-pill" data-ooh="ambient" onclick="selectOohPill(this)">Ambient</button>
+              <button class="platform-pill" data-ooh="spectacular" onclick="selectOohPill(this)">Spectacular</button>
+              <button class="platform-pill" data-ooh="guerrilla" onclick="selectOohPill(this)">Guerrilla</button>
+            </div>
+          </div>
 
-      <!-- Social platform pills -->
-      <div id="socialTagsRow" style="display:none;">
-        <div class="platform-pills-wrap">
-          <button class="platform-pill" data-platform="TikTok" onclick="togglePlatformPill(this)">TikTok</button>
-          <button class="platform-pill" data-platform="Instagram" onclick="togglePlatformPill(this)">Instagram</button>
-          <button class="platform-pill" data-platform="YouTube" onclick="togglePlatformPill(this)">YouTube</button>
-          <button class="platform-pill" data-platform="Facebook" onclick="togglePlatformPill(this)">Facebook</button>
-          <button class="platform-pill" data-platform="X" onclick="togglePlatformPill(this)">X</button>
-          <button class="platform-pill" data-platform="LinkedIn" onclick="togglePlatformPill(this)">LinkedIn</button>
-          <button class="platform-pill" data-platform="Threads" onclick="togglePlatformPill(this)">Threads</button>
-          <button class="platform-pill" data-platform="Pinterest" onclick="togglePlatformPill(this)">Pinterest</button>
-          <button class="platform-pill" data-platform="Snapchat" onclick="togglePlatformPill(this)">Snapchat</button>
+          <!-- Social platform pills -->
+          <div id="socialTagsRow" style="display:none;">
+            <div class="platform-pills-wrap">
+              <button class="platform-pill" data-platform="TikTok" onclick="togglePlatformPill(this)">TikTok</button>
+              <button class="platform-pill" data-platform="Instagram" onclick="togglePlatformPill(this)">Instagram</button>
+              <button class="platform-pill" data-platform="YouTube" onclick="togglePlatformPill(this)">YouTube</button>
+              <button class="platform-pill" data-platform="Facebook" onclick="togglePlatformPill(this)">Facebook</button>
+              <button class="platform-pill" data-platform="X" onclick="togglePlatformPill(this)">X</button>
+              <button class="platform-pill" data-platform="LinkedIn" onclick="togglePlatformPill(this)">LinkedIn</button>
+              <button class="platform-pill" data-platform="Threads" onclick="togglePlatformPill(this)">Threads</button>
+              <button class="platform-pill" data-platform="Pinterest" onclick="togglePlatformPill(this)">Pinterest</button>
+              <button class="platform-pill" data-platform="Snapchat" onclick="togglePlatformPill(this)">Snapchat</button>
+            </div>
+          </div>
         </div>
       </div>
 
