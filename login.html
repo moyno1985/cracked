@@ -581,6 +581,16 @@
 
 <script>
 (function() {
+  const el = document.getElementById('statCount');
+  if (!el) return;
+  fetch('/api/stats').then(r => r.json()).then(data => {
+    if (data.count) el.textContent = Number(data.count).toLocaleString();
+  }).catch(() => {});
+})();
+</script>
+
+<script>
+(function() {
   const legends = [
     'david@ogilvy.com',
     'bill.bernbach@ddb.com',
