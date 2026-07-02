@@ -2781,7 +2781,17 @@ The inspiredBy array should contain 2–3 real Cannes Lions winning campaigns th
   const formatInstruction = formatInstructions[_currentFormat] || '';
 
   const brandGuideContext = getBrandGuideContext(brand);
-  const userPrompt = `Generate ${numConcepts} original advertising campaign concepts for the following brief:\n\nBrand: ${brand}\nCategory: ${category||'Not specified'}\nTarget Audience: ${audience||'Not specified'}\nCampaign Ambition: ${ambition||'Not specified'}\nTone: ${tone||'Not specified'}\nFormat: ${channel||'Not specified'}\n\nThe Brief:\n${brief}\n\n${formatInstruction ? formatInstruction + '\n\n' : ''}${archiveContext}${brandGuideContext}\n\nEach concept should feel genuinely brave — the kind of idea a jury would argue about. Avoid safe, predictable territory. Think about what the brand could OWN culturally, not just what it could say.`;
+
+  // Pull recent concept names from history to avoid repetition
+  const recentNames = getHistory()
+    .flatMap(h => (h.concepts || []).map(c => c.name))
+    .filter(Boolean)
+    .slice(0, 20);
+  const avoidClause = recentNames.length
+    ? `\n\nDo NOT generate any of these concepts — they have already been shown to the user:\n${recentNames.map(n => `- ${n}`).join('\n')}\n\nExplore genuinely different creative territory.`
+    : '';
+
+  const userPrompt = `Generate ${numConcepts} original advertising campaign concepts for the following brief:\n\nBrand: ${brand}\nCategory: ${category||'Not specified'}\nTarget Audience: ${audience||'Not specified'}\nCampaign Ambition: ${ambition||'Not specified'}\nTone: ${tone||'Not specified'}\nFormat: ${channel||'Not specified'}\n\nThe Brief:\n${brief}\n\n${formatInstruction ? formatInstruction + '\n\n' : ''}${archiveContext}${brandGuideContext}${avoidClause}\n\nEach concept should feel genuinely brave — the kind of idea a jury would argue about. Avoid safe, predictable territory. Think about what the brand could OWN culturally, not just what it could say.`;
 
   try {
     const response = await fetch('/api/claude', {
