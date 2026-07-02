@@ -3185,6 +3185,10 @@ function switchGuideTab(tab) {
     document.getElementById('guidePanel-' + t).style.display = t === tab ? '' : 'none';
     document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === tab);
   });
+  var sub = document.querySelector('#brandGuideModal .bgm-sub');
+  if (sub) sub.textContent = tab === 'url'
+    ? "We'll scrape the page and use what we find to keep ideas on-brand."
+    : "Add a brand guide and the ideas get sharper. We'll remember it for next time.";
 }
 
 function checkUrlSaveReady() {
