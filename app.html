@@ -3037,12 +3037,48 @@ function searchArchive(brief, brand, category) {
     if (scribbles.length) scribbles[scribbles.length - 1].endT = performance.now();
   });
 
+  function drawScribblesOnly() {
+    const now2 = performance.now();
+    ctx.clearRect(0, 0, W, H);
+    scribbles = scribbles.filter(s => !s.endT || now2 - s.endT < SCRIBBLE_HOLD + SCRIBBLE_FADE);
+    for (const s of scribbles) {
+      if (s.points.length < 2) continue;
+      const age = s.endT ? Math.max(0, now2 - s.endT - SCRIBBLE_HOLD) : 0;
+      const alpha = s.endT ? Math.max(0, 1 - age / SCRIBBLE_FADE) : 1;
+      const a = alpha * alpha;
+      const drawScribble = (lw, strokeA) => {
+        ctx.beginPath();
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.moveTo(s.points[0].x, s.points[0].y);
+        for (let i = 1; i < s.points.length - 1; i++) {
+          const mx = s.points[i].x * 0.7 + (s.points[i].x + s.points[i+1].x) / 2 * 0.3;
+          const my = s.points[i].y * 0.7 + (s.points[i].y + s.points[i+1].y) / 2 * 0.3;
+          ctx.quadraticCurveTo(s.points[i].x, s.points[i].y, mx, my);
+        }
+        ctx.lineTo(s.points[s.points.length-1].x, s.points[s.points.length-1].y);
+        ctx.strokeStyle = `rgba(14, 8, 3, ${a * strokeA})`;
+        ctx.lineWidth = lw;
+        ctx.stroke();
+      };
+      drawScribble(LINE_WIDTH * 1.2, 0.18);
+      drawScribble(LINE_WIDTH * 0.4, 0.07);
+    }
+    if (scribbles.length > 0) requestAnimationFrame(drawScribblesOnly);
+    else { active = false; scribbleActive = false; }
+  }
+
   function draw() {
     const now = performance.now();
     ctx.clearRect(0, 0, W, H);
 
     while (points.length && now - points[0].t > FADE) points.shift();
-    if (points.length < 2) { active = false; return; }
+    if (points.length < 2) {
+      // cursor trail gone — hand off to scribble-only loop if needed
+      if (scribbles.length > 0) requestAnimationFrame(drawScribblesOnly);
+      else { active = false; scribbleActive = false; }
+      return;
+    }
 
     const segments = [];
     let seg = [points[0]];
@@ -3113,8 +3149,8 @@ function searchArchive(brief, brand, category) {
       drawScribble(LINE_WIDTH * 0.4, 0.07);
     }
 
-    const needsLoop = points.length > 0 || scribbles.length > 0 || drawing;
-    if (needsLoop) requestAnimationFrame(draw);
+    if (points.length > 0 || drawing) requestAnimationFrame(draw);
+    else if (scribbles.length > 0) requestAnimationFrame(drawScribblesOnly);
     else { active = false; scribbleActive = false; }
   }
 })();
