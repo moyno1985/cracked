@@ -1234,6 +1234,7 @@ function addToHistory(brand, audience, brief, format, concepts) {
       mechanic: c.mechanic || '',
       concept: c.concept || '',
       keyInsight: c.keyInsight || '',
+      brandOwnership: c.brandOwnership || '',
       executionIdea: c.executionIdea || '',
       skipped: false,
     })),
@@ -1278,6 +1279,8 @@ function loadFromHistory(item) {
   concepts.forEach((c, i) => {
     const card = document.createElement('div');
     card.className = 'concept-card';
+    card.dataset.mechanic = c.mechanic || '';
+    card.dataset.execution = c.executionIdea || '';
     card.innerHTML = `
       <div class="concept-num">Concept ${String(i+1).padStart(2,'0')}</div>
       <div class="concept-name-wrap"><span class="concept-name"><span class="highlight-line">${c.name || ''}</span></span></div>
@@ -1285,6 +1288,7 @@ function loadFromHistory(item) {
       ${c.mechanic ? `<span class="concept-label">The idea</span><div class="concept-body" style="font-weight:500;">${c.mechanic}</div>` : ''}
       ${c.concept ? `<div class="concept-body">${c.concept}</div>` : '<div class="concept-body" style="color:var(--ink-light);font-style:italic;">Re-run this brief to see the full concept.</div>'}
       ${c.keyInsight ? `<span class="concept-label">The insight</span><div class="concept-body">${c.keyInsight}</div>` : ''}
+      ${c.brandOwnership ? `<span class="concept-label">Why only this brand</span><div class="concept-body">${c.brandOwnership}</div>` : ''}
       ${c.executionIdea ? `<span class="concept-label">Bring it to life</span><div class="concept-body">${c.executionIdea}</div>` : ''}
       <div class="concept-image" style="display:none;"></div>
       <div class="concept-meta"></div>
@@ -1307,7 +1311,8 @@ async function resketchFromHistory(btn, index, brand) {
   const card = cards[index];
   if (!card) return;
   const conceptName = card.querySelector('.highlight-line')?.textContent || '';
-  const conceptBody = card.querySelector('.concept-body')?.textContent || '';
+  const mechanic = card.dataset.mechanic || card.querySelector('.concept-body')?.textContent || '';
+  const execution = card.dataset.execution || '';
   btn.disabled = true;
   btn.textContent = 'Scamping...';
   const imgDiv = card.querySelector('.concept-image');
@@ -1315,7 +1320,7 @@ async function resketchFromHistory(btn, index, brand) {
     const r = await fetch('/api/image', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ concept: conceptName + '. ' + conceptBody, brand })
+      body: JSON.stringify({ concept: conceptName + (mechanic ? ': ' + mechanic : '') + (execution ? ' ' + execution : ''), brand })
     });
     const { jobId } = await r.json();
     let result;
@@ -1788,8 +1793,9 @@ function sketchConcept(btn, index) {
   var card = cards[index];
   var imgDiv = card.querySelector('.concept-image');
   var conceptName = card.querySelector('.highlight-line').textContent;
-  var bodyEls = card.querySelectorAll('.concept-body');
-  var conceptBody = Array.from(bodyEls).slice(0,2).map(el => el.textContent).join(' ');
+  var mechanic = card.dataset.mechanic || '';
+  var execution = card.dataset.execution || '';
+  var scampConcept = conceptName + (mechanic ? ': ' + mechanic : '') + (execution ? ' ' + execution : '');
   btn.classList.add('loading');
   btn.innerHTML = 'Scamping...';
   imgDiv.style.display = 'flex';
@@ -1797,7 +1803,7 @@ function sketchConcept(btn, index) {
   fetch('/api/image', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ concept: conceptName + ': ' + conceptBody, brand: window._currentBrand || '' })
+    body: JSON.stringify({ concept: scampConcept.trim(), brand: window._currentBrand || '' })
   })
   .then(r => r.json())
   .then(async startData => {
@@ -2451,7 +2457,9 @@ async function generateConcepts() {
 
 Your job is to generate original advertising creative concepts that are informed by the patterns, strategic leaps, and creative bravery of Lions-winning work. You understand what makes juries weep: genuine human truth, unexpected creative territory, cultural relevance, craft, and ideas that couldn't belong to any other brand. When a specific channel is specified, tailor the concepts and executions specifically for that medium — a social media idea should feel native to social, an OOH idea should work at scale in the street, a PR stunt should be newsworthy.
 
-Before writing any concept, stress-test it with this question: "If I describe this idea in one plain sentence to someone who will immediately say 'so what?' — does it hold up?" If it only sounds good when dressed in poetic language, it is not a finished concept. Discard it and find a better one.
+Before writing any concept, apply two tests:
+1. Plain language test: "If I describe this idea in one plain sentence to someone who will immediately say 'so what?' — does it hold up?" If it only sounds good when dressed in poetic language, discard it.
+2. Competitor swap test: "Would this idea work if a competitor's logo replaced the brand's?" If yes, it is not specific enough — it belongs to no brand in particular, which means it belongs to none. Find what only this brand can own.
 
 You must respond ONLY with a valid JSON object. No preamble, no markdown, no explanation outside the JSON. The format is:
 
@@ -2463,8 +2471,8 @@ You must respond ONLY with a valid JSON object. No preamble, no markdown, no exp
       "mechanic": "One plain sentence describing exactly what the audience sees or experiences. No metaphors. No framing. Just: what is literally happening?",
       "concept": "3–4 sentences describing the creative idea clearly: what it is, what it does, why it works, and how it would live in the world. Must be consistent with the mechanic above.",
       "keyInsight": "The single human or cultural truth the idea unlocks",
+      "brandOwnership": "One sentence: what specific brand truth, asset, or cultural permission means only this brand could run this idea? If a competitor could run it equally convincingly, this field should say so — and the concept should be reconsidered.",
       "executionIdea": "One specific, vivid execution detail — a scene, a stunt, a format twist that makes it real",
-      "lionsPotential": "Which Cannes Lions category this idea is best suited for and one specific reason why — be direct and honest, not hyperbolic. No Grand Prix claims unless truly warranted. One sentence.",
       "inspiredBy": [
         { "campaign": "CAMPAIGN NAME", "brand": "Brand", "year": "Year", "why": "One sentence on what it borrows or echoes" }
       ]
