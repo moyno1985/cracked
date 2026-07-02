@@ -2500,7 +2500,7 @@ Each concept should feel genuinely ownable — the kind of series that builds a 
     const response = await fetch('/api/claude', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 2500, system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 6000, system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] })
     });
     const data = await response.json();
     stopLoader();
@@ -2797,7 +2797,7 @@ The inspiredBy array should contain 2–3 real Cannes Lions winning campaigns th
     const response = await fetch('/api/claude', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 2500, system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 6000, system: systemPrompt, messages: [{ role: 'user', content: userPrompt }] })
     });
     const data = await response.json();
     stopLoader();
