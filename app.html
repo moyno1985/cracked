@@ -2983,8 +2983,9 @@ function searchArchive(brief, brand, category) {
   let enabled = false; // off by default
   let overInteractive = false;
 
-  // Scribble strokes — drawn on mousedown+drag, fade over 2.5s
-  const SCRIBBLE_FADE = 6000;
+  // Scribble strokes — hold for 5s then fade over 1s
+  const SCRIBBLE_HOLD = 5000;
+  const SCRIBBLE_FADE = 1000;
   let scribbles = [];       // [{points: [...], endT: null|timestamp}]
   let drawing = false;
   let scribbleActive = false;
@@ -3086,10 +3087,10 @@ function searchArchive(brief, brand, category) {
 
     // Draw scribbles
     const now2 = performance.now();
-    scribbles = scribbles.filter(s => !s.endT || now2 - s.endT < SCRIBBLE_FADE);
+    scribbles = scribbles.filter(s => !s.endT || now2 - s.endT < SCRIBBLE_HOLD + SCRIBBLE_FADE);
     for (const s of scribbles) {
       if (s.points.length < 2) continue;
-      const age = s.endT ? now2 - s.endT : 0;
+      const age = s.endT ? Math.max(0, now2 - s.endT - SCRIBBLE_HOLD) : 0;
       const alpha = s.endT ? Math.max(0, 1 - age / SCRIBBLE_FADE) : 1;
       const a = alpha * alpha;
 
