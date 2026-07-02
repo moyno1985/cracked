@@ -657,13 +657,6 @@
   let enabled = true;
   let overInteractive = false;
 
-  const toggle = document.getElementById('sharpieToggle');
-  toggle.addEventListener('click', () => {
-    enabled = !enabled;
-    toggle.style.opacity = enabled ? '0.7' : '0.25';
-    toggle.querySelector('path').setAttribute('stroke', enabled ? '#1a1008' : '#aaa');
-    if (!enabled) { points = []; ctx.clearRect(0, 0, W, H); }
-  });
 
   const interactiveSel = 'input, button, a, .login-card, .scamp-slide, .carousel-controls';
   document.querySelectorAll(interactiveSel).forEach(el => {
