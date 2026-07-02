@@ -2976,7 +2976,7 @@ function searchArchive(brief, brand, category) {
   window.addEventListener('resize', resize);
 
   const FADE = 320;
-  const LINE_WIDTH = 5.5;
+  const LINE_WIDTH = 6.6;
 
   let points = [];
   let active = false;
@@ -3052,12 +3052,12 @@ function searchArchive(brief, brand, category) {
       };
 
       buildPath();
-      ctx.strokeStyle = `rgba(14, 8, 3, ${a * 0.039})`;
+      ctx.strokeStyle = `rgba(14, 8, 3, ${a * 0.047})`;
       ctx.lineWidth = LINE_WIDTH;
       ctx.stroke();
 
       buildPath();
-      ctx.strokeStyle = `rgba(8, 4, 1, ${a * 0.013})`;
+      ctx.strokeStyle = `rgba(8, 4, 1, ${a * 0.016})`;
       ctx.lineWidth = LINE_WIDTH * 0.4;
       ctx.stroke();
     }
