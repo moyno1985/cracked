@@ -1758,6 +1758,20 @@ function renderHistory() {
             </div>
           </div>
 
+          <!-- Content Series platform pills -->
+          <div id="contentTagsRow" style="display:none;">
+            <div class="platform-pills-wrap">
+              <button class="platform-pill" data-content="YouTube" onclick="selectContentPill(this)">YouTube</button>
+              <button class="platform-pill" data-content="TikTok" onclick="selectContentPill(this)">TikTok</button>
+              <button class="platform-pill" data-content="Meta (Facebook &amp; Instagram)" onclick="selectContentPill(this)">Meta</button>
+              <button class="platform-pill" data-content="LinkedIn" onclick="selectContentPill(this)">LinkedIn</button>
+              <button class="platform-pill" data-content="Podcast" onclick="selectContentPill(this)">Podcast</button>
+              <button class="platform-pill" data-content="Pinterest" onclick="selectContentPill(this)">Pinterest</button>
+              <button class="platform-pill" data-content="Snapchat" onclick="selectContentPill(this)">Snapchat</button>
+              <button class="platform-pill" data-content="X (Twitter)" onclick="selectContentPill(this)">X</button>
+            </div>
+          </div>
+
           <!-- Social platform pills -->
           <div id="socialTagsRow" style="display:none;">
             <div class="platform-pills-wrap">
@@ -1807,20 +1821,7 @@ function renderHistory() {
         <!-- Content Series fields -->
         <div id="fields-content" style="display:none">
           <div class="form-row">
-            <div class="form-group">
-              <label>Platform</label>
-              <select id="contentPlatform">
-                <option value="">Any platform</option>
-                <option>TikTok</option>
-                <option>Meta (Facebook &amp; Instagram)</option>
-                <option>YouTube</option>
-                <option>LinkedIn</option>
-                <option>Podcast</option>
-                <option>Pinterest</option>
-                <option>Snapchat</option>
-                <option>X (Twitter)</option>
-              </select>
-            </div>
+            <input type="hidden" id="contentPlatform" value="" />
             <div class="form-group">
               <label>Series Ambition</label>
               <select id="contentAmbition">
@@ -2191,7 +2192,12 @@ function loadContentExample(key) {
   const ex = CONTENT_EXAMPLES[key];
   document.getElementById('brand').value = ex.brand;
   document.getElementById('audience').value = ex.audience;
-  document.getElementById('contentPlatform').value = ex.platform;
+  document.querySelectorAll('[data-content]').forEach(function(p) { p.classList.remove('selected'); });
+  if (ex.platform) {
+    var cpBtn = document.querySelector(`[data-content="${ex.platform}"]`);
+    if (cpBtn) cpBtn.classList.add('selected');
+    document.getElementById('contentPlatform').value = ex.platform;
+  }
   document.getElementById('contentAmbition').value = ex.ambition;
   document.getElementById('contentTerritory').value = ex.territory;
   document.getElementById('tone').value = ex.tone;
@@ -2319,6 +2325,19 @@ function selectOohPill(btn) {
   }
 }
 
+function selectContentPill(btn) {
+  var platform = btn.getAttribute('data-content');
+  var cp = document.getElementById('contentPlatform');
+  if (btn.classList.contains('selected')) {
+    btn.classList.remove('selected');
+    if (cp) cp.value = '';
+  } else {
+    document.querySelectorAll('[data-content]').forEach(function(p) { p.classList.remove('selected'); });
+    btn.classList.add('selected');
+    if (cp) cp.value = platform;
+  }
+}
+
 var _formatDescriptions = {
   'campaign':   'An integrated idea that works across multiple channels and touchpoints.',
   'social':     'Native content built for a specific social platform — feed, stories, or short-form video.',
@@ -2379,6 +2398,19 @@ function setFormat(format) {
       oohRow.style.display = 'none';
       _currentOohSubformat = null;
       document.querySelectorAll('[data-ooh]').forEach(function(p) { p.classList.remove('selected'); });
+    }
+  }
+
+  // Show/hide content platform pills
+  var contentRow = document.getElementById('contentTagsRow');
+  if (contentRow) {
+    if (format === 'content') {
+      contentRow.style.display = 'flex';
+    } else {
+      contentRow.style.display = 'none';
+      document.querySelectorAll('[data-content]').forEach(function(p) { p.classList.remove('selected'); });
+      var cp = document.getElementById('contentPlatform');
+      if (cp) cp.value = '';
     }
   }
 
