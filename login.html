@@ -49,13 +49,12 @@
     flex-shrink: 0;
   }
   .brand-bottom-group {
-    margin-bottom: 0;padding-bottom: 32px;
+    margin-bottom: 0; padding-bottom: 0;
     margin-top: 0;
-    flex: 1;
+    flex: 1 1 auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    flex-shrink: 0;
     position: relative; z-index: 1;
   }
   .brand-top {
@@ -121,8 +120,8 @@
     overflow: hidden;
     width: 100%;
     position: relative;
-    height: 360px;
-    flex-grow: 1;
+    min-height: 360px;
+    flex: 1 1 auto;
   }
   .carousel-wrap {
     position: relative; z-index: 1;
