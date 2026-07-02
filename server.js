@@ -232,6 +232,72 @@ Write it as if this is going into production tomorrow. Make it feel like award-w
     return;
   }
 
+  // ── Brand URL scraper ─────────────────────────────────────────────────────
+  if (req.url === '/api/scrape-brand-url') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', async () => {
+      let parsed;
+      try { parsed = JSON.parse(body); } catch(e) {
+        res.writeHead(400); res.end(JSON.stringify({ error: 'Invalid JSON' })); return;
+      }
+      const { url } = parsed;
+      if (!url || !url.startsWith('http')) {
+        res.writeHead(400); res.end(JSON.stringify({ error: 'Valid URL required' })); return;
+      }
+      try {
+        const https = require('https');
+        const http = require('http');
+        const lib = url.startsWith('https') ? https : http;
+        const pageText = await new Promise((resolve, reject) => {
+          const req2 = lib.get(url, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+              'Accept': 'text/html',
+            },
+            timeout: 10000,
+          }, (r) => {
+            // Follow one redirect
+            if (r.statusCode >= 300 && r.statusCode < 400 && r.headers.location) {
+              const redir = r.headers.location.startsWith('http') ? r.headers.location : url + r.headers.location;
+              const lib2 = redir.startsWith('https') ? https : http;
+              lib2.get(redir, { headers: { 'User-Agent': 'Mozilla/5.0' }, timeout: 10000 }, (r2) => {
+                let d = '';
+                r2.on('data', c => d += c);
+                r2.on('end', () => resolve(d));
+              }).on('error', reject);
+              return;
+            }
+            let d = '';
+            r.on('data', c => d += c);
+            r.on('end', () => resolve(d));
+          });
+          req2.on('error', reject);
+          req2.on('timeout', () => { req2.destroy(); reject(new Error('Timeout')); });
+        });
+
+        // Strip HTML tags and collapse whitespace
+        const text = pageText
+          .replace(/<script[\s\S]*?<\/script>/gi, '')
+          .replace(/<style[\s\S]*?<\/style>/gi, '')
+          .replace(/<[^>]+>/g, ' ')
+          .replace(/&nbsp;/g, ' ')
+          .replace(/&amp;/g, '&')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .slice(0, 12000);
+
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.end(JSON.stringify({ text }));
+      } catch(e) {
+        res.writeHead(500); res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
   // ── Semantic search via Pinecone ──────────────────────────────────────────
   if (req.url === '/api/search') {
     let body = '';

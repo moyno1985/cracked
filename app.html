@@ -3087,6 +3087,7 @@ function openGuideModal() {
   if (brand) {
     document.getElementById('guideNameInput').value = brand;
     document.getElementById('qBrandName').value = brand;
+    document.getElementById('urlBrandName').value = brand;
   }
 }
 
@@ -3187,10 +3188,48 @@ async function extractPdfText(file) {
 }
 
 function switchGuideTab(tab) {
-  document.getElementById('guidePanel-upload').style.display = tab === 'upload' ? '' : 'none';
-  document.getElementById('guidePanel-questionnaire').style.display = tab === 'questionnaire' ? '' : 'none';
-  document.getElementById('tabUpload').classList.toggle('active', tab === 'upload');
-  document.getElementById('tabQuestionnaire').classList.toggle('active', tab === 'questionnaire');
+  ['upload','questionnaire','url'].forEach(function(t) {
+    document.getElementById('guidePanel-' + t).style.display = t === tab ? '' : 'none';
+    document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === tab);
+  });
+}
+
+function checkUrlSaveReady() {
+  var btn = document.getElementById('urlSaveBtn');
+  var name = (document.getElementById('urlBrandName').value || '').trim();
+  var url  = (document.getElementById('urlInput').value || '').trim();
+  btn.classList.toggle('ready', !!(name && url.startsWith('http')));
+}
+
+async function scrapeAndSaveUrl() {
+  var name = (document.getElementById('urlBrandName').value || '').trim();
+  var url  = (document.getElementById('urlInput').value || '').trim();
+  if (!name || !url.startsWith('http')) return;
+  var status = document.getElementById('urlScrapeStatus');
+  var btn = document.getElementById('urlSaveBtn');
+  status.textContent = 'Fetching ' + url + '...';
+  btn.classList.remove('ready');
+  try {
+    var r = await fetch('/api/scrape-brand-url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: url }),
+    });
+    var data = await r.json();
+    if (data.error) throw new Error(data.error);
+    var sizeK = Math.round(data.text.length / 1000);
+    var guides = getBrandGuides();
+    guides[name] = { name: name, text: 'Source: ' + url + '\n\n' + data.text, savedAt: new Date().toISOString(), source: 'url' };
+    saveBrandGuides(guides);
+    status.textContent = '✓ Saved — ' + sizeK + 'k chars from ' + url;
+    document.getElementById('urlBrandName').value = '';
+    document.getElementById('urlInput').value = '';
+    renderGuidesList();
+    updateGuideIndicator();
+  } catch(e) {
+    status.textContent = 'Error: ' + e.message;
+    btn.classList.add('ready');
+  }
 }
 
 function checkQSaveReady() {
@@ -3248,6 +3287,7 @@ function getBrandGuideContext(brandName) {
     <div class="guide-tabs">
       <button class="guide-tab active" id="tabUpload" onclick="switchGuideTab('upload')">Upload a doc</button>
       <button class="guide-tab" id="tabQuestionnaire" onclick="switchGuideTab('questionnaire')">Quick questionnaire</button>
+      <button class="guide-tab" id="tabUrl" onclick="switchGuideTab('url')">Brand website</button>
     </div>
 
     <!-- Upload panel -->
@@ -3289,6 +3329,20 @@ function getBrandGuideContext(brandName) {
         <input type="text" class="guide-name-input" id="qAudience" placeholder="e.g. People who find themselves there without quite deciding to go" oninput="checkQSaveReady()" style="margin-bottom:0;" />
       </div>
       <button class="guide-save-btn" id="qSaveBtn" onclick="saveQuestionnaire()">Save guide</button>
+    </div>
+
+    <!-- URL panel -->
+    <div id="guidePanel-url" style="display:none;">
+      <div class="q-field">
+        <label class="q-label">Brand name</label>
+        <input type="text" class="guide-name-input" id="urlBrandName" placeholder="e.g. McDonald's" oninput="checkUrlSaveReady()" style="margin-bottom:0;" />
+      </div>
+      <div class="q-field" style="margin-bottom:16px;">
+        <label class="q-label">Website URL</label>
+        <input type="text" class="guide-name-input" id="urlInput" placeholder="e.g. https://www.mcdonalds.com" oninput="checkUrlSaveReady()" style="margin-bottom:0;" />
+      </div>
+      <div class="guide-upload-status" id="urlScrapeStatus"></div>
+      <button class="guide-save-btn" id="urlSaveBtn" onclick="scrapeAndSaveUrl()">Fetch &amp; save</button>
     </div>
 
     <div id="guidesListWrap" style="margin-top:8px;">
