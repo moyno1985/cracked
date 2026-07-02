@@ -3096,7 +3096,7 @@ function renderGuidesList() {
   el.innerHTML = keys.map(function(k) {
     var g = guides[k];
     var size = Math.round(g.text.length / 1000);
-    return '<div class="guide-item"><span class="guide-item-name">' + escHtml(g.name) + '</span><span class="guide-item-meta">~' + size + 'k chars</span><button class="guide-item-del" onclick="deleteGuide(' + JSON.stringify(k) + ')" title="Delete">×</button></div>';
+    return '<div class="guide-item"><span class="guide-item-name">' + escHtml(g.name) + '</span><span class="guide-item-meta">~' + size + 'k chars</span><button class="guide-item-del" data-key="' + escHtml(k) + '" title="Delete">×</button></div>';
   }).join('');
 }
 
@@ -3107,6 +3107,13 @@ function deleteGuide(key) {
   renderGuidesList();
   updateGuideIndicator();
 }
+
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('guide-item-del')) {
+    var key = e.target.getAttribute('data-key');
+    if (key) deleteGuide(key);
+  }
+});
 
 function checkGuideSaveReady() {
   var btn = document.getElementById('guideSaveBtn');
