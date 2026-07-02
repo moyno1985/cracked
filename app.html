@@ -3231,7 +3231,6 @@ function getBrandGuideContext(brandName) {
   <div class="brand-guide-box">
     <h2>Brand Guides</h2>
     <p class="bgm-sub">Add a brand guide and the ideas get sharper. We'll remember it for next time.</p>
-    <p class="bgm-sub">Tone of voice docs, positioning decks, or past briefs work best.</p>
 
     <!-- Tabs -->
     <div class="guide-tabs">
@@ -3244,9 +3243,8 @@ function getBrandGuideContext(brandName) {
       <div class="guide-upload-area" id="guideDropZone" onclick="document.getElementById('guideFileInput').click()" ondragover="event.preventDefault()" ondrop="handleGuideDrop(event)">
         <input type="file" id="guideFileInput" accept=".pdf,.txt" onchange="handleGuideFile(this.files[0])">
         <span class="upload-label">Drop a file here or <strong>browse</strong></span>
-        <span class="upload-hint">PDF or TXT</span>
+        <span class="upload-hint">PDF or TXT — tone of voice docs, brand bibles, past briefs</span>
       </div>
-      <p style="font-family:monospace;font-size:11px;color:var(--text-muted,#888);margin:8px 0 16px;line-height:1.5;">Upload a tone of voice doc or brand bible. We'll extract the text and use it to keep ideas on-brand. Works best with copy-heavy docs — visual-only style guides won't extract well.</p>
       <div class="guide-upload-status" id="guideUploadStatus"></div>
       <div class="q-field" style="margin-bottom:6px;">
         <label class="q-label">Brand name</label>
