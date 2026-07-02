@@ -381,6 +381,12 @@
     border-color: var(--ink);
   }
 
+  .example-pill.active {
+    background: var(--ink);
+    color: var(--yellow);
+    border-color: var(--ink);
+  }
+
   .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -2350,6 +2356,8 @@ function loadExample(key) {
   document.getElementById('ambition').value = ex.ambition;
   document.getElementById('brief').value = ex.brief; autoGrowBrief();
   document.getElementById('tone').value = ex.tone;
+  document.querySelectorAll('.example-pill').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.example-pill[onclick="loadExample('${key}')"]`).classList.add('active');
 }
 
 const LOADING_PHRASES = ['Asking if its been done...','Playing table tennis...','Browsing Carhartt.com...','Deciphering Notes App Mash...','Admiring clouds...','Hiding in cubicle...','Taking long lunch...','Climbing out of YouTube hole...','Losing Sharpie cap...','Sleeping on beanbag...','Opening more tabs...','Arguing with imaginary focus group...','Experiencing brief wave of panic...'];
