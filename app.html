@@ -3256,12 +3256,13 @@ function getBrandGuideContext(brandName) {
         <label class="q-label">Brand name</label>
         <input type="text" class="guide-name-input" id="urlBrandName" placeholder="e.g. McDonald's" oninput="checkUrlSaveReady()" style="margin-bottom:0;" />
       </div>
-      <div class="q-field" style="margin-bottom:16px;">
+      <div class="q-field" style="margin-bottom:6px;">
         <label class="q-label">Website URL</label>
         <input type="text" class="guide-name-input" id="urlInput" placeholder="e.g. https://www.mcdonalds.com" oninput="checkUrlSaveReady()" style="margin-bottom:0;" />
       </div>
+      <p style="font-family:monospace;font-size:11px;color:var(--text-muted,#888);margin:0 0 20px;line-height:1.5;">We'll read the page and use it to shape the tone, language, and positioning of every idea we generate for this brand.</p>
       <div class="guide-upload-status" id="urlScrapeStatus"></div>
-      <button class="guide-save-btn" id="urlSaveBtn" onclick="scrapeAndSaveUrl()">Fetch &amp; save</button>
+      <button class="guide-save-btn" id="urlSaveBtn" onclick="scrapeAndSaveUrl()">Read site &amp; save</button>
     </div>
 
     <div id="guidesListWrap" style="margin-top:8px;">
