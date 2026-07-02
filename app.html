@@ -1695,6 +1695,12 @@ function renderHistory() {
     </div>
     <div class="form-body">
 
+      <!-- Brief upload drop zone -->
+      <div id="dropZone" style="border:1.5px dashed var(--ink-light);border-radius:4px;padding:18px 20px;margin-bottom:18px;text-align:center;cursor:pointer;transition:border-color 0.15s,background 0.15s;" onclick="document.getElementById('briefUploadTop').click()" ondragover="event.preventDefault();this.style.borderColor='var(--ink)';this.style.background='rgba(0,0,0,0.03)'" ondragleave="this.style.borderColor='var(--ink-light)';this.style.background=''" ondrop="handleBriefDrop(event)">
+        <input type="file" id="briefUploadTop" accept=".pdf,.png,.jpg,.jpeg,.txt" style="display:none" onchange="parseBriefFile(this)" />
+        <span id="dropZoneText" style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);">↑ Drop brief here or click to upload &nbsp;·&nbsp; PDF, image or text</span>
+      </div>
+
       <!-- Shared fields -->
       <div class="form-row">
         <div class="form-group">
@@ -1791,11 +1797,7 @@ function renderHistory() {
 
       <div class="form-row">
         <div class="form-group full">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-            <label style="margin:0;">Brief</label>
-            <label for="briefUpload" id="uploadLabel" style="cursor:pointer;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);text-decoration:underline;">↑ Upload brief</label>
-            <input type="file" id="briefUpload" accept=".pdf,.png,.jpg,.jpeg,.txt,.doc,.docx" style="display:none" onchange="parseBriefFile(this)" />
-          </div>
+          <label>Brief</label>
           <textarea id="brief" placeholder="Describe the creative challenge. The more specific you are, the better the ideas."></textarea>
         </div>
       </div>
@@ -1968,12 +1970,23 @@ function showExamples() {
   if (link) link.style.display = 'none';
 }
 
+function handleBriefDrop(event) {
+  event.preventDefault();
+  const zone = document.getElementById('dropZone');
+  zone.style.borderColor = 'var(--ink-light)';
+  zone.style.background = '';
+  const file = event.dataTransfer.files[0];
+  if (!file) return;
+  parseBriefFile({ files: [file] });
+}
+
 async function parseBriefFile(input) {
   const file = input.files[0];
   if (!file) return;
 
-  const label = document.getElementById('uploadLabel');
-  label.textContent = 'Reading…';
+  const zone = document.getElementById('dropZone');
+  const zoneText = document.getElementById('dropZoneText');
+  zoneText.textContent = 'Reading brief…';
 
   try {
     const base64 = await new Promise((resolve, reject) => {
@@ -2056,16 +2069,20 @@ ${text}`
     }
 
     updateGuideIndicator();
-    label.textContent = '✓ Brief loaded';
-    setTimeout(() => { label.textContent = '↑ Upload brief'; }, 3000);
+    zoneText.textContent = '✓ Brief loaded — drop another to replace';
+    zone.style.borderColor = 'var(--ink)';
+    setTimeout(() => {
+      zoneText.textContent = '↑ Drop brief here or click to upload · PDF, image or text';
+      zone.style.borderColor = 'var(--ink-light)';
+    }, 4000);
 
   } catch (err) {
     console.error('Brief parse error:', err);
-    label.textContent = '✗ Failed — try again';
-    setTimeout(() => { label.textContent = '↑ Upload brief'; }, 3000);
+    zoneText.textContent = '✗ Could not read brief — try again';
+    setTimeout(() => { zoneText.textContent = '↑ Drop brief here or click to upload · PDF, image or text'; }, 3000);
   }
 
-  input.value = '';
+  if (input.value !== undefined) input.value = '';
 }
 
 document.getElementById('formDate').textContent = new Date().toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'}).toUpperCase();
