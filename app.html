@@ -1236,6 +1236,7 @@ function addToHistory(brand, audience, brief, format, concepts) {
       keyInsight: c.keyInsight || '',
       brandOwnership: c.brandOwnership || '',
       executionIdea: c.executionIdea || '',
+      visualIdentity: c.visualIdentity || '',
       skipped: false,
     })),
   });
@@ -1281,6 +1282,7 @@ function loadFromHistory(item) {
     card.className = 'concept-card';
     card.dataset.mechanic = c.mechanic || '';
     card.dataset.execution = c.executionIdea || '';
+    card.dataset.visualIdentity = c.visualIdentity || '';
     card.innerHTML = `
       <div class="concept-num">Concept ${String(i+1).padStart(2,'0')}</div>
       <div class="concept-name-wrap"><span class="concept-name"><span class="highlight-line">${c.name || ''}</span></span></div>
@@ -1290,6 +1292,7 @@ function loadFromHistory(item) {
       ${c.keyInsight ? `<span class="concept-label">The insight</span><div class="concept-body">${c.keyInsight}</div>` : ''}
       ${c.brandOwnership ? `<span class="concept-label">Why only this brand</span><div class="concept-body">${c.brandOwnership}</div>` : ''}
       ${c.executionIdea ? `<span class="concept-label">Bring it to life</span><div class="concept-body">${c.executionIdea}</div>` : ''}
+      ${c.visualIdentity ? `<span class="concept-label">Art direction</span><div class="concept-body">${c.visualIdentity}</div>` : ''}
       <div class="concept-image" style="display:none;"></div>
       <div class="concept-meta"></div>
       <button class="sketch-btn" onclick="resketchFromHistory(this, ${i}, '${(item.brand||'').replace(/'/g,"\'")}')">
@@ -1313,6 +1316,7 @@ async function resketchFromHistory(btn, index, brand) {
   const conceptName = card.querySelector('.highlight-line')?.textContent || '';
   const mechanic = card.dataset.mechanic || card.querySelector('.concept-body')?.textContent || '';
   const execution = card.dataset.execution || '';
+  const visualIdentity = card.dataset.visualIdentity || '';
   btn.disabled = true;
   btn.textContent = 'Scamping...';
   const imgDiv = card.querySelector('.concept-image');
@@ -1320,7 +1324,7 @@ async function resketchFromHistory(btn, index, brand) {
     const r = await fetch('/api/image', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ concept: conceptName + (mechanic ? ': ' + mechanic : '') + (execution ? ' ' + execution : ''), brand })
+      body: JSON.stringify({ concept: conceptName + (mechanic ? ': ' + mechanic : '') + (execution ? ' ' + execution : '') + (visualIdentity ? ' Art direction: ' + visualIdentity : ''), brand })
     });
     const { jobId } = await r.json();
     let result;
@@ -1795,7 +1799,8 @@ function sketchConcept(btn, index) {
   var conceptName = card.querySelector('.highlight-line').textContent;
   var mechanic = card.dataset.mechanic || '';
   var execution = card.dataset.execution || '';
-  var scampConcept = conceptName + (mechanic ? ': ' + mechanic : '') + (execution ? ' ' + execution : '');
+  var visualIdentity = card.dataset.visualIdentity || '';
+  var scampConcept = conceptName + (mechanic ? ': ' + mechanic : '') + (execution ? ' ' + execution : '') + (visualIdentity ? ' Art direction: ' + visualIdentity : '');
   btn.classList.add('loading');
   btn.innerHTML = 'Scamping...';
   imgDiv.style.display = 'flex';
@@ -2473,6 +2478,7 @@ You must respond ONLY with a valid JSON object. No preamble, no markdown, no exp
       "keyInsight": "The single human or cultural truth the idea unlocks",
       "brandOwnership": "One sentence: what specific brand truth, asset, or cultural permission means only this brand could run this idea? If a competitor could run it equally convincingly, this field should say so — and the concept should be reconsidered.",
       "executionIdea": "One specific, vivid execution detail — a scene, a stunt, a format twist that makes it real",
+      "visualIdentity": "Specify exactly how this brand's visual identity should appear in the execution. Draw on what you know about this brand's actual visual system — specific colours (e.g. 'McDonald's red #DA291C background, white headline copy' not just 'brand colours'), typography style, logo usage, and crucially WHY that specific visual choice serves the idea. If the brand's visual identity is not load-bearing to the idea, say so explicitly.",
       "inspiredBy": [
         { "campaign": "CAMPAIGN NAME", "brand": "Brand", "year": "Year", "why": "One sentence on what it borrows or echoes" }
       ]
