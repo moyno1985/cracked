@@ -2984,7 +2984,7 @@ function searchArchive(brief, brand, category) {
   let overInteractive = false;
 
   // Scribble strokes — all hold 5s after last stroke ends, then fade together over 1s
-  const SCRIBBLE_HOLD = 5000;
+  const SCRIBBLE_HOLD = 4500;
   const SCRIBBLE_FADE = 1000;
   let scribbles = [];       // [{points: [...]}]
   let lastStrokeEnd = null; // shared timestamp — resets on every mouseup
