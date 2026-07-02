@@ -2712,8 +2712,8 @@ async function generateConcepts() {
     const results = searchData.results || [];
     if (results.length > 0) {
       archiveContext = '\n\nRELEVANT AWARD-WINNING CAMPAIGNS FROM THE CRACK ARCHIVE:\n' +
-        results.slice(0, 12).map(e => {
-          const desc = e.desc ? ` — "${e.desc.slice(0, 120)}"` : '';
+        results.slice(0, 8).map(e => {
+          const desc = e.desc ? `\n  "${e.desc.slice(0, 500)}"` : '';
           return `- ${e.c} (${e.b || e.a || 'Unknown'}) [${e.award}, ${e.src ? e.src.toUpperCase() : ''} ${e.y}]${desc}`;
         }).join('\n');
     }

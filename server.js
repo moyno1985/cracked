@@ -408,7 +408,7 @@ Write it as if this is going into production tomorrow. Make it feel like award-w
           cat: m.metadata.cat,
           award: m.metadata.award,
           src: m.metadata.src,
-          desc: m.metadata.desc ? m.metadata.desc.slice(0, 300) : '',
+          desc: m.metadata.desc ? m.metadata.desc.slice(0, 500) : '',
           score: m.score,
         }));
 
