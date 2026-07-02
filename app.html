@@ -770,6 +770,185 @@
     margin-bottom: 16px;
   }
 
+  /* Brand Guide */
+  .guide-indicator {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    min-height: 16px;
+  }
+  .guide-indicator .guide-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #4caf50;
+    flex-shrink: 0;
+  }
+  .guide-indicator a {
+    color: var(--ink-light);
+    text-decoration: underline;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font: inherit;
+    letter-spacing: inherit;
+    padding: 0;
+  }
+  .guide-indicator a:hover { color: var(--ink); }
+
+  .brand-guide-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .brand-guide-modal.open { display: flex; }
+  .brand-guide-box {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    width: 100%;
+    max-width: 560px;
+    padding: 32px;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .brand-guide-box h2 {
+    font-family: 'Rock Salt', cursive;
+    font-size: 16px;
+    margin: 0 0 6px;
+    color: var(--ink);
+  }
+  .brand-guide-box .bgm-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-light);
+    letter-spacing: 0.08em;
+    margin-bottom: 24px;
+  }
+  .guide-upload-area {
+    border: 1.5px dashed var(--ink-mid);
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 24px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .guide-upload-area:hover { border-color: var(--ink); }
+  .guide-upload-area input[type="file"] { display: none; }
+  .guide-upload-area .upload-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-mid);
+    display: block;
+    margin-bottom: 8px;
+  }
+  .guide-upload-area .upload-label strong { color: var(--ink); cursor: pointer; text-decoration: underline; }
+  .guide-upload-area .upload-hint {
+    font-size: 10px;
+    color: var(--ink-light);
+    font-family: 'Space Mono', monospace;
+  }
+  .guide-name-input {
+    width: 100%;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    border: 1.5px solid var(--ink);
+    background: white;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    color: var(--ink);
+  }
+  .guide-name-input::placeholder { color: var(--ink-light); }
+  .guide-save-btn {
+    width: 100%;
+    background: var(--ink);
+    color: var(--yellow);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    margin-bottom: 24px;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .guide-save-btn.ready { opacity: 1; pointer-events: all; }
+  .guide-save-btn.ready:hover { background: #333; }
+  .guides-list-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 12px;
+  }
+  .guide-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border: 1px solid var(--ink-mid);
+    margin-bottom: 8px;
+    gap: 12px;
+  }
+  .guide-item-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--ink);
+    flex: 1;
+  }
+  .guide-item-meta {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-light);
+  }
+  .guide-item-del {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink-light);
+    font-size: 16px;
+    line-height: 1;
+    padding: 0 4px;
+  }
+  .guide-item-del:hover { color: var(--ink); }
+  .guide-modal-close {
+    display: block;
+    margin-top: 20px;
+    background: none;
+    border: 1.5px solid var(--ink);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    cursor: pointer;
+    color: var(--ink);
+  }
+  .guide-modal-close:hover { background: var(--ink); color: var(--yellow); }
+  .guide-upload-status {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-mid);
+    margin-bottom: 10px;
+    min-height: 16px;
+  }
+
   .concept-label {
     font-family: 'Space Mono', monospace;
     font-size: 9px;
@@ -1094,6 +1273,7 @@
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
@@ -1482,7 +1662,10 @@ function renderHistory() {
       <div class="form-row">
         <div class="form-group">
           <label>Brand / Product</label>
-          <input type="text" id="brand" placeholder="e.g. Oatly, Nike, Dove" />
+          <input type="text" id="brand" placeholder="e.g. Oatly, Nike, Dove" oninput="updateGuideIndicator()" />
+          <div class="guide-indicator" id="guideIndicator">
+            <button onclick="openGuideModal()" style="background:none;border:none;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);cursor:pointer;padding:0;text-decoration:underline;">+ Add brand guide</button>
+          </div>
         </div>
         <div class="form-group">
           <label>Target Audience</label>
@@ -2226,7 +2409,7 @@ Tone: ${tone || 'Not specified'}
 The Brief:
 ${brief}
 
-Each concept should feel genuinely ownable — the kind of series that builds a real audience and makes people look forward to the next episode. Avoid generic "behind the scenes" or "meet our team" formats. Think about what unique perspective or access this brand has that no one else does.`;
+Each concept should feel genuinely ownable — the kind of series that builds a real audience and makes people look forward to the next episode. Avoid generic "behind the scenes" or "meet our team" formats. Think about what unique perspective or access this brand has that no one else does.${getBrandGuideContext(brand)}`;
 
   try {
     const response = await fetch('/api/claude', {
@@ -2509,7 +2692,8 @@ The inspiredBy array should contain 2–3 real Cannes Lions winning campaigns th
   };
   const formatInstruction = formatInstructions[_currentFormat] || '';
 
-  const userPrompt = `Generate ${numConcepts} original advertising campaign concepts for the following brief:\n\nBrand: ${brand}\nCategory: ${category||'Not specified'}\nTarget Audience: ${audience||'Not specified'}\nCampaign Ambition: ${ambition||'Not specified'}\nTone: ${tone||'Not specified'}\nFormat: ${channel||'Not specified'}\n\nThe Brief:\n${brief}\n\n${formatInstruction ? formatInstruction + '\n\n' : ''}${archiveContext}\n\nEach concept should feel genuinely brave — the kind of idea a jury would argue about. Avoid safe, predictable territory. Think about what the brand could OWN culturally, not just what it could say.`;
+  const brandGuideContext = getBrandGuideContext(brand);
+  const userPrompt = `Generate ${numConcepts} original advertising campaign concepts for the following brief:\n\nBrand: ${brand}\nCategory: ${category||'Not specified'}\nTarget Audience: ${audience||'Not specified'}\nCampaign Ambition: ${ambition||'Not specified'}\nTone: ${tone||'Not specified'}\nFormat: ${channel||'Not specified'}\n\nThe Brief:\n${brief}\n\n${formatInstruction ? formatInstruction + '\n\n' : ''}${archiveContext}${brandGuideContext}\n\nEach concept should feel genuinely brave — the kind of idea a jury would argue about. Avoid safe, predictable territory. Think about what the brand could OWN culturally, not just what it could say.`;
 
   try {
     const response = await fetch('/api/claude', {
@@ -2793,7 +2977,190 @@ function searchArchive(brief, brand, category) {
     else active = false;
   }
 })();
+
+// ── Brand Guide Manager ───────────────────────────────────────────────────────
+
+if (typeof pdfjsLib !== 'undefined') {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+var _pendingGuideText = null;
+
+function getBrandGuides() {
+  try { return JSON.parse(localStorage.getItem('cracked_brand_guides') || '{}'); }
+  catch(e) { return {}; }
+}
+
+function saveBrandGuides(guides) {
+  localStorage.setItem('cracked_brand_guides', JSON.stringify(guides));
+}
+
+function normaliseName(name) {
+  return name.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function matchGuideToName(brandName) {
+  if (!brandName) return null;
+  var guides = getBrandGuides();
+  var norm = normaliseName(brandName);
+  for (var key in guides) {
+    if (normaliseName(key) === norm) return guides[key];
+  }
+  for (var key in guides) {
+    if (norm.includes(normaliseName(key)) || normaliseName(key).includes(norm)) return guides[key];
+  }
+  return null;
+}
+
+function updateGuideIndicator() {
+  var brand = (document.getElementById('brand').value || '').trim();
+  var el = document.getElementById('guideIndicator');
+  var guide = matchGuideToName(brand);
+  if (guide) {
+    el.innerHTML = '<span class="guide-dot"></span><span>' + escHtml(guide.name) + ' guide loaded</span><button onclick="openGuideModal()" style="background:none;border:none;font-family:\'Space Mono\',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);cursor:pointer;padding:0;text-decoration:underline;margin-left:8px;">Manage</button>';
+  } else {
+    el.innerHTML = '<button onclick="openGuideModal()" style="background:none;border:none;font-family:\'Space Mono\',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);cursor:pointer;padding:0;text-decoration:underline;">+ Add brand guide</button>';
+  }
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function openGuideModal() {
+  document.getElementById('brandGuideModal').classList.add('open');
+  renderGuidesList();
+  var brand = (document.getElementById('brand').value || '').trim();
+  if (brand) document.getElementById('guideNameInput').value = brand;
+}
+
+function closeGuideModal() {
+  document.getElementById('brandGuideModal').classList.remove('open');
+  _pendingGuideText = null;
+  document.getElementById('guideUploadStatus').textContent = '';
+  document.getElementById('guideNameInput').value = '';
+  checkGuideSaveReady();
+}
+
+function renderGuidesList() {
+  var guides = getBrandGuides();
+  var el = document.getElementById('guidesList');
+  var keys = Object.keys(guides);
+  if (!keys.length) {
+    el.innerHTML = '<div style="font-family:\'Space Mono\',monospace;font-size:10px;color:var(--ink-light);padding:12px 0;">No guides saved yet.</div>';
+    return;
+  }
+  el.innerHTML = keys.map(function(k) {
+    var g = guides[k];
+    var size = Math.round(g.text.length / 1000);
+    return '<div class="guide-item"><span class="guide-item-name">' + escHtml(g.name) + '</span><span class="guide-item-meta">~' + size + 'k chars</span><button class="guide-item-del" onclick="deleteGuide(' + JSON.stringify(k) + ')" title="Delete">×</button></div>';
+  }).join('');
+}
+
+function deleteGuide(key) {
+  var guides = getBrandGuides();
+  delete guides[key];
+  saveBrandGuides(guides);
+  renderGuidesList();
+  updateGuideIndicator();
+}
+
+function checkGuideSaveReady() {
+  var btn = document.getElementById('guideSaveBtn');
+  var name = (document.getElementById('guideNameInput').value || '').trim();
+  btn.classList.toggle('ready', !!(name && _pendingGuideText));
+}
+
+function saveCurrentGuide() {
+  var name = (document.getElementById('guideNameInput').value || '').trim();
+  if (!name || !_pendingGuideText) return;
+  var guides = getBrandGuides();
+  guides[name] = { name: name, text: _pendingGuideText, savedAt: new Date().toISOString() };
+  saveBrandGuides(guides);
+  _pendingGuideText = null;
+  document.getElementById('guideUploadStatus').textContent = '✓ Saved.';
+  document.getElementById('guideNameInput').value = '';
+  checkGuideSaveReady();
+  renderGuidesList();
+  updateGuideIndicator();
+}
+
+function handleGuideDrop(e) {
+  e.preventDefault();
+  var file = e.dataTransfer.files[0];
+  if (file) handleGuideFile(file);
+}
+
+async function handleGuideFile(file) {
+  if (!file) return;
+  var status = document.getElementById('guideUploadStatus');
+  status.textContent = 'Reading ' + file.name + '...';
+  try {
+    var text;
+    if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+      text = await extractPdfText(file);
+    } else {
+      text = await file.text();
+    }
+    var truncated = text.slice(0, 12000);
+    _pendingGuideText = truncated;
+    var sizeK = Math.round(truncated.length / 1000);
+    status.textContent = '✓ ' + file.name + ' (' + sizeK + 'k chars extracted). Name it and save.';
+    var nameInput = document.getElementById('guideNameInput');
+    if (!nameInput.value) {
+      nameInput.value = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+    }
+    checkGuideSaveReady();
+  } catch(err) {
+    status.textContent = 'Error: ' + err.message;
+  }
+}
+
+async function extractPdfText(file) {
+  if (typeof pdfjsLib === 'undefined') throw new Error('PDF.js not loaded');
+  var arrayBuffer = await file.arrayBuffer();
+  var pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  var texts = [];
+  var maxPages = Math.min(pdf.numPages, 30);
+  for (var i = 1; i <= maxPages; i++) {
+    var page = await pdf.getPage(i);
+    var content = await page.getTextContent();
+    texts.push(content.items.map(function(item) { return item.str; }).join(' '));
+  }
+  return texts.join('\n');
+}
+
+function getBrandGuideContext(brandName) {
+  var guide = matchGuideToName(brandName);
+  if (!guide) return '';
+  return '\n\n--- BRAND GUIDE: ' + guide.name + ' ---\nThe following is extracted from this brand\'s official style guide or tone of voice document. Use it to inform the visual identity, voice, and values of every concept:\n\n' + guide.text + '\n--- END BRAND GUIDE ---';
+}
 </script>
+
+<!-- Brand Guide Modal -->
+<div class="brand-guide-modal" id="brandGuideModal" onclick="if(event.target===this)closeGuideModal()">
+  <div class="brand-guide-box">
+    <h2>Brand Guides</h2>
+    <p class="bgm-sub">Upload a brand style guide or tone of voice doc. Saved guides load automatically when you enter a matching brand name.</p>
+
+    <div class="guide-upload-area" id="guideDropZone" onclick="document.getElementById('guideFileInput').click()" ondragover="event.preventDefault()" ondrop="handleGuideDrop(event)">
+      <input type="file" id="guideFileInput" accept=".pdf,.txt,.md" onchange="handleGuideFile(this.files[0])">
+      <span class="upload-label">Drop a file here or <strong>browse</strong></span>
+      <span class="upload-hint">PDF, TXT or MD — style guides, TOV docs, brand bibles</span>
+    </div>
+
+    <div class="guide-upload-status" id="guideUploadStatus"></div>
+    <input type="text" class="guide-name-input" id="guideNameInput" placeholder="Brand name (e.g. McDonald's)" oninput="checkGuideSaveReady()" />
+    <button class="guide-save-btn" id="guideSaveBtn" onclick="saveCurrentGuide()">Save guide</button>
+
+    <div id="guidesListWrap">
+      <div class="guides-list-title">Saved guides</div>
+      <div id="guidesList"></div>
+    </div>
+
+    <button class="guide-modal-close" onclick="closeGuideModal()">Close</button>
+  </div>
+</div>
 
 </body>
 </html>
