@@ -375,7 +375,7 @@ Write it as if this is going into production tomorrow. Make it feel like award-w
 
         const queryBody = JSON.stringify({
           vector,
-          topK: 15,
+          topK: 30,
           includeMetadata: true,
         });
 
