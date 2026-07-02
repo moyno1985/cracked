@@ -2703,7 +2703,7 @@ async function generateConcepts() {
   // Semantic search via Pinecone
   let archiveContext = '';
   try {
-    const searchQuery = `${brand} ${brief} ${category || ''} ${ambition || ''}`.trim();
+    const searchQuery = `${brief} ${category || ''} ${ambition || ''}`.trim();
     const searchRes = await fetch('/api/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
