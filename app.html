@@ -949,6 +949,14 @@
     min-height: 16px;
   }
 
+  .concept-copy-line {
+    font-family: 'Rock Salt', cursive;
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.4;
+    margin: 4px 0 12px;
+  }
+
   .concept-label {
     font-family: 'Space Mono', monospace;
     font-size: 9px;
@@ -1416,6 +1424,7 @@ function addToHistory(brand, audience, brief, format, concepts) {
       keyInsight: c.keyInsight || '',
       brandOwnership: c.brandOwnership || '',
       executionIdea: c.executionIdea || '',
+      scampCopy: c.scampCopy || null,
       visualIdentity: c.visualIdentity || '',
       skipped: false,
     })),
@@ -1462,10 +1471,12 @@ function loadFromHistory(item) {
     card.className = 'concept-card';
     card.dataset.mechanic = c.mechanic || '';
     card.dataset.execution = c.executionIdea || '';
+    card.dataset.scampCopy = c.scampCopy || '';
     card.dataset.visualIdentity = c.visualIdentity || '';
     card.innerHTML = `
       <div class="concept-num">Concept ${String(i+1).padStart(2,'0')}</div>
       <div class="concept-name-wrap"><span class="concept-name"><span class="highlight-line">${c.name || ''}</span></span></div>
+      ${c.scampCopy ? `<div class="concept-copy-line">"${c.scampCopy}"</div>` : ''}
       ${c.logline ? `<div class="concept-logline">"${c.logline}"</div>` : ''}
       ${c.mechanic ? `<span class="concept-label">The idea</span><div class="concept-body" style="font-weight:500;">${c.mechanic}</div>` : ''}
       ${c.concept ? `<div class="concept-body">${c.concept}</div>` : '<div class="concept-body" style="color:var(--ink-light);font-style:italic;">Re-run this brief to see the full concept.</div>'}
@@ -1496,6 +1507,7 @@ async function resketchFromHistory(btn, index, brand) {
   const conceptName = card.querySelector('.highlight-line')?.textContent || '';
   const mechanic = card.dataset.mechanic || card.querySelector('.concept-body')?.textContent || '';
   const execution = card.dataset.execution || '';
+  const scampCopy = card.dataset.scampCopy || '';
   const visualIdentity = card.dataset.visualIdentity || '';
   btn.disabled = true;
   btn.textContent = 'Scamping...';
@@ -1504,7 +1516,7 @@ async function resketchFromHistory(btn, index, brand) {
     const r = await fetch('/api/image', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ concept: conceptName + (mechanic ? ': ' + mechanic : '') + (execution ? ' ' + execution : '') + (visualIdentity ? ' Art direction: ' + visualIdentity : ''), brand })
+      body: JSON.stringify({ concept: conceptName + (mechanic ? ': ' + mechanic : '') + (execution ? ' ' + execution : '') + (scampCopy ? ' The copy reads: "' + scampCopy + '" — render this text legibly and prominently in the image.' : ' No copy — the visual and placement carry the idea alone.') + (visualIdentity ? ' Art direction: ' + visualIdentity : ''), brand })
     });
     const { jobId } = await r.json();
     let result;
@@ -1982,8 +1994,9 @@ function sketchConcept(btn, index) {
   var conceptName = card.querySelector('.highlight-line').textContent;
   var mechanic = card.dataset.mechanic || '';
   var execution = card.dataset.execution || '';
+  var scampCopy = card.dataset.scampCopy || '';
   var visualIdentity = card.dataset.visualIdentity || '';
-  var scampConcept = conceptName + (mechanic ? ': ' + mechanic : '') + (execution ? ' ' + execution : '') + (visualIdentity ? ' Art direction: ' + visualIdentity : '');
+  var scampConcept = conceptName + (mechanic ? ': ' + mechanic : '') + (execution ? ' ' + execution : '') + (scampCopy ? ' The copy reads: "' + scampCopy + '" — render this text legibly and prominently in the image.' : ' No copy — the visual and placement carry the idea alone.') + (visualIdentity ? ' Art direction: ' + visualIdentity : '');
   btn.classList.add('loading');
   btn.innerHTML = 'Scamping...';
   imgDiv.style.display = 'flex';
@@ -2663,6 +2676,7 @@ You must respond ONLY with a valid JSON object. No preamble, no markdown, no exp
       "keyInsight": "The single human or cultural truth the idea unlocks",
       "brandOwnership": "One sentence: what specific brand truth, asset, or cultural permission means only this brand could run this idea? If a competitor could run it equally convincingly, this field should say so — and the concept should be reconsidered.",
       "executionIdea": "One specific execution — a single scene, placement, or moment that makes the idea tangible. Not a platform, not a series of executions, not a tech layer. Strip it to the simplest possible form. If the idea needs the execution to be complicated, the idea is not strong enough yet.",
+      "scampCopy": "The exact copy that must appear visibly in the execution, or null if no copy is needed. Make an independent judgement: does this idea require words to complete the thought, or does the visual/placement do it alone? For billboard and print, copy is usually load-bearing. For ambient, guerrilla, and film, the execution often works without it. If copy is needed, write the exact line. If not, return null.",
       "visualIdentity": "Specify exactly how this brand's visual identity should appear in the execution. Draw on what you know about this brand's actual visual system — specific colours (e.g. 'McDonald's red #DA291C background, white headline copy' not just 'brand colours'), typography style, logo usage, and crucially WHY that specific visual choice serves the idea. If the brand's visual identity is not load-bearing to the idea, say so explicitly.",
       "inspiredBy": [
         { "campaign": "CAMPAIGN NAME", "brand": "Brand", "year": "Year", "why": "One sentence on what it borrows or echoes" }
