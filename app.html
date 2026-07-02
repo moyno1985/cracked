@@ -1696,19 +1696,22 @@ function renderHistory() {
     <div class="form-body">
 
       <!-- Brief upload drop zone -->
-      <div id="dropZone" style="border:1.5px dashed var(--ink-light);border-radius:4px;padding:18px 20px;margin-bottom:18px;text-align:center;cursor:pointer;transition:border-color 0.15s,background 0.15s;" onclick="document.getElementById('briefUploadTop').click()" ondragover="event.preventDefault();this.style.borderColor='var(--ink)';this.style.background='rgba(0,0,0,0.03)'" ondragleave="this.style.borderColor='var(--ink-light)';this.style.background=''" ondrop="handleBriefDrop(event)">
+      <div id="dropZone" style="border:1.5px dashed var(--ink-light);border-radius:4px;padding:18px 20px;margin-bottom:4px;text-align:center;cursor:pointer;transition:border-color 0.15s,background 0.15s;" onclick="document.getElementById('briefUploadTop').click()" ondragover="event.preventDefault();this.style.borderColor='var(--ink)';this.style.background='rgba(0,0,0,0.03)'" ondragleave="this.style.borderColor='var(--ink-light)';this.style.background=''" ondrop="handleBriefDrop(event)">
         <input type="file" id="briefUploadTop" accept=".pdf,.png,.jpg,.jpeg,.txt" style="display:none" onchange="parseBriefFile(this)" />
         <span id="dropZoneText" style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);">↑ Drop brief here or click to upload &nbsp;·&nbsp; PDF, image or text</span>
       </div>
+      <p style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-light);text-align:center;margin:0 0 18px;">or write your brief below</p>
 
       <!-- Shared fields -->
       <div class="form-row">
         <div class="form-group">
-          <label>Brand / Product</label>
-          <input type="text" id="brand" placeholder="e.g. Oatly, Nike, Dove" oninput="updateGuideIndicator()" />
-          <div class="guide-indicator" id="guideIndicator">
-            <button onclick="openGuideModal()" style="background:none;border:none;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);cursor:pointer;padding:0;text-decoration:underline;">+ Brand guide</button>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;">
+            <label>Brand / Product</label>
+            <div class="guide-indicator" id="guideIndicator">
+              <button onclick="openGuideModal()" style="background:none;border:none;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);cursor:pointer;padding:0;text-decoration:underline;">+ Brand guide</button>
+            </div>
           </div>
+          <input type="text" id="brand" placeholder="e.g. Oatly, Nike, Dove" oninput="updateGuideIndicator()" />
         </div>
         <div class="form-group">
           <label>Target Audience</label>
