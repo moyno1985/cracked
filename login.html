@@ -120,7 +120,8 @@
   }
 
   .carousel {
-    overflow: hidden;
+    overflow: visible;
+
     padding: 20px 0 0;
     height: auto;
   }
@@ -156,7 +157,7 @@
   .scamp-img-wrap {
     width: 100%;
 
-    overflow: hidden;
+
   }
   .scamp-img-wrap img {
     width: 100%;
@@ -507,16 +508,12 @@
 (function() {
   const track  = document.getElementById('carouselTrack');
   const carousel = document.getElementById('carousel');
-  const dotsWrap = document.getElementById('dots');
 
   // 6 originals already in HTML + 6 aria-hidden clones — don't re-clone
   const total = Array.from(track.querySelectorAll('.scamp-slide'))
                      .filter(s => !s.hasAttribute('aria-hidden')).length;
 
-  const dots = Array.from({length: total}, (_, i) => {
     const d = document.createElement('div');
-    d.className = 'dot' + (i === 0 ? ' active' : '');
-    dotsWrap.appendChild(d);
     return d;
   });
 
@@ -536,12 +533,10 @@
     return v;
   }
 
-  function updateDots() {
     if (loopWidth <= 0) return;
     const slideWidth = loopWidth / total;
     const pos = ((Math.abs(x) % loopWidth) + loopWidth) % loopWidth;
     const idx = Math.round(pos / slideWidth) % total;
-    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
   }
 
   function tick() {
@@ -550,7 +545,6 @@
       if (loopWidth > 0 && x <= -loopWidth) x += loopWidth;
     }
     track.style.transform = 'translateX(' + x + 'px)';
-    updateDots();
     requestAnimationFrame(tick);
   }
 
