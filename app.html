@@ -3241,9 +3241,9 @@ function getBrandGuideContext(brandName) {
     <!-- Upload panel -->
     <div id="guidePanel-upload">
       <div class="guide-upload-area" id="guideDropZone" onclick="document.getElementById('guideFileInput').click()" ondragover="event.preventDefault()" ondrop="handleGuideDrop(event)">
-        <input type="file" id="guideFileInput" accept=".pdf,.txt,.md" onchange="handleGuideFile(this.files[0])">
+        <input type="file" id="guideFileInput" accept=".pdf,.txt" onchange="handleGuideFile(this.files[0])">
         <span class="upload-label">Drop a file here or <strong>browse</strong></span>
-        <span class="upload-hint">PDF, TXT or MD</span>
+        <span class="upload-hint">PDF or TXT</span>
       </div>
       <p style="font-family:monospace;font-size:11px;color:var(--text-muted,#888);margin:8px 0 16px;line-height:1.5;">Upload a tone of voice doc, style guide, or brand bible. We'll extract the text and use it to keep ideas on-brand.</p>
       <div class="guide-upload-status" id="guideUploadStatus"></div>
