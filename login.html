@@ -505,20 +505,12 @@
 
 <script>
 (function() {
-  const track  = document.getElementById('carouselTrack');
+  const track = document.getElementById('carouselTrack');
   const carousel = document.getElementById('carousel');
 
-  // 6 originals already in HTML + 6 aria-hidden clones — don't re-clone
-  const total = Array.from(track.querySelectorAll('.scamp-slide'))
-                     .filter(s => !s.hasAttribute('aria-hidden')).length;
-
-    const d = document.createElement('div');
-    return d;
-  });
-
-  let x        = 0;
-  let speed    = 1.0;   // px per frame, recalculated on first tick
-  let paused   = false;
+  let x = 0;
+  let speed = 1.0;
+  let paused = false;
   let dragging = false;
   let dragStartClientX, dragStartX;
   let loopWidth = 0;
@@ -532,12 +524,6 @@
     return v;
   }
 
-    if (loopWidth <= 0) return;
-    const slideWidth = loopWidth / total;
-    const pos = ((Math.abs(x) % loopWidth) + loopWidth) % loopWidth;
-    const idx = Math.round(pos / slideWidth) % total;
-  }
-
   function tick() {
     if (!paused && !dragging) {
       x -= speed;
@@ -547,14 +533,12 @@
     requestAnimationFrame(tick);
   }
 
-  // Init after first paint so scrollWidth is accurate
   requestAnimationFrame(function() {
     loopWidth = getLoopWidth();
-    speed = loopWidth / (55 * 60); // 55s loop at ~60fps
+    speed = loopWidth / (55 * 60);
     requestAnimationFrame(tick);
   });
 
-  // Hover — pause in place
   track.addEventListener('mouseover', function(e) {
     if (e.target.closest('.scamp-slide') && !dragging) paused = true;
   });
@@ -564,7 +548,6 @@
     if (!dragging) paused = false;
   });
 
-  // Drag
   carousel.addEventListener('mousedown', function(e) {
     dragging = true; paused = true;
     dragStartClientX = e.clientX; dragStartX = x;
@@ -580,7 +563,6 @@
     carousel.style.cursor = '';
   });
 
-  // Wheel scroll
   carousel.addEventListener('wheel', function(e) {
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { e.preventDefault(); return; }
     e.preventDefault();
