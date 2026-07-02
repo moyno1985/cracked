@@ -65,6 +65,27 @@ function handleCors(res) {
 
 const jobs = {};
 
+// Rate limiter — tracks request counts per session token
+const searchRateLimit = {};
+const SEARCH_MAX = 30;      // requests
+const SEARCH_WINDOW = 60000; // per minute
+
+function isRateLimited(token) {
+  const now = Date.now();
+  if (!searchRateLimit[token]) {
+    searchRateLimit[token] = { count: 1, windowStart: now };
+    return false;
+  }
+  const entry = searchRateLimit[token];
+  if (now - entry.windowStart > SEARCH_WINDOW) {
+    entry.count = 1;
+    entry.windowStart = now;
+    return false;
+  }
+  entry.count++;
+  return entry.count > SEARCH_MAX;
+}
+
 const server = http.createServer((req, res) => {
   if (req.method === 'OPTIONS') { handleCors(res); return; }
 
@@ -292,6 +313,16 @@ Write it as if this is going into production tomorrow. Make it feel like award-w
     req.on('data', chunk => body += chunk);
     req.on('end', async () => {
       try {
+        // Rate limit by session token
+        const cookie = req.headers.cookie || '';
+        const tokenMatch = cookie.match(/cracked_session=([^;]+)/);
+        const token = tokenMatch ? tokenMatch[1] : req.socket.remoteAddress;
+        if (isRateLimited(token)) {
+          res.writeHead(429, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+          res.end(JSON.stringify({ error: 'Too many requests', results: [] }));
+          return;
+        }
+
         const { query } = JSON.parse(body);
 
         // 1. Embed the query with OpenAI
@@ -377,7 +408,7 @@ Write it as if this is going into production tomorrow. Make it feel like award-w
           cat: m.metadata.cat,
           award: m.metadata.award,
           src: m.metadata.src,
-          desc: m.metadata.desc,
+          desc: m.metadata.desc ? m.metadata.desc.slice(0, 300) : '',
           score: m.score,
         }));
 
