@@ -808,9 +808,10 @@
     inset: 0;
     background: rgba(0,0,0,0.6);
     z-index: 1000;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding: 24px;
+    padding: 40px 24px;
+    overflow-y: auto;
   }
   .brand-guide-modal.open { display: flex; }
   .brand-guide-box {
@@ -820,8 +821,7 @@
     width: 100%;
     max-width: 560px;
     padding: 32px;
-    max-height: 80vh;
-    overflow-y: auto;
+    flex-shrink: 0;
   }
   .brand-guide-box h2 {
     font-family: 'Rock Salt', cursive;
