@@ -1700,7 +1700,7 @@ function renderHistory() {
           <label>Brand / Product</label>
           <input type="text" id="brand" placeholder="e.g. Oatly, Nike, Dove" oninput="updateGuideIndicator()" />
           <div class="guide-indicator" id="guideIndicator">
-            <button onclick="openGuideModal()" style="background:none;border:none;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);cursor:pointer;padding:0;text-decoration:underline;">+ Add brand guide</button>
+            <button onclick="openGuideModal()" style="background:none;border:none;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);cursor:pointer;padding:0;text-decoration:underline;">+ Brand guide</button>
           </div>
         </div>
         <div class="form-group">
@@ -3059,7 +3059,7 @@ function updateGuideIndicator() {
   if (guide) {
     el.innerHTML = '<span class="guide-dot"></span><span>' + escHtml(guide.name) + ' guide loaded</span><button onclick="openGuideModal()" style="background:none;border:none;font-family:\'Space Mono\',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);cursor:pointer;padding:0;text-decoration:underline;margin-left:8px;">Manage</button>';
   } else {
-    el.innerHTML = '<button onclick="openGuideModal()" style="background:none;border:none;font-family:\'Space Mono\',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);cursor:pointer;padding:0;text-decoration:underline;">+ Add brand guide</button>';
+    el.innerHTML = '<button onclick="openGuideModal()" style="background:none;border:none;font-family:\'Space Mono\',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);cursor:pointer;padding:0;text-decoration:underline;">+ Brand guide</button>';
   }
 }
 
