@@ -1942,7 +1942,6 @@ function loadContentExample(key) {
 
 var _currentFormat = 'campaign';
 var _currentPrintSubformat = null;
-showFormatDesc('campaign');
 var _selectedPlatforms = [];
 
 function _updateSocialPill() {
@@ -2066,6 +2065,8 @@ var _formatDescriptions = {
   'activation': 'Live events, stunts, and real-world experiences that generate earned media.',
   'print':      'Ink on paper — press ads, posters, direct mail. Pick a subformat below.',
 };
+
+showFormatDesc('campaign');
 
 function showFormatDesc(format) {
   var el = document.getElementById('formatDescriptor');
