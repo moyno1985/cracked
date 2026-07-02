@@ -2983,8 +2983,8 @@ function searchArchive(brief, brand, category) {
   let enabled = false; // off by default
   let overInteractive = false;
 
-  // Scribble strokes — all hold 6s after last stroke ends, then fade together over 1s
-  const SCRIBBLE_HOLD = 6000;
+  // Scribble strokes — all hold 5s after last stroke ends, then fade together over 1s
+  const SCRIBBLE_HOLD = 5000;
   const SCRIBBLE_FADE = 1000;
   let scribbles = [];       // [{points: [...]}]
   let lastStrokeEnd = null; // shared timestamp — resets on every mouseup
@@ -3038,18 +3038,11 @@ function searchArchive(brief, brand, category) {
     if (scribbles.length) lastStrokeEnd = performance.now();
   });
 
-  function drawScribblesOnly() {
-    const now2 = performance.now();
-    ctx.clearRect(0, 0, W, H);
-    const age2 = lastStrokeEnd && !drawing ? Math.max(0, now2 - lastStrokeEnd - SCRIBBLE_HOLD) : 0;
-    const groupAlpha = lastStrokeEnd && !drawing ? Math.max(0, 1 - age2 / SCRIBBLE_FADE) : 1;
-    if (lastStrokeEnd && !drawing && now2 - lastStrokeEnd > SCRIBBLE_HOLD + SCRIBBLE_FADE) {
-      scribbles = []; lastStrokeEnd = null;
-    }
+  function renderScribbles(groupAlpha) {
+    const a = groupAlpha * groupAlpha;
     for (const s of scribbles) {
       if (s.points.length < 2) continue;
-      const a = groupAlpha * groupAlpha;
-      const drawScribble = (lw, strokeA) => {
+      const stroke = (lw, strokeA) => {
         ctx.beginPath();
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
@@ -3064,101 +3057,57 @@ function searchArchive(brief, brand, category) {
         ctx.lineWidth = lw;
         ctx.stroke();
       };
-      drawScribble(LINE_WIDTH * 1.2, 0.55);
-      drawScribble(LINE_WIDTH * 0.75, 0.40);
-      drawScribble(LINE_WIDTH * 0.3, 0.20);
+      stroke(LINE_WIDTH * 1.2, 0.55);
+      stroke(LINE_WIDTH * 0.75, 0.40);
+      stroke(LINE_WIDTH * 0.3, 0.20);
     }
-    if (scribbles.length > 0 || drawing) requestAnimationFrame(drawScribblesOnly);
-    else { active = false; scribbleActive = false; lastStrokeEnd = null; }
   }
 
   function draw() {
     const now = performance.now();
     ctx.clearRect(0, 0, W, H);
 
+    // Cursor trail
     while (points.length && now - points[0].t > FADE) points.shift();
-    if (points.length < 2) {
-      // cursor trail gone — hand off to scribble-only loop if needed
-      if (scribbles.length > 0) requestAnimationFrame(drawScribblesOnly);
-      else { active = false; scribbleActive = false; }
-      return;
-    }
-
-    const segments = [];
-    let seg = [points[0]];
-    for (let i = 1; i < points.length; i++) {
-      if (points[i].t - points[i-1].t > 80) {
-        if (seg.length > 1) segments.push(seg);
-        seg = [];
+    if (points.length >= 2) {
+      const segments = [];
+      let seg = [points[0]];
+      for (let i = 1; i < points.length; i++) {
+        if (points[i].t - points[i-1].t > 80) { if (seg.length > 1) segments.push(seg); seg = []; }
+        seg.push(points[i]);
       }
-      seg.push(points[i]);
-    }
-    if (seg.length > 1) segments.push(seg);
+      if (seg.length > 1) segments.push(seg);
 
-    for (const seg of segments) {
-      if (seg.length < 2) continue;
-      const age = now - seg[seg.length - 1].t;
-      const alpha = Math.max(0, 1 - age / FADE);
-      const a = alpha * alpha;
-
-      const buildPath = () => {
-        ctx.beginPath();
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.moveTo(seg[0].x, seg[0].y);
-        for (let i = 1; i < seg.length - 1; i++) {
-          const mx = seg[i].x * 0.7 + (seg[i].x + seg[i+1].x) / 2 * 0.3;
-          const my = seg[i].y * 0.7 + (seg[i].y + seg[i+1].y) / 2 * 0.3;
-          ctx.quadraticCurveTo(seg[i].x, seg[i].y, mx, my);
-        }
-        ctx.lineTo(seg[seg.length-1].x, seg[seg.length-1].y);
-      };
-
-      buildPath();
-      ctx.strokeStyle = `rgba(14, 8, 3, ${a * 0.062})`;
-      ctx.lineWidth = LINE_WIDTH;
-      ctx.stroke();
-
-      buildPath();
-      ctx.strokeStyle = `rgba(8, 4, 1, ${a * 0.022})`;
-      ctx.lineWidth = LINE_WIDTH * 0.4;
-      ctx.stroke();
+      for (const seg of segments) {
+        if (seg.length < 2) continue;
+        const age = now - seg[seg.length - 1].t;
+        const a = Math.pow(Math.max(0, 1 - age / FADE), 2);
+        const buildPath = () => {
+          ctx.beginPath(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+          ctx.moveTo(seg[0].x, seg[0].y);
+          for (let i = 1; i < seg.length - 1; i++) {
+            const mx = seg[i].x * 0.7 + (seg[i].x + seg[i+1].x) / 2 * 0.3;
+            const my = seg[i].y * 0.7 + (seg[i].y + seg[i+1].y) / 2 * 0.3;
+            ctx.quadraticCurveTo(seg[i].x, seg[i].y, mx, my);
+          }
+          ctx.lineTo(seg[seg.length-1].x, seg[seg.length-1].y);
+        };
+        buildPath(); ctx.strokeStyle = `rgba(14, 8, 3, ${a * 0.062})`; ctx.lineWidth = LINE_WIDTH; ctx.stroke();
+        buildPath(); ctx.strokeStyle = `rgba(8, 4, 1, ${a * 0.022})`; ctx.lineWidth = LINE_WIDTH * 0.4; ctx.stroke();
+      }
     }
 
-    // Draw scribbles
-    const now2 = performance.now();
-    const age2 = lastStrokeEnd && !drawing ? Math.max(0, now2 - lastStrokeEnd - SCRIBBLE_HOLD) : 0;
-    const groupAlpha = lastStrokeEnd && !drawing ? Math.max(0, 1 - age2 / SCRIBBLE_FADE) : 1;
-    if (lastStrokeEnd && !drawing && now2 - lastStrokeEnd > SCRIBBLE_HOLD + SCRIBBLE_FADE) {
+    // Scribbles — always draw in same frame as clear to avoid blank frames
+    if (lastStrokeEnd && !drawing && now - lastStrokeEnd > SCRIBBLE_HOLD + SCRIBBLE_FADE) {
       scribbles = []; lastStrokeEnd = null;
     }
-    for (const s of scribbles) {
-      if (s.points.length < 2) continue;
-      const a = groupAlpha * groupAlpha;
+    const scribbleAge = lastStrokeEnd && !drawing ? Math.max(0, now - lastStrokeEnd - SCRIBBLE_HOLD) : 0;
+    const groupAlpha = lastStrokeEnd && !drawing ? Math.max(0, 1 - scribbleAge / SCRIBBLE_FADE) : 1;
+    if (scribbles.length > 0) renderScribbles(groupAlpha);
 
-      const drawScribble = (lw, strokeA) => {
-        ctx.beginPath();
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.moveTo(s.points[0].x, s.points[0].y);
-        for (let i = 1; i < s.points.length - 1; i++) {
-          const mx = s.points[i].x * 0.7 + (s.points[i].x + s.points[i+1].x) / 2 * 0.3;
-          const my = s.points[i].y * 0.7 + (s.points[i].y + s.points[i+1].y) / 2 * 0.3;
-          ctx.quadraticCurveTo(s.points[i].x, s.points[i].y, mx, my);
-        }
-        ctx.lineTo(s.points[s.points.length-1].x, s.points[s.points.length-1].y);
-        ctx.strokeStyle = `rgba(14, 8, 3, ${a * strokeA})`;
-        ctx.lineWidth = lw;
-        ctx.stroke();
-      };
-      drawScribble(LINE_WIDTH * 1.2, 0.55);
-      drawScribble(LINE_WIDTH * 0.75, 0.40);
-      drawScribble(LINE_WIDTH * 0.3, 0.20);
-    }
-
-    if (points.length > 0 || drawing) requestAnimationFrame(draw);
-    else if (scribbles.length > 0) requestAnimationFrame(drawScribblesOnly);
-    else { active = false; scribbleActive = false; }
+    const needsLoop = points.length > 0 || drawing || scribbles.length > 0;
+    if (needsLoop) requestAnimationFrame(draw);
+    else { active = false; scribbleActive = false; lastStrokeEnd = null; }
   }
 })();
 
