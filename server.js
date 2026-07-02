@@ -401,11 +401,17 @@ Write it as if this is going into production tomorrow. Make it feel like award-w
         });
 
         const brandLower = (brand || '').toLowerCase().trim();
+        let sameBrandCount = 0;
         const results = (pineconeRes.matches || [])
           .filter(m => {
             if (!brandLower) return true;
             const b = (m.metadata.b || '').toLowerCase();
-            return !b.includes(brandLower) && !brandLower.includes(b.split(' ')[0]);
+            const isSameBrand = b.includes(brandLower) || brandLower.includes(b.split(' ')[0]);
+            if (isSameBrand) {
+              sameBrandCount++;
+              return sameBrandCount <= 3;
+            }
+            return true;
           })
           .map(m => ({
             c: m.metadata.c,
