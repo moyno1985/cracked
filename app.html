@@ -950,19 +950,6 @@
     color: var(--ink);
     border-bottom-color: var(--ink);
   }
-  .q-field {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-bottom: 12px;
-  }
-  .q-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-light);
-  }
 
   .guide-modal-close {
     display: block;
@@ -3086,7 +3073,6 @@ function openGuideModal() {
   var brand = (document.getElementById('brand').value || '').trim();
   if (brand) {
     document.getElementById('guideNameInput').value = brand;
-    document.getElementById('qBrandName').value = brand;
     document.getElementById('urlBrandName').value = brand;
   }
 }
@@ -3188,7 +3174,7 @@ async function extractPdfText(file) {
 }
 
 function switchGuideTab(tab) {
-  ['upload','questionnaire','url'].forEach(function(t) {
+  ['upload','url'].forEach(function(t) {
     document.getElementById('guidePanel-' + t).style.display = t === tab ? '' : 'none';
     document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === tab);
   });
@@ -3232,43 +3218,6 @@ async function scrapeAndSaveUrl() {
   }
 }
 
-function checkQSaveReady() {
-  var btn = document.getElementById('qSaveBtn');
-  var name = (document.getElementById('qBrandName').value || '').trim();
-  var voice = (document.getElementById('qVoice').value || '').trim();
-  btn.classList.toggle('ready', !!(name && voice));
-}
-
-function saveQuestionnaire() {
-  var name    = (document.getElementById('qBrandName').value || '').trim();
-  var voice   = (document.getElementById('qVoice').value || '').trim();
-  var colour  = (document.getElementById('qColour').value || '').trim();
-  var never   = (document.getElementById('qNever').value || '').trim();
-  var owns    = (document.getElementById('qOwns').value || '').trim();
-  var audience = (document.getElementById('qAudience').value || '').trim();
-  if (!name || !voice) return;
-
-  var text = [
-    'Brand: ' + name,
-    voice   ? 'Voice: ' + voice : '',
-    colour  ? 'Colours: ' + colour : '',
-    never   ? 'Never says or does: ' + never : '',
-    owns    ? 'Culturally owns: ' + owns : '',
-    audience ? 'Audience truth: ' + audience : '',
-  ].filter(Boolean).join('\n');
-
-  var guides = getBrandGuides();
-  guides[name] = { name: name, text: text, savedAt: new Date().toISOString(), source: 'questionnaire' };
-  saveBrandGuides(guides);
-
-  // Clear fields
-  ['qBrandName','qVoice','qColour','qNever','qOwns','qAudience'].forEach(function(id) {
-    document.getElementById(id).value = '';
-  });
-  checkQSaveReady();
-  renderGuidesList();
-  updateGuideIndicator();
-}
 
 function getBrandGuideContext(brandName) {
   var guide = matchGuideToName(brandName);
@@ -3286,7 +3235,6 @@ function getBrandGuideContext(brandName) {
     <!-- Tabs -->
     <div class="guide-tabs">
       <button class="guide-tab active" id="tabUpload" onclick="switchGuideTab('upload')">Upload a doc</button>
-      <button class="guide-tab" id="tabQuestionnaire" onclick="switchGuideTab('questionnaire')">Quick questionnaire</button>
       <button class="guide-tab" id="tabUrl" onclick="switchGuideTab('url')">Brand website</button>
     </div>
 
@@ -3300,35 +3248,6 @@ function getBrandGuideContext(brandName) {
       <div class="guide-upload-status" id="guideUploadStatus"></div>
       <input type="text" class="guide-name-input" id="guideNameInput" placeholder="Brand name (e.g. McDonald's)" oninput="checkGuideSaveReady()" />
       <button class="guide-save-btn" id="guideSaveBtn" onclick="saveCurrentGuide()">Save guide</button>
-    </div>
-
-    <!-- Questionnaire panel -->
-    <div id="guidePanel-questionnaire" style="display:none;">
-      <div class="q-field">
-        <label class="q-label">Brand name</label>
-        <input type="text" class="guide-name-input" id="qBrandName" placeholder="e.g. McDonald's" oninput="checkQSaveReady()" style="margin-bottom:0;" />
-      </div>
-      <div class="q-field">
-        <label class="q-label">Voice in 3 words</label>
-        <input type="text" class="guide-name-input" id="qVoice" placeholder="e.g. Direct, warm, confident" oninput="checkQSaveReady()" style="margin-bottom:0;" />
-      </div>
-      <div class="q-field">
-        <label class="q-label">Primary colour</label>
-        <input type="text" class="guide-name-input" id="qColour" placeholder="e.g. Red #DA291C, yellow #FFC72C" oninput="checkQSaveReady()" style="margin-bottom:0;" />
-      </div>
-      <div class="q-field">
-        <label class="q-label">What it never says or does</label>
-        <input type="text" class="guide-name-input" id="qNever" placeholder="e.g. Never uses irony, never speaks down" oninput="checkQSaveReady()" style="margin-bottom:0;" />
-      </div>
-      <div class="q-field">
-        <label class="q-label">What it already owns culturally</label>
-        <input type="text" class="guide-name-input" id="qOwns" placeholder="e.g. Physical ubiquity, the feeling of finding one unexpectedly" oninput="checkQSaveReady()" style="margin-bottom:0;" />
-      </div>
-      <div class="q-field" style="margin-bottom:16px;">
-        <label class="q-label">Honest audience truth</label>
-        <input type="text" class="guide-name-input" id="qAudience" placeholder="e.g. People who find themselves there without quite deciding to go" oninput="checkQSaveReady()" style="margin-bottom:0;" />
-      </div>
-      <button class="guide-save-btn" id="qSaveBtn" onclick="saveQuestionnaire()">Save guide</button>
     </div>
 
     <!-- URL panel -->
