@@ -1791,6 +1791,11 @@ function renderHistory() {
 
       <div class="form-row">
         <div class="form-group full">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <label style="margin:0;">Brief</label>
+            <label for="briefUpload" id="uploadLabel" style="cursor:pointer;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-light);text-decoration:underline;">↑ Upload brief</label>
+            <input type="file" id="briefUpload" accept=".pdf,.png,.jpg,.jpeg,.txt,.doc,.docx" style="display:none" onchange="parseBriefFile(this)" />
+          </div>
           <textarea id="brief" placeholder="Describe the creative challenge. The more specific you are, the better the ideas."></textarea>
         </div>
       </div>
@@ -1961,6 +1966,106 @@ function showExamples() {
   const link = document.getElementById('exampleLink');
   if (row) row.style.display = 'flex';
   if (link) link.style.display = 'none';
+}
+
+async function parseBriefFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const label = document.getElementById('uploadLabel');
+  label.textContent = 'Reading…';
+
+  try {
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+    const isPdf = file.type === 'application/pdf';
+    const isImage = file.type.startsWith('image/');
+    const isText = file.type === 'text/plain' || file.name.endsWith('.txt');
+
+    let messages;
+    if (isPdf || isImage) {
+      messages = [{
+        role: 'user',
+        content: [{
+          type: isPdf ? 'document' : 'image',
+          source: { type: 'base64', media_type: file.type, data: base64 }
+        }, {
+          type: 'text',
+          text: `Extract the creative brief from this document and return a JSON object with these fields:
+- brand: the brand or product name (string)
+- audience: the target audience description (string)
+- brief: the core creative challenge or objective — this should be a full, rich description of the problem to solve (string)
+- ambition: pick the closest match from: "Change behaviour", "Challenge a cultural norm", "Launch a new product", "Reposition a brand", "Drive brand fame", "Respond to a cultural moment", "Make people feel something" (string)
+- tone: 1-3 words describing the desired tone (string)
+
+Only return the JSON object, nothing else. If a field cannot be determined, use an empty string.`
+        }]
+      }];
+    } else {
+      // Plain text — decode and send as text
+      const text = atob(base64);
+      messages = [{
+        role: 'user',
+        content: `Extract the creative brief from this document and return a JSON object with these fields:
+- brand: the brand or product name (string)
+- audience: the target audience description (string)
+- brief: the core creative challenge or objective — full rich description (string)
+- ambition: pick the closest match from: "Change behaviour", "Challenge a cultural norm", "Launch a new product", "Reposition a brand", "Drive brand fame", "Respond to a cultural moment", "Make people feel something" (string)
+- tone: 1-3 words describing the desired tone (string)
+
+Only return the JSON object, nothing else. If a field cannot be determined, use an empty string.
+
+Document:
+${text}`
+      }];
+    }
+
+    const res = await fetch('/api/claude', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages,
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || 'API error');
+
+    const raw = data.content.map(b => b.text || '').join('').trim();
+    const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
+
+    if (parsed.brand)    document.getElementById('brand').value = parsed.brand;
+    if (parsed.audience) { const a = document.getElementById('audience'); a.value = parsed.audience; a.style.height = 'auto'; a.style.height = a.scrollHeight + 'px'; }
+    if (parsed.brief)    document.getElementById('brief').value = parsed.brief;
+    if (parsed.ambition) document.getElementById('ambition').value = parsed.ambition;
+    if (parsed.tone) {
+      const toneEl = document.getElementById('tone');
+      for (const opt of toneEl.options) {
+        if (opt.value.toLowerCase().includes(parsed.tone.toLowerCase()) || parsed.tone.toLowerCase().includes(opt.value.toLowerCase())) {
+          toneEl.value = opt.value;
+          break;
+        }
+      }
+    }
+
+    updateGuideIndicator();
+    label.textContent = '✓ Brief loaded';
+    setTimeout(() => { label.textContent = '↑ Upload brief'; }, 3000);
+
+  } catch (err) {
+    console.error('Brief parse error:', err);
+    label.textContent = '✗ Failed — try again';
+    setTimeout(() => { label.textContent = '↑ Upload brief'; }, 3000);
+  }
+
+  input.value = '';
 }
 
 document.getElementById('formDate').textContent = new Date().toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'}).toUpperCase();
