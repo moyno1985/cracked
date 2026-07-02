@@ -3044,8 +3044,8 @@ function searchArchive(brief, brand, category) {
         ctx.lineJoin = 'round';
         ctx.moveTo(seg[0].x, seg[0].y);
         for (let i = 1; i < seg.length - 1; i++) {
-          const mx = (seg[i].x + seg[i+1].x) / 2;
-          const my = (seg[i].y + seg[i+1].y) / 2;
+          const mx = seg[i].x * 0.7 + (seg[i].x + seg[i+1].x) / 2 * 0.3;
+          const my = seg[i].y * 0.7 + (seg[i].y + seg[i+1].y) / 2 * 0.3;
           ctx.quadraticCurveTo(seg[i].x, seg[i].y, mx, my);
         }
         ctx.lineTo(seg[seg.length-1].x, seg[seg.length-1].y);
