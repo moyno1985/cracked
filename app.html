@@ -2196,6 +2196,11 @@ function loadContentExample(key) {
   document.getElementById('contentTerritory').value = ex.territory;
   document.getElementById('tone').value = ex.tone;
   document.getElementById('brief').value = ex.brief; autoGrowBrief();
+  const audienceEl = document.getElementById('audience');
+  if (audienceEl) { audienceEl.style.height = 'auto'; audienceEl.style.height = audienceEl.scrollHeight + 'px'; }
+  document.querySelectorAll('.example-pill').forEach(p => p.classList.remove('active'));
+  const pill = document.querySelector(`.example-pill[onclick="setFormat('content');loadContentExample('${key}')"]`);
+  if (pill) pill.classList.add('active');
 }
 
 var _currentFormat = 'campaign';
