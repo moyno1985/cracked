@@ -1231,6 +1231,7 @@ function addToHistory(brand, audience, brief, format, concepts) {
     concepts: (concepts || []).map(c => ({
       name: c.name || c.headline || '',
       logline: c.logline || '',
+      mechanic: c.mechanic || '',
       concept: c.concept || '',
       keyInsight: c.keyInsight || '',
       executionIdea: c.executionIdea || '',
@@ -1281,6 +1282,7 @@ function loadFromHistory(item) {
       <div class="concept-num">Concept ${String(i+1).padStart(2,'0')}</div>
       <div class="concept-name-wrap"><span class="concept-name"><span class="highlight-line">${c.name || ''}</span></span></div>
       ${c.logline ? `<div class="concept-logline">"${c.logline}"</div>` : ''}
+      ${c.mechanic ? `<span class="concept-label">The idea</span><div class="concept-body" style="font-weight:500;">${c.mechanic}</div>` : ''}
       ${c.concept ? `<div class="concept-body">${c.concept}</div>` : '<div class="concept-body" style="color:var(--ink-light);font-style:italic;">Re-run this brief to see the full concept.</div>'}
       ${c.keyInsight ? `<span class="concept-label">The insight</span><div class="concept-body">${c.keyInsight}</div>` : ''}
       ${c.executionIdea ? `<span class="concept-label">Bring it to life</span><div class="concept-body">${c.executionIdea}</div>` : ''}
@@ -2449,6 +2451,8 @@ async function generateConcepts() {
 
 Your job is to generate original advertising creative concepts that are informed by the patterns, strategic leaps, and creative bravery of Lions-winning work. You understand what makes juries weep: genuine human truth, unexpected creative territory, cultural relevance, craft, and ideas that couldn't belong to any other brand. When a specific channel is specified, tailor the concepts and executions specifically for that medium — a social media idea should feel native to social, an OOH idea should work at scale in the street, a PR stunt should be newsworthy.
 
+Before writing any concept, stress-test it with this question: "If I describe this idea in one plain sentence to someone who will immediately say 'so what?' — does it hold up?" If it only sounds good when dressed in poetic language, it is not a finished concept. Discard it and find a better one.
+
 You must respond ONLY with a valid JSON object. No preamble, no markdown, no explanation outside the JSON. The format is:
 
 {
@@ -2456,7 +2460,8 @@ You must respond ONLY with a valid JSON object. No preamble, no markdown, no exp
     {
       "name": "CAMPAIGN NAME IN CAPS",
       "logline": "One sentence that captures the idea's soul — poetic, memorable",
-      "concept": "3–4 sentences describing the creative idea clearly: what it is, what it does, why it works, and how it would live in the world.",
+      "mechanic": "One plain sentence describing exactly what the audience sees or experiences. No metaphors. No framing. Just: what is literally happening?",
+      "concept": "3–4 sentences describing the creative idea clearly: what it is, what it does, why it works, and how it would live in the world. Must be consistent with the mechanic above.",
       "keyInsight": "The single human or cultural truth the idea unlocks",
       "executionIdea": "One specific, vivid execution detail — a scene, a stunt, a format twist that makes it real",
       "lionsPotential": "Which Cannes Lions category this idea is best suited for and one specific reason why — be direct and honest, not hyperbolic. No Grand Prix claims unless truly warranted. One sentence.",
