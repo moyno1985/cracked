@@ -1468,7 +1468,7 @@ function renderHistory() {
         </div>
         <div class="form-group">
           <label>Target Audience</label>
-          <input type="text" id="audience" placeholder="e.g. Gen Z urban professionals" />
+          <textarea id="audience" placeholder="e.g. Gen Z urban professionals" rows="1" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" style="resize:none;overflow:hidden;min-height:38px;"></textarea>
         </div>
       </div>
 
@@ -2352,7 +2352,7 @@ function loadExample(key) {
   const ex = EXAMPLES[key];
   if (ex.format) setFormat(ex.format);
   document.getElementById('brand').value = ex.brand;
-  document.getElementById('audience').value = ex.audience;
+  const aud = document.getElementById('audience'); aud.value = ex.audience; aud.style.height='auto'; aud.style.height=aud.scrollHeight+'px';
   document.getElementById('ambition').value = ex.ambition;
   document.getElementById('brief').value = ex.brief; autoGrowBrief();
   document.getElementById('tone').value = ex.tone;
