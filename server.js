@@ -323,7 +323,7 @@ Write it as if this is going into production tomorrow. Make it feel like award-w
           return;
         }
 
-        const { query } = JSON.parse(body);
+        const { query, brand } = JSON.parse(body);
 
         // 1. Embed the query with OpenAI
         const embedBody = JSON.stringify({ model: 'text-embedding-3-small', input: query });
@@ -400,17 +400,24 @@ Write it as if this is going into production tomorrow. Make it feel like award-w
           r.end();
         });
 
-        const results = (pineconeRes.matches || []).map(m => ({
-          c: m.metadata.c,
-          b: m.metadata.b,
-          a: m.metadata.a,
-          y: m.metadata.y,
-          cat: m.metadata.cat,
-          award: m.metadata.award,
-          src: m.metadata.src,
-          desc: m.metadata.desc_clean || m.metadata.desc || '',
-          score: m.score,
-        }));
+        const brandLower = (brand || '').toLowerCase().trim();
+        const results = (pineconeRes.matches || [])
+          .filter(m => {
+            if (!brandLower) return true;
+            const b = (m.metadata.b || '').toLowerCase();
+            return !b.includes(brandLower) && !brandLower.includes(b.split(' ')[0]);
+          })
+          .map(m => ({
+            c: m.metadata.c,
+            b: m.metadata.b,
+            a: m.metadata.a,
+            y: m.metadata.y,
+            cat: m.metadata.cat,
+            award: m.metadata.award,
+            src: m.metadata.src,
+            desc: m.metadata.desc_clean || m.metadata.desc || '',
+            score: m.score,
+          }));
 
         res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
         res.end(JSON.stringify({ results }));

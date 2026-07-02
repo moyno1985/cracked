@@ -2706,7 +2706,7 @@ async function generateConcepts() {
     const searchRes = await fetch('/api/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: searchQuery })
+      body: JSON.stringify({ query: searchQuery, brand: brand })
     });
     const searchData = await searchRes.json();
     const results = searchData.results || [];
