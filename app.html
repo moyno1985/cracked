@@ -2983,6 +2983,12 @@ function searchArchive(brief, brand, category) {
   let enabled = false; // off by default
   let overInteractive = false;
 
+  // Scribble strokes — drawn on mousedown+drag, fade over 2.5s
+  const SCRIBBLE_FADE = 2500;
+  let scribbles = [];       // [{points: [...], endT: null|timestamp}]
+  let drawing = false;
+  let scribbleActive = false;
+
   const toggle = document.getElementById('sharpieToggle');
 
   // Nudge toggle above footer when footer is visible
@@ -2999,7 +3005,7 @@ function searchArchive(brief, brand, category) {
     enabled = !enabled;
     toggle.style.opacity = enabled ? '0.85' : '0.6';
     toggle.querySelector('path').setAttribute('stroke', enabled ? '#1a1008' : '#aaa');
-    if (!enabled) { points = []; ctx.clearRect(0, 0, W, H); }
+    if (!enabled) { points = []; scribbles = []; drawing = false; ctx.clearRect(0, 0, W, H); }
   });
 
   const interactiveSel = 'input, button, a, select, textarea, .concept-card, .sidebar';
@@ -3012,6 +3018,22 @@ function searchArchive(brief, brand, category) {
     if (!enabled || overInteractive) return;
     points.push({ x: e.clientX, y: e.clientY, t: performance.now() });
     if (!active) { active = true; requestAnimationFrame(draw); }
+    if (drawing && scribbles.length) {
+      scribbles[scribbles.length - 1].points.push({ x: e.clientX, y: e.clientY });
+    }
+  });
+
+  window.addEventListener('mousedown', e => {
+    if (!enabled || overInteractive || e.button !== 0) return;
+    drawing = true;
+    scribbles.push({ points: [{ x: e.clientX, y: e.clientY }], endT: null });
+    if (!scribbleActive) { scribbleActive = true; requestAnimationFrame(draw); }
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (!drawing) return;
+    drawing = false;
+    if (scribbles.length) scribbles[scribbles.length - 1].endT = performance.now();
   });
 
   function draw() {
@@ -3062,8 +3084,37 @@ function searchArchive(brief, brand, category) {
       ctx.stroke();
     }
 
-    if (points.length > 0) requestAnimationFrame(draw);
-    else active = false;
+    // Draw scribbles
+    const now2 = performance.now();
+    scribbles = scribbles.filter(s => !s.endT || now2 - s.endT < SCRIBBLE_FADE);
+    for (const s of scribbles) {
+      if (s.points.length < 2) continue;
+      const age = s.endT ? now2 - s.endT : 0;
+      const alpha = s.endT ? Math.max(0, 1 - age / SCRIBBLE_FADE) : 1;
+      const a = alpha * alpha;
+
+      const drawScribble = (lw, strokeA) => {
+        ctx.beginPath();
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.moveTo(s.points[0].x, s.points[0].y);
+        for (let i = 1; i < s.points.length - 1; i++) {
+          const mx = s.points[i].x * 0.7 + (s.points[i].x + s.points[i+1].x) / 2 * 0.3;
+          const my = s.points[i].y * 0.7 + (s.points[i].y + s.points[i+1].y) / 2 * 0.3;
+          ctx.quadraticCurveTo(s.points[i].x, s.points[i].y, mx, my);
+        }
+        ctx.lineTo(s.points[s.points.length-1].x, s.points[s.points.length-1].y);
+        ctx.strokeStyle = `rgba(14, 8, 3, ${a * strokeA})`;
+        ctx.lineWidth = lw;
+        ctx.stroke();
+      };
+      drawScribble(LINE_WIDTH * 1.2, 0.18);
+      drawScribble(LINE_WIDTH * 0.4, 0.07);
+    }
+
+    const needsLoop = points.length > 0 || scribbles.length > 0 || drawing;
+    if (needsLoop) requestAnimationFrame(draw);
+    else { active = false; scribbleActive = false; }
   }
 })();
 
