@@ -418,5 +418,5 @@ Write it as if this is going into production tomorrow. Make it feel like award-w
 
 server.timeout = 120000; // 2 minutes
 server.listen(PORT, () => {
-  console.log(`Cracked running on port ${PORT}`);
+  console.log(`Crack running on port ${PORT}`);
 });

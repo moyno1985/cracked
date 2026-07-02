@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiBmaWxsPSIjMTExMTEwIi8+CiAgPHRleHQgeD0iNCIgeT0iMjQiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiNGRkU1NjYiIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zdHlsZT0iaXRhbGljIiBmb250LXdlaWdodD0iYm9sZCI+QzwvdGV4dD4KPC9zdmc+">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cracked — AI Creative Intelligence</title>
+<title>Crack — AI Creative Intelligence</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Rock+Salt&display=swap');
 
@@ -1370,7 +1370,7 @@
       return;
     }
     // Store user data globally
-    window._crackedUser = data;
+    window._crackUser = data;
     const nameEl = document.getElementById('sidebarName');
     if (nameEl && data.email) {
       const firstName = data.email.split('@')[0].split('.')[0];
@@ -1517,7 +1517,7 @@ function loadFromHistory(item) {
     grid.appendChild(card);
   });
 
-  document.getElementById('resultsTitle').textContent = `${concepts.length} concepts — ${item.brand || 'brief'} cracked`;
+  document.getElementById('resultsTitle').textContent = `${concepts.length} concepts — ${item.brand || 'brief'} — cracked`;
   window._currentBrand = item.brand || '';
   document.getElementById('results').classList.add('active');
   document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1672,7 +1672,7 @@ function renderHistory() {
   <div style="display:flex;align-items:center;">
     <a href="/" class="logo-link">
       <div class="logo">
-        <img src="/cracked_logo.png" alt="Cracked" class="main-logo" style="height:22px;width:auto;filter:brightness(0) invert(1);">
+        <img src="/cracked_logo.png" alt="Crack" class="main-logo" style="height:22px;width:auto;filter:brightness(0) invert(1);">
       </div>
     </a>
   </div>
@@ -2065,7 +2065,7 @@ function sketchConcept(btn, index) {
     downloadRow.style.cssText = 'display:flex;gap:8px;margin-top:12px;justify-content:flex-end;';
     var dlJpeg = document.createElement('a');
     dlJpeg.href = imgSrc;
-    dlJpeg.download = (window._currentBrand || 'cracked').toLowerCase().replace(/\s+/g, '-') + '-' + (conceptName || 'concept').toLowerCase().replace(/\s+/g, '-') + '.jpg';
+    dlJpeg.download = (window._currentBrand || 'crack').toLowerCase().replace(/\s+/g, '-') + '-' + (conceptName || 'concept').toLowerCase().replace(/\s+/g, '-') + '.jpg';
     dlJpeg.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download scamp (JPEG)';
     dlJpeg.style.cssText = "display:flex;align-items:center;gap:5px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);border:1.5px solid var(--ink);padding:6px 12px;background:var(--white);box-shadow:2px 2px 0 var(--ink);text-decoration:none;cursor:pointer;";
     dlJpeg.onmouseover = function(){ this.style.background='var(--yellow)'; };
@@ -2127,11 +2127,11 @@ function downloadConceptPdf(name, logline, concept, insight, execution, imgSrc) 
         var scampH = (scampImg.height * pdfWidth) / scampImg.width;
         var topMargin = scampH < 297 ? (297 - scampH) / 2 : 0;
         pdf.addImage(scampImg, 'PNG', 0, topMargin, scampW, Math.min(scampH, 297));
-        pdf.save((window._currentBrand || 'cracked').toLowerCase().replace(/\s+/g, '-') + '-' + name.toLowerCase().replace(/\s+/g, '-') + '.pdf');
+        pdf.save((window._currentBrand || 'crack').toLowerCase().replace(/\s+/g, '-') + '-' + name.toLowerCase().replace(/\s+/g, '-') + '.pdf');
       };
       scampImg.src = imgSrc;
     } else {
-      pdf.save((window._currentBrand || 'cracked').toLowerCase().replace(/\s+/g, '-') + '-' + name.toLowerCase().replace(/\s+/g, '-') + '.pdf');
+      pdf.save((window._currentBrand || 'crack').toLowerCase().replace(/\s+/g, '-') + '-' + name.toLowerCase().replace(/\s+/g, '-') + '.pdf');
     }
   });
 }
@@ -2555,7 +2555,7 @@ function renderContentConcepts(concepts, brand) {
           downloadRow.style.cssText = 'display:flex;gap:8px;margin-top:12px;justify-content:flex-end;';
           var dlJpeg = document.createElement('a');
           dlJpeg.href = imgSrc;
-          dlJpeg.download = (window._currentBrand || 'cracked').toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + conceptName.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.jpg';
+          dlJpeg.download = (window._currentBrand || 'crack').toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + conceptName.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.jpg';
           dlJpeg.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download scamp (JPEG)';
           dlJpeg.style.cssText = "display:flex;align-items:center;gap:5px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);border:1.5px solid var(--ink);padding:6px 12px;background:var(--white);box-shadow:2px 2px 0 var(--ink);text-decoration:none;cursor:pointer;";
           dlJpeg.onmouseover = function(){ this.style.background='var(--yellow)'; };
@@ -2663,7 +2663,7 @@ async function generateConcepts() {
     const searchData = await searchRes.json();
     const results = searchData.results || [];
     if (results.length > 0) {
-      archiveContext = '\n\nRELEVANT AWARD-WINNING CAMPAIGNS FROM THE CRACKED ARCHIVE:\n' +
+      archiveContext = '\n\nRELEVANT AWARD-WINNING CAMPAIGNS FROM THE CRACK ARCHIVE:\n' +
         results.slice(0, 12).map(e => {
           const desc = e.desc ? ` — "${e.desc.slice(0, 120)}"` : '';
           return `- ${e.c} (${e.b || e.a || 'Unknown'}) [${e.award}, ${e.src ? e.src.toUpperCase() : ''} ${e.y}]${desc}`;
@@ -2673,7 +2673,7 @@ async function generateConcepts() {
     // Fall back to local keyword search if Pinecone unavailable
     const fallback = searchArchive(brief, brand, category);
     if (fallback.length > 0) {
-      archiveContext = '\n\nRELEVANT AWARD-WINNING CAMPAIGNS FROM THE CRACKED ARCHIVE:\n' +
+      archiveContext = '\n\nRELEVANT AWARD-WINNING CAMPAIGNS FROM THE CRACK ARCHIVE:\n' +
         fallback.slice(0,10).map(e => `- ${e.c} — ${e.b} [${e.award}, ${e.y}]`).join('\n');
     }
   }
@@ -2850,7 +2850,7 @@ function renderConcepts(concepts, brand) {
           downloadRow.style.cssText = 'display:flex;gap:8px;margin-top:12px;justify-content:flex-end;';
           var dlJpeg = document.createElement('a');
           dlJpeg.href = imgSrc;
-          dlJpeg.download = (window._currentBrand || 'cracked').toLowerCase().replace(/\s+/g, '-') + '-' + (conceptName || 'concept').toLowerCase().replace(/\s+/g, '-') + '.jpg';
+          dlJpeg.download = (window._currentBrand || 'crack').toLowerCase().replace(/\s+/g, '-') + '-' + (conceptName || 'concept').toLowerCase().replace(/\s+/g, '-') + '.jpg';
           dlJpeg.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download scamp (JPEG)';
           dlJpeg.style.cssText = "display:flex;align-items:center;gap:5px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);border:1.5px solid var(--ink);padding:6px 12px;background:var(--white);box-shadow:2px 2px 0 var(--ink);text-decoration:none;cursor:pointer;";
           dlJpeg.onmouseover = function(){ this.style.background='var(--yellow)'; };

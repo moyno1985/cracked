@@ -59,12 +59,12 @@ async function sendMagicLinkEmail(email, token) {
   }
 
   const emailBody = JSON.stringify({
-    from: 'Cracked <onboarding@resend.dev>',
+    from: 'Crack <onboarding@resend.dev>',
     to: [email],
-    subject: 'Your Cracked login link',
+    subject: 'Your Crack login link',
     html: `
       <div style="font-family: 'Space Mono', monospace; max-width: 500px; margin: 40px auto; padding: 40px; background: #111; color: #F8F7F3;">
-        <h1 style="font-family: 'Rock Salt', cursive; font-size: 28px; color: #FFE566; margin-bottom: 8px;">Cracked★</h1>
+        <h1 style="font-family: 'Rock Salt', cursive; font-size: 28px; color: #FFE566; margin-bottom: 8px;">Crack★</h1>
         <p style="color: #99978F; font-size: 12px; margin-bottom: 32px;">AI CREATIVE INTELLIGENCE</p>
         <p style="margin-bottom: 24px;">Click the link below to sign in. It expires in 15 minutes.</p>
         <a href="${link}" style="display: inline-block; background: #FFE566; color: #111; padding: 14px 28px; font-weight: 700; text-decoration: none; font-size: 14px;">CRACK THE BRIEF →</a>
